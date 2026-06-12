@@ -769,7 +769,7 @@
         <source src="music.mp3" type="audio/mpeg">
     </audio>
     
-    <div class="music-control playing" id="musicControl" title="点击暂停/播放《月下煮茶》"></div>
+    <div class="music-control paused" id="musicControl" title="点击播放《月下煮茶》"></div>
 
     <div class="reading-progress" id="readingProgress"></div>
 
@@ -1663,7 +1663,7 @@
     <script>
         const bgMusic = document.getElementById('bgMusic');
         const musicControl = document.getElementById('musicControl');
-        let isPlaying = true;
+        let isPlaying = false;
 
         function toggleMusic() {
             if (isPlaying) {
@@ -1686,7 +1686,13 @@
         bgMusic.volume = 0.3;
         const playPromise = bgMusic.play();
         if (playPromise !== undefined) {
-            playPromise.catch(() => {
+            playPromise.then(() => {
+                // 自动播放成功
+                isPlaying = true;
+                musicControl.classList.add('playing');
+                musicControl.classList.remove('paused');
+            }).catch(() => {
+                // 自动播放被阻止，等用户点击页面任意位置
                 document.addEventListener('click', function initAudio() {
                     bgMusic.play();
                     musicControl.classList.add('playing');
