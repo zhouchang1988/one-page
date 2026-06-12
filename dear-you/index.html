@@ -1,0 +1,1661 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>给阿嬷的情书</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #8B4513;
+            --primary-light: #A0522D;
+            --secondary: #DAA520;
+            --accent: #2E8B57;
+            --bg: #FFFAF0;
+            --bg-card: #FFFFFF;
+            --text: #2C1810;
+            --text-light: #5C4033;
+            --border: #DEB887;
+            --shadow: rgba(139, 69, 19, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.8;
+            font-size: 16px;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #2C1810 0%, #4A2C1A 50%, #6B3A1F 100%);
+            color: #FFFAF0;
+            padding: 80px 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23DAA520' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.3;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: var(--secondary);
+            color: var(--text);
+            padding: 6px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 24px;
+            letter-spacing: 2px;
+        }
+
+        .hero h1 {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            letter-spacing: 4px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 32px;
+            font-weight: 300;
+        }
+
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--secondary);
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            opacity: 0.8;
+            margin-top: 4px;
+        }
+
+        /* Navigation */
+        .nav {
+            background: var(--bg-card);
+            border-bottom: 2px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 20px var(--shadow);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .nav-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .nav-item {
+            padding: 16px 24px;
+            white-space: nowrap;
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+            background: rgba(139, 69, 19, 0.05);
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .section {
+            margin-bottom: 60px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 32px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .section-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .section-title {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .section-desc {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-top: 4px;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 24px;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 20px var(--shadow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px var(--shadow);
+        }
+
+        .card-title {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .card-title::before {
+            content: '';
+            width: 4px;
+            height: 24px;
+            background: var(--secondary);
+            border-radius: 2px;
+            flex-shrink: 0;
+        }
+
+        /* Grid Layout */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+        }
+
+        .grid-2 {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .grid-3 {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        @media (max-width: 768px) {
+            .grid-2,
+            .grid-3 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Info List */
+        .info-list {
+            list-style: none;
+        }
+
+        .info-item {
+            padding: 12px 0;
+            border-bottom: 1px dashed var(--border);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .info-item:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: var(--primary);
+            min-width: 100px;
+        }
+
+        .info-value {
+            color: var(--text-light);
+            flex: 1;
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding-left: 40px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 16px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--border);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 32px;
+            padding: 20px 24px;
+            background: var(--bg-card);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -32px;
+            top: 24px;
+            width: 12px;
+            height: 12px;
+            background: var(--primary);
+            border-radius: 50%;
+            border: 3px solid var(--bg);
+            box-shadow: 0 0 0 2px var(--primary);
+        }
+
+        .timeline-year {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--secondary);
+            margin-bottom: 8px;
+        }
+
+        .timeline-content {
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+
+        /* Character Card */
+        .character-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 24px;
+            border: 1px solid var(--border);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .character-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px var(--shadow);
+        }
+
+        .character-avatar {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 50%;
+            margin: 0 auto 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: white;
+        }
+
+        .character-name {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 4px;
+        }
+
+        .character-actor {
+            font-size: 0.85rem;
+            color: var(--secondary);
+            margin-bottom: 12px;
+        }
+
+        .character-desc {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+
+        /* Quote */
+        .quote {
+            background: linear-gradient(135deg, #FFF8DC, #FFFACD);
+            border-left: 4px solid var(--secondary);
+            padding: 24px 32px;
+            border-radius: 0 12px 12px 0;
+            margin: 24px 0;
+            position: relative;
+        }
+
+        .quote::before {
+            content: '"';
+            font-family: 'Noto Serif SC', serif;
+            font-size: 4rem;
+            color: var(--secondary);
+            opacity: 0.3;
+            position: absolute;
+            top: -10px;
+            left: 12px;
+        }
+
+        .quote-text {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 1.1rem;
+            color: var(--text);
+            font-style: italic;
+            position: relative;
+            z-index: 1;
+        }
+
+        .quote-author {
+            margin-top: 12px;
+            font-size: 0.9rem;
+            color: var(--text-light);
+            text-align: right;
+        }
+
+        /* Tag */
+        .tag {
+            display: inline-block;
+            background: rgba(139, 69, 19, 0.1);
+            color: var(--primary);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin: 4px;
+        }
+
+        .tag-accent {
+            background: rgba(46, 139, 87, 0.1);
+            color: var(--accent);
+        }
+
+        .tag-secondary {
+            background: rgba(218, 165, 32, 0.15);
+            color: #B8860B;
+        }
+
+        /* Table */
+        .table-wrapper {
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--bg-card);
+        }
+
+        th {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            padding: 14px 16px;
+            text-align: left;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        td {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.95rem;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover {
+            background: rgba(139, 69, 19, 0.03);
+        }
+
+        /* Collapsible */
+        .collapsible {
+            background: var(--bg-card);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            margin-bottom: 12px;
+            overflow: hidden;
+        }
+
+        .collapsible-header {
+            padding: 16px 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            color: var(--primary);
+            transition: background 0.3s ease;
+        }
+
+        .collapsible-header:hover {
+            background: rgba(139, 69, 19, 0.05);
+        }
+
+        .collapsible-header::after {
+            content: '+';
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .collapsible.active .collapsible-header::after {
+            transform: rotate(45deg);
+        }
+
+        .collapsible-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .collapsible.active .collapsible-content {
+            max-height: 1000px;
+        }
+
+        .collapsible-inner {
+            padding: 0 20px 20px;
+            color: var(--text-light);
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+
+        /* Highlight Box */
+        .highlight-box {
+            background: linear-gradient(135deg, #FFF8DC, #FFFACD);
+            border: 2px solid var(--secondary);
+            border-radius: 16px;
+            padding: 24px;
+            margin: 24px 0;
+        }
+
+        .highlight-title {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Image Placeholder */
+        .img-placeholder {
+            background: linear-gradient(135deg, #F5DEB3, #DEB887);
+            border-radius: 12px;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin: 16px 0;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--primary);
+            color: #FFFAF0;
+            padding: 40px 20px;
+            text-align: center;
+            margin-top: 60px;
+        }
+
+        .footer-title {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 1.5rem;
+            margin-bottom: 12px;
+        }
+
+        .footer-desc {
+            opacity: 0.8;
+            font-size: 0.95rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+
+            .hero-stats {
+                gap: 24px;
+            }
+
+            .section-title {
+                font-size: 1.4rem;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate {
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-light);
+        }
+
+        /* Letter styling */
+        .letter {
+            background: #FFF8E7;
+            border: 1px solid #D4A574;
+            border-radius: 8px;
+            padding: 32px;
+            margin: 24px 0;
+            font-family: 'Noto Serif SC', serif;
+            position: relative;
+            box-shadow: 4px 4px 0 rgba(139, 69, 19, 0.1);
+        }
+
+        .letter::before {
+            content: '侨批';
+            position: absolute;
+            top: -12px;
+            left: 24px;
+            background: var(--secondary);
+            color: white;
+            padding: 4px 16px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+        }
+
+        .letter-content {
+            white-space: pre-line;
+            line-height: 2;
+            color: var(--text);
+        }
+
+        .letter-date {
+            text-align: right;
+            margin-top: 16px;
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        /* Progress indicator */
+        .reading-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            z-index: 1000;
+            transition: width 0.1s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="reading-progress" id="readingProgress"></div>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content animate">
+
+            <h1>给阿嬷的情书</h1>
+            <p class="hero-subtitle">一封跨越山海的侨批 · 一段尘封半世纪的情义 · 一部潮汕人的史诗</p>
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <div class="stat-value">9.1</div>
+                    <div class="stat-label">豆瓣评分</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">16亿+</div>
+                    <div class="stat-label">票房（人民币）</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">118分钟</div>
+                    <div class="stat-label">片长</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">2026</div>
+                    <div class="stat-label">上映年份</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-container">
+            <a href="#basic" class="nav-item active">基本信息</a>
+            <a href="#synopsis" class="nav-item">剧情梗概</a>
+            <a href="#characters" class="nav-item">角色与演员</a>
+            <a href="#team" class="nav-item">主创团队</a>
+            <a href="#behind" class="nav-item">幕后故事</a>
+            <a href="#culture" class="nav-item">侨批文化</a>
+            <a href="#history" class="nav-item">历史背景</a>
+            <a href="#art" class="nav-item">艺术特色</a>
+            <a href="#impact" class="nav-item">社会影响</a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+
+        <!-- Section 1: Basic Info -->
+        <section id="basic" class="section">
+            <div class="section-header">
+                <div class="section-icon">🎬</div>
+                <div>
+                    <h2 class="section-title">基本信息</h2>
+                    <p class="section-desc">电影的核心数据与制作信息</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title">电影概览</h3>
+                <ul class="info-list">
+                    <li class="info-item">
+                        <span class="info-label">中文片名</span>
+                        <span class="info-value">给阿嬷的情书</span>
+                    </li>
+                    <li class="info-item">
+                        <span class="info-label">英文片名</span>
+                        <span class="info-value">Dear You</span>
+                    </li>
+                    <li class="info-item">
+                        <span class="info-label">导演</span>
+                        <span class="info-value">蓝鸿春</span>
+                    </li>
+                    <li class="info-item">
+                        <span class="info-label">编剧</span>
+                        <span class="info-value">蓝鸿春、郑萱轩、杨冷、朱丽云</span>
+                    </li>
+                    <li class="info-item">
+                        <span class="info-label">制片人</span>
+                        <span class="info-value">罗展宏、谢颖、郑萱轩、林国明</span>
+                    </li>
+                    <li class="info-item">
+                        <span class="info-label">主演</span>
+                        <span class="info-value">李思潼、王彦桐、吴少卿、郑润奇、王晓慧</span>
+                    </li>
+                    <li class="info-item">
+                        <span class="info-label">类型</span>
+                        <span class="info-value">剧情 / 家庭 / 爱情</span>
+                    </li>
+                    <li class="info-item">
+                        <span class="info-label">片长</span>
+                        <span class="info-value">118分钟</span>
+                    </li>
+                    <li class="info-item">
+                        <span class="info-label">语言</span>
+                        <span class="info-value">潮汕话、泰语、普通话</span>
+                    </li>
+                    <li class="info-item">
+                        <span class="info-label">制片地区</span>
+                        <span class="info-value">中国大陆</span>
+                    </li>
+                    <li class="info-item">
+                        <span class="info-label">制作成本</span>
+                        <span class="info-value">约1400万人民币</span>
+                    </li>
+                    <li class="info-item">
+                        <span class="info-label">票房成绩</span>
+                        <span class="info-value">超过16.24亿人民币（截至2026年6月）</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="grid grid-2">
+                <div class="card">
+                    <h3 class="card-title">上映信息</h3>
+                    <ul class="info-list">
+                        <li class="info-item">
+                            <span class="info-label">首映</span>
+                            <span class="info-value">2026年4月17日（汕头）</span>
+                        </li>
+                        <li class="info-item">
+                            <span class="info-label">中国大陆</span>
+                            <span class="info-value">2026年4月30日（部分地区）<br>5月3日（全国公映）</span>
+                        </li>
+                        <li class="info-item">
+                            <span class="info-label">海外上映</span>
+                            <span class="info-value">2026年6月18日（香港、澳门、新加坡、马来西亚、泰国、文莱）</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h3 class="card-title">制作公司</h3>
+                    <div style="margin-top: 8px;">
+                        <p class="tag">深圳市金蚂蚁影视传媒有限公司</p>
+                        <p class="tag">北京大麦娱乐文化有限公司</p>
+                        <p class="tag">荣德控股集团有限公司</p>
+                        <p class="tag">深圳市立春影业有限公司</p>
+                    </div>
+                    <p style="margin-top: 16px; font-size: 0.9rem; color: var(--text-light);">
+                        发行商：北京大麦娱乐文化有限公司
+                    </p>
+                </div>
+            </div>
+
+            <div class="highlight-box">
+                <div class="highlight-title">🏆 票房奇迹</div>
+                <p style="color: var(--text-light); font-size: 0.95rem;">
+                    这部投资仅1400万、全素人出演、95%潮汕方言对白的小成本电影，在五一档首日排片仅1.6%的情况下，凭借口碑逆袭，连续获得单日票房冠军，最终票房突破16亿，成为中国影史最大的票房黑马之一。豆瓣评分从开分9.0一路攀升至9.1，创下近年华语剧情片高分纪录。
+                </p>
+            </div>
+        </section>
+
+        <!-- Section 2: Synopsis -->
+        <section id="synopsis" class="section">
+            <div class="section-header">
+                <div class="section-icon">📖</div>
+                <div>
+                    <h2 class="section-title">剧情梗概</h2>
+                    <p class="section-desc">一段跨越70年的侨批传奇</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title">故事主线</h3>
+                <p style="color: var(--text-light); margin-bottom: 16px;">
+                    电影以「侨批」为线索，讲述了潮汕阿嬷叶淑柔半生守候着与丈夫郑木生的书信往来。孙子晓伟因债务远赴泰国探寻真相，却意外揭开一个尘封半世纪的秘密——那个与阿嬷通信半生、寄钱养家的人，并非郑木生，而是一个名叫谢南枝的陌生女人。
+                </p>
+
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-year">潮汕故里 · 木生与淑柔的相识</div>
+                        <div class="timeline-content">
+                            郑木生是潮汕青年，家境贫寒，却为人仗义、勤劳朴实。叶淑柔是当地姑娘，性格温婉坚韧。两人在乡间相识——淑柔扛着镖旗从小桥走过，木生一见倾心，追着她跑，一个闪失掉进了河里。这个带着少年羞涩与莽撞的相遇，成为他们爱情的起点。木生用木头亲手做了一辆"木单车"，载着淑柔私奔，许下相守一生的承诺。婚后不久，为生计所迫，木生决定"过番"下南洋谋生，与淑柔依依惜别，踏上前往曼谷的红头船。
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-year">1955年 · 曼谷唐人街</div>
+                        <div class="timeline-content">
+                            谢家在曼谷唐人街经营旅社。老板之女谢南枝身为本地二代华人，性情刚直，不愿被婚姻束缚。郑木生因卷入劳资纠纷被马来亚当局驱逐后迁往曼谷务工，偷住于旅社，两人因此相识。
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-year">华文教育的坚守</div>
+                        <div class="timeline-content">
+                            在同乡帮助下，木生与在银信局代写侨批的中文教师狄功一同借住旅社。泰国当局取缔中文教育，在木生支持下，狄功在旅社开班给孩子教授中文。起初南枝反对，但在女工如姨、父亲来顺劝说下逐渐被打动，也开始学习读书识字。
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-year">木生的意外</div>
+                        <div class="timeline-content">
+                            木生委托南枝每月代写平安批寄回潮汕。木生离开旅社后购入河船从事航运。1960年，木生目睹邻近河船遭遇抢劫，挺身而出，在搏斗中堕河身亡。
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-year">南枝的守护</div>
+                        <div class="timeline-content">
+                            得知消息后南枝寄讣告，在银信局中见到寄侨批的各色人士，并收到淑柔回信。遂决定隐瞒木生之死，继续代木生寄侨批。十几年来，南枝向郑家寄款寄物，支撑起淑柔对木生的思念。南枝在此期间还收养弃婴泽华，并成为中文教师。
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-year">1978年 · 真相与误解</div>
+                        <div class="timeline-content">
+                            南枝收到淑柔来信称欲赴泰见木生；南枝假称台风回绝，并计划和家人一道前往中国看望淑柔、说明真相，但因谢父亡故未能成行。南枝遂将真相写成长信，随附当年在旅社时与木生和学生们的合影。然而信在途中意外遇台风，只剩合影，淑柔因而误会木生在泰国另组家庭，搬离原村，两人因而失联。
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-year">当代 · 晓伟的寻亲之旅</div>
+                        <div class="timeline-content">
+                            孙子晓伟因欠债，拿着一封尘封的侨批前往泰国寻找失联四十年的阿公木生。在泰国，他逐渐揭开家族的秘密，最终找到年老的南枝，得知真相。淑柔与家人前往泰国，与年老的南枝重逢，感念往事万千。郑家与谢家结拜，木生在泰国的牌位也回归故乡。
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quote">
+                <div class="quote-text">做人得有情义，无情无义的人不能交往。</div>
+                <div class="quote-author">—— 电影开篇字幕，阿嬷的教诲</div>
+            </div>
+        </section>
+
+        <!-- Section 3: Characters -->
+        <section id="characters" class="section">
+            <div class="section-header">
+                <div class="section-icon">👥</div>
+                <div>
+                    <h2 class="section-title">角色与演员</h2>
+                    <p class="section-desc">全素人阵容，却演绎出最真实的人生</p>
+                </div>
+            </div>
+
+            <div class="grid grid-3">
+                <div class="character-card">
+                    <div class="character-avatar">🌸</div>
+                    <div class="character-name">谢南枝（青年）</div>
+                    <div class="character-actor">演员：李思潼</div>
+                    <div class="character-desc">
+                        泰国华裔女性，谢家旅社老板之女。性情刚直，不愿被婚姻束缚，后因木生影响开始学习中文，最终成为华文教师，守护两个家庭数十年。
+                    </div>
+                </div>
+                <div class="character-card">
+                    <div class="character-avatar">🌺</div>
+                    <div class="character-name">谢南枝（老年）</div>
+                    <div class="character-actor">演员：乌萨·萨梅坎姆</div>
+                    <div class="character-desc">
+                        泰国知名素人演员，因《姥姥的外孙》在东南亚走红。祖籍广东澄海东里镇，与影片设定完全吻合。她说接到剧本那晚哭了，觉得是在替祖父还愿。
+                    </div>
+                </div>
+                <div class="character-card">
+                    <div class="character-avatar">💪</div>
+                    <div class="character-name">郑木生</div>
+                    <div class="character-actor">演员：王彦桐</div>
+                    <div class="character-desc">
+                        潮汕青年，叶淑柔的丈夫。因劳资纠纷被马来亚驱逐后迁往曼谷务工。为人仗义，挺身救人时意外身亡，年仅30岁。
+                    </div>
+                </div>
+                <div class="character-card">
+                    <div class="character-avatar">👵</div>
+                    <div class="character-name">叶淑柔（老年）</div>
+                    <div class="character-actor">演员：吴少卿</div>
+                    <div class="character-desc">
+                        84岁潮汕阿嬷，本是潮汕地区的网络红人。平时拍视频风格外放，但在电影里她"收"住了，用自身阅历为影片注入直击人心的力量。
+                    </div>
+                </div>
+                <div class="character-card">
+                    <div class="character-avatar">👩</div>
+                    <div class="character-name">叶淑柔（青年）</div>
+                    <div class="character-actor">演员：王晓慧</div>
+                    <div class="character-desc">
+                        潮汕女性，郑木生的妻子。在丈夫"过番"后独自守候家园，半生等待着丈夫的归来。
+                    </div>
+                </div>
+                <div class="character-card">
+                    <div class="character-avatar">👦</div>
+                    <div class="character-name">晓伟</div>
+                    <div class="character-actor">演员：郑润奇</div>
+                    <div class="character-desc">
+                        叶淑柔（老年）的孙子。因欠债远赴泰国寻找传闻中的富豪阿公，却意外揭开家族尘封半世纪的秘密。
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" style="margin-top: 24px;">
+                <h3 class="card-title">其他重要角色</h3>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>演员</th>
+                                <th>角色</th>
+                                <th>介绍</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>方培松</td>
+                                <td>谢来顺</td>
+                                <td>谢南枝的父亲，旅社老板</td>
+                            </tr>
+                            <tr>
+                                <td>赵曙光</td>
+                                <td>谢泽华</td>
+                                <td>谢南枝的养子</td>
+                            </tr>
+                            <tr>
+                                <td>李德如</td>
+                                <td>如姨</td>
+                                <td>谢家旅社的女工</td>
+                            </tr>
+                            <tr>
+                                <td>姚远</td>
+                                <td>陈楚远</td>
+                                <td>谢南枝的追求者</td>
+                            </tr>
+                            <tr>
+                                <td>陈钦勤</td>
+                                <td>狄功（青年）</td>
+                                <td>中文教师，在银信局代写侨批</td>
+                            </tr>
+                            <tr>
+                                <td>陈锦标</td>
+                                <td>狄功（老年）</td>
+                                <td>年迈的狄功</td>
+                            </tr>
+                            <tr>
+                                <td>郑鹏生</td>
+                                <td>龙伯</td>
+                                <td>晓伟的叔叔，叶淑柔的小儿子</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Team -->
+        <section id="team" class="section">
+            <div class="section-header">
+                <div class="section-icon">🎥</div>
+                <div>
+                    <h2 class="section-title">主创团队</h2>
+                    <p class="section-desc">一群被故事打动的创作者</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title">导演：蓝鸿春</h3>
+                <div class="grid grid-2" style="margin-top: 16px;">
+                    <div>
+                        <p style="color: var(--text-light); margin-bottom: 16px;">
+                            蓝鸿春是土生土长的潮汕人，并非科班出身，曾在电视台担任纪录片编导，拍摄多部潮汕文化主题纪录片。他一直深耕潮汕方言电影，前有《爸！我一定行的》，后有《带你去见我妈》，《给阿嬷的情书》是他的"潮汕三部曲"的最后一部。
+                        </p>
+                        <p style="color: var(--text-light); margin-bottom: 16px;">
+                            2019年，蓝鸿春在拍摄纪录片《四海潮味》时，在东南亚及欧美走访了300多个华人家庭，"每个故事都很动人，每个家庭都有一封舍不得扔的侨批"。这次走访触发了他做一部跟侨批有关的电影的想法。
+                        </p>
+                        <p style="color: var(--text-light);">
+                            蓝鸿春坦言，他也没想到《给阿嬷的情书》能走出潮汕地区，被全国观众接受，"我们做的其实是一个很本土的故事，但情感的真诚度穿透了地域的边界"。
+                        </p>
+                    </div>
+                    <div>
+                        <div class="quote" style="margin-top: 0;">
+                            <div class="quote-text">我们赌观众还愿意相信真诚，赌这个时代还渴望温柔。</div>
+                            <div class="quote-author">—— 蓝鸿春</div>
+                        </div>
+                        <div class="highlight-box" style="margin-top: 16px;">
+                            <div class="highlight-title">🎬 创作理念</div>
+                            <p style="font-size: 0.9rem; color: var(--text-light);">
+                                蓝鸿春受侯孝贤影响很深。2007年，他在片场看到侯孝贤拍戏，"一条拍了十几遍。那种静静陪伴角色、旁观他们生活的拍摄方式，对我后来的拍摄手法影响巨大。"
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title">编剧团队</h3>
+                <p style="color: var(--text-light); margin-bottom: 16px;">
+                    影片的编剧团队由四位风格各异的创作者组成：
+                </p>
+                <div class="grid grid-2">
+                    <div>
+                        <p><strong>蓝鸿春</strong>（导演兼编剧）：潮汕人，对本土文化有深刻理解</p>
+                        <p><strong>郑萱轩</strong>（制片兼编剧）：广西人，专业编剧出身，主动通过豆瓣私信联系蓝鸿春</p>
+                    </div>
+                    <div>
+                        <p><strong>杨冷</strong>：四川人，与蓝鸿春是老搭档</p>
+                        <p><strong>朱丽云</strong>：负责将剧本改写为小说，补充女性视角的细腻之处</p>
+                    </div>
+                </div>
+                <p style="color: var(--text-light); margin-top: 16px; font-size: 0.9rem;">
+                    蓝鸿春让编剧们"拼图式"写作——各自写完再一起汇总讨论。剧本素材出自大量的田野调查采访，同时他们还查阅了大量20世纪50年代泰国畅销的华文小说，如《风雨耀华力》《三聘姑娘》等。
+                </p>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title">其他主创</h3>
+                <ul class="info-list">
+                    <li class="info-item">
+                        <span class="info-label">配乐</span>
+                        <span class="info-value">李奕瀚、吴泽华、杨冷</span>
+                    </li>
+                    <li class="info-item">
+                        <span class="info-label">摄影</span>
+                        <span class="info-value">海涛、周泽民</span>
+                    </li>
+                    <li class="info-item">
+                        <span class="info-label">音效</span>
+                        <span class="info-value">钟尚奎</span>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Section 5: Behind the Scenes -->
+        <section id="behind" class="section">
+            <div class="section-header">
+                <div class="section-icon">🎞️</div>
+                <div>
+                    <h2 class="section-title">幕后故事</h2>
+                    <p class="section-desc">"笨拙的真诚"如何创造票房奇迹</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title">从私信到合作</h3>
+                <p style="color: var(--text-light);">
+                    郑萱轩第一次看到《给阿嬷的情书》的小说就觉得，它如果拍成电影是可以破亿的。小说是导演蓝鸿春发给她的，在那之前，他们只见过一面。再之前，她看过他的《爸，我一定行的》和《带你去见我妈》，很欣赏其处理小成本电影的能力。
+                </p>
+                <p style="color: var(--text-light); margin-top: 12px;">
+                    "我本身也是编剧，一直在进行剧本创作，看完蓝导前两部作品后，我主动通过豆瓣私信联系了他。最初，我带着自己的原创剧本去深圳与他见面，想请他拍。蓝导看完后，觉得故事没那么适合他的风格，所以没合作成，但我们就这样认识了。"郑萱轩回忆道。
+                </p>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title">1000多次面试的海选</h3>
+                <p style="color: var(--text-light);">
+                    只有1400万投资成本的剧组请不起出名的演员，而且在蓝鸿春的设想中，《给阿嬷的情书》所要呈现的就是原生态质感，明星面孔也会形成一种干扰。但素人的寻找没有那么容易，前期筹备阶段70%以上的时间都扑在了这上面。
+                </p>
+                <p style="color: var(--text-light); margin-top: 12px;">
+                    光是为了年轻的南枝就面试了1000多个女生，宛如大海捞针。最终选定的李思潼当时20岁，是广东财经大学的大二学生，学的是金融工程专业，之前没有接触过表演。她通过社交平台私信收到剧组试戏邀约时，父母一度担心是诈骗。
+                </p>
+            </div>
+
+            <div class="grid grid-2">
+                <div class="card">
+                    <h3 class="card-title">沉浸式表演法</h3>
+                    <p style="color: var(--text-light);">
+                        由于场地档期限制，毫无经验的李思潼进组的第一场戏，就是全片情绪最重的"银信局寄讣告"。蓝鸿春采用了最原始的"沉浸式排练法"：
+                    </p>
+                    <p style="color: var(--text-light); margin-top: 12px;">
+                        "拍那场戏之前，我先不让思潼进片场。花了差不多两天时间，把整个银信局里所有的群演、所有的细节，全部彩排到滚瓜烂熟，等所有一切都准备妥当，才让思潼走进来。"就这样，当思潼踏入那个充满时代感的真实空间时，她的共情力被瞬间激发。
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3 class="card-title">"电影之神"的眷顾</h3>
+                    <p style="color: var(--text-light);">
+                        木生与淑柔初次相遇的一场戏，淑柔扛着镖旗从小桥走过，木生追着她，一个闪失掉进了河里。按照剧本，木生要从水面露出头来，向淑柔表达爱意。
+                    </p>
+                    <p style="color: var(--text-light); margin-top: 12px;">
+                        但实际拍摄时，因为演员王彦桐不会游泳，反复试了很多次，还是没法完成表演。就在剧组几乎要放弃这个镜头时，王彦桐最后一次从水里冒出来，那一刻的表情——惊慌、窘迫、又带着一丝少年的羞涩——完全超出了预期。蓝鸿春说："那是电影之神回头看了我们一眼。"
+                    </p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title">12万字的《暹罗生活指南》</h3>
+                <p style="color: var(--text-light);">
+                    为了呈现真实的场景，蓝鸿春的车开了8万多公里，找遍了潮汕各个村庄。团队还编写了一本12万字的《暹罗生活指南》，从历史背景到当地的建筑、服饰，都调研得清清楚楚。
+                </p>
+                <p style="color: var(--text-light); margin-top: 12px;">
+                    大到当年曼谷的街区布局，小到暹罗的服饰花纹、日常用语、生活习俗，指南中都做了详尽的梳理。它是全组开展工作的翔实依据，"力求让一个旧时光的南洋在银幕上得以精确复现"。
+                </p>
+                <div class="highlight-box" style="margin-top: 16px;">
+                    <div class="highlight-title">📚 置景的"笨办法"</div>
+                    <p style="font-size: 0.9rem; color: var(--text-light);">
+                        团队动用大量外联人员和道具组的同事走遍潮汕各个村镇，向乡亲父老借用家中真实使用的老物件作为拍摄道具。锅碗瓢盆、日常器皿、卧床桌椅，全部来自民间生活。同时在潮汕老厝、老街基础上，改造门面招牌、南洋式骑楼构件，用旧商号的招牌，街头杂货铺、摊位的陈设，包括大量的热带水果的道具，基本上还原出了唐人街的烟火市井感。
+                    </p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title">侨批的创作</h3>
+                <p style="color: var(--text-light);">
+                    据编剧朱丽云透露，影片中侨批共创作了近30封，最终呈现在成片中的有27封。"我们翻阅了大量侨批原件，被那种隔海相望、情深义重的情感深深打动。"正是基于这份情感源头，他们才原创出了"暹罗没有春天，你便是我的春天"等令人动容的句子。
+                </p>
+                <p style="color: var(--text-light); margin-top: 12px;">
+                    导演蓝鸿春说："我们影片里90%的细节，都来自真实的华侨故事。"
+                </p>
+
+                <div class="letter" style="margin-top: 20px;">
+                    <div class="letter-content">
+暹罗虽远，心有所寄，身若比邻。
+
+江海万里，心中有你，便不觉遥远。
+
+行船入夜，恰江上升明月，似与你并肩共赏。
+
+七夕之夜，梦你衣锦归来，仍是少年模样。梦醒行至寨门前，闻溪水潺潺，方觉夜深。念你安康，好梦，即已知足。
+                    </div>
+                    <div class="letter-date">—— 影片中的侨批内容</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title">剧组的日常</h3>
+                <p style="color: var(--text-light);">
+                    热潮之中，这些站在故事背后的创作者们却表现得平静如常：
+                </p>
+                <ul style="color: var(--text-light); margin-top: 12px; padding-left: 20px;">
+                    <li>饰演青年南枝的<strong>李思潼</strong>，路演间隙还在努力地撰写论文，很快她将面临人生中的第一次毕业答辩</li>
+                    <li>饰演青年淑柔的<strong>王晓慧</strong>连剧组的宣传活动都很少参加，她有自己的本职工作要做，不方便经常请假</li>
+                    <li>饰演老年淑柔的<strong>吴少卿</strong>则照旧过着寻常日子，每天买菜、做饭，对于外界涌来的关注，她只是开心于这一次自己终于有了名字，而不再是谁的女儿、妻子、妈妈和奶奶</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Section 6: Qiaopi Culture -->
+        <section id="culture" class="section">
+            <div class="section-header">
+                <div class="section-icon">✉️</div>
+                <div>
+                    <h2 class="section-title">侨批文化</h2>
+                    <p class="section-desc">世界记忆遗产中的华人故事</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title">什么是侨批？</h3>
+                <p style="color: var(--text-light); margin-bottom: 16px;">
+                    侨批，又称"银信"，是海外侨胞寄给国内家乡眷属的书信与汇款的合称。这一物件始于一段山河破碎的苦难岁月，大批潮汕百姓被迫下南洋谋生，用一纸侨批维系着远隔重洋的亲情。
+                </p>
+                <p style="color: var(--text-light); margin-bottom: 16px;">
+                    侨批不仅是经济命脉，更是跨国情感与政治纽带。一封侨批，往往承载着游子对故土的眷恋、对家人的牵挂，以及在异国他乡的艰辛与坚持。
+                </p>
+                <div class="highlight-box">
+                    <div class="highlight-title">🏛️ 世界记忆遗产</div>
+                    <p style="font-size: 0.9rem; color: var(--text-light);">
+                        2013年，"侨批档案——海外华侨银信"被联合国教科文组织列入《世界记忆名录》，成为全人类共同的文化遗产。这批档案记录了近代海外华侨的移民史、创业史和情感史，具有极高的历史价值和文化价值。
+                    </p>
+                </div>
+            </div>
+
+            <div class="grid grid-2">
+                <div class="card">
+                    <h3 class="card-title">侨批的构成</h3>
+                    <ul style="color: var(--text-light); padding-left: 20px;">
+                        <li><strong>信件</strong>：游子写给家人的书信，报平安、诉思念</li>
+                        <li><strong>汇款</strong>：附带的金钱，是海外华侨对家乡的经济支持</li>
+                        <li><strong>信封</strong>：特殊的侨批信封，印有批局名称和地址</li>
+                        <li><strong>批局</strong>：专门经营侨批业务的民间机构，负责收发和转递</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3 class="card-title">侨批的价值</h3>
+                    <ul style="color: var(--text-light); padding-left: 20px;">
+                        <li><strong>历史价值</strong>：记录了近代华侨的移民史和创业史</li>
+                        <li><strong>文化价值</strong>：展现了中华文化的海外传承</li>
+                        <li><strong>情感价值</strong>：承载着游子与家人之间的深情厚谊</li>
+                        <li><strong>艺术价值</strong>：侨批的书法和文辞具有独特的审美价值</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title">电影中的侨批</h3>
+                <p style="color: var(--text-light);">
+                    在电影中，侨批不仅是情节推动的关键道具，更是情感表达的核心载体。南枝以木生的口吻写下的每一封侨批，都是对两个家庭的守护，对中华文化根脉的坚守。
+                </p>
+                <p style="color: var(--text-light); margin-top: 12px;">
+                    正如导演蓝鸿春所说："侨批不只是汇款和家书的合体，它是海外华侨与故土之间的情感脐带。一封侨批，就是一个家庭的命运。"
+                </p>
+            </div>
+        </section>
+
+        <!-- Section 7: Historical Background -->
+        <section id="history" class="section">
+            <div class="section-header">
+                <div class="section-icon">📜</div>
+                <div>
+                    <h2 class="section-title">历史背景</h2>
+                    <p class="section-desc">潮汕人"下南洋"的百年移民史</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title">"过番"的历史</h3>
+                <p style="color: var(--text-light); margin-bottom: 16px;">
+                    "过番"是潮汕人对下南洋的称呼。从19世纪中叶开始，由于战乱、饥荒等原因，大批潮汕百姓被迫离开故土，乘红头船远渡重洋，前往东南亚谋生。
+                </p>
+                <p style="color: var(--text-light); margin-bottom: 16px;">
+                    他们大多从事苦力劳动，在码头扛货、在种植园劳作、在杂货铺帮工，省吃俭用，将积蓄寄回家乡。许多人一去就是几十年，甚至一辈子都没能再回到故土。
+                </p>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-year">19世纪中叶</div>
+                        <div class="timeline-content">
+                            第一次大规模"下南洋"潮。鸦片战争后，社会动荡，大批潮汕人被迫出海谋生。
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-year">20世纪初</div>
+                        <div class="timeline-content">
+                            华侨在东南亚逐渐站稳脚跟，开始建立同乡会、宗亲会等组织，互相扶持。
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-year">1930-1940年代</div>
+                        <div class="timeline-content">
+                            抗日战争期间，海外华侨积极支援祖国抗战，侨批成为重要的汇款渠道。
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-year">1950-1960年代</div>
+                        <div class="timeline-content">
+                            电影故事发生的年代。新中国成立后，许多华侨与家乡失去联系，侨批成为维系亲情的唯一纽带。
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-year">1970-1980年代</div>
+                        <div class="timeline-content">
+                            改革开放后，华侨与家乡的联系逐渐恢复，许多人回到故土探亲。
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title">泰国华人社区</h3>
+                <p style="color: var(--text-light); margin-bottom: 16px;">
+                    泰国是潮汕华侨最集中的国家之一。曼谷的三聘街（Sampeng）是华人聚居区，被称为"唐人街"。电影中谢家旅社就位于这里。
+                </p>
+                <p style="color: var(--text-light); margin-bottom: 16px;">
+                    在泰国，华人社区保持着浓厚的中华文化传统。他们开办华文学校、建设庙宇、组织同乡会，努力在异国他乡传承中华文化的根脉。
+                </p>
+                <div class="quote">
+                    <div class="quote-text">愈远离故土，愈守护根脉。</div>
+                    <div class="quote-author">—— 南洋华人的文化韧性</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title">华文教育的坚守</h3>
+                <p style="color: var(--text-light);">
+                    电影中，泰国当局取缔中文教育，狄功在旅社开班给孩子教授中文的情节，反映了历史上华文教育在东南亚的艰难处境。
+                </p>
+                <p style="color: var(--text-light); margin-top: 12px;">
+                    在那个华文教育条件艰苦的年代，许多先辈为了让海外华裔学好中文，亲手编撰教材，用泰语标注音标，编写普通话课本、整理《三字经》，一字一句教会他们母语。他们用一生坚守，在异国他乡守护中华文化根脉。
+                </p>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title">真实的华侨故事</h3>
+                <p style="color: var(--text-light); margin-bottom: 16px;">
+                    导演蓝鸿春在筹备电影期间，多次前往东南亚调研，采访了大量八九十岁高龄的老华侨。这些真实的故事成为电影的素材来源：
+                </p>
+                <div class="collapsible">
+                    <div class="collapsible-header">马来西亚吉旦岛的村长</div>
+                    <div class="collapsible-content">
+                        <div class="collapsible-inner">
+                            在马来西亚吉旦岛，剧组结识了一位以打鱼为生的大叔，他的父亲是当地村落的村长，乡亲们的籍贯均为广东汕头澄海。改革开放初期，大叔的父亲阔别多年后回到故土。看着故乡道路泥泞、车辆难行的景象，回到马来西亚后，他召集吉旦岛上的乡亲，亲自发集资，为村里通了第一条柏油路。
+                        </div>
+                    </div>
+                </div>
+                <div class="collapsible">
+                    <div class="collapsible-header">越南的芬姐</div>
+                    <div class="collapsible-content">
+                        <div class="collapsible-inner">
+                            在越南，剧组遇见了年逾七旬的芬姐，她是越南南部乡下华文学校的老教师，即便年过古稀，依旧用潮汕话为孩子们教授中文。回到中国、踏上父亲魂牵梦萦的故土，成为她一生最大的心愿。随着《给阿嬷的情书》热映，芬姐终于如愿回到汕头，踏上了父亲日夜思念的故土。
+                        </div>
+                    </div>
+                </div>
+                <div class="collapsible">
+                    <div class="collapsible-header">泰国的王叔叔</div>
+                    <div class="collapsible-content">
+                        <div class="collapsible-inner">
+                            在泰国，剧组结识了王叔叔，这位潮汕后裔热情地带着他们走遍泰国华人聚居的古老村落，寻访当地华人坚守传统文化、传承民族血脉的点点滴滴。他的老师刘子川为了让海外华裔学好中文，亲手编撰教材，用泰语标注音标，编写普通话课本、整理《三字经》，一字一句教会他们母语。
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 8: Artistic Features -->
+        <section id="art" class="section">
+            <div class="section-header">
+                <div class="section-icon">🎨</div>
+                <div>
+                    <h2 class="section-title">艺术特色</h2>
+                    <p class="section-desc">原生态质感与诗意表达的融合</p>
+                </div>
+            </div>
+
+            <div class="grid grid-2">
+                <div class="card">
+                    <h3 class="card-title">素人演员的表演</h3>
+                    <p style="color: var(--text-light);">
+                        全员启用素人演员，是影片最成功也最大胆的创作选择之一。素人自带的生命体验，是职业演员无法替代的。
+                    </p>
+                    <p style="color: var(--text-light); margin-top: 12px;">
+                        正如导演所说："淑柔阿嬷打橄榄、做橄榄菜，就是她日常生活的一部分，这种状态演不出来。"这种"普通人演普通人"的模式，让电影具有了一种纪录片般的质感。
+                    </p>
+                </div>
+                <div class="card">
+                    <h3 class="card-title">潮汕方言的运用</h3>
+                    <p style="color: var(--text-light);">
+                        影片超过九成对白采用潮汕方言，搭配字幕转译，不仅保留语言韵味，也让非潮汕观众感受独特文化质地。
+                    </p>
+                    <p style="color: var(--text-light); margin-top: 12px;">
+                        潮汕方言的运用，让电影具有了强烈的地域特色和文化认同感。许多观众表示，听到潮汕话的那一刻，就想起了自己的阿嬷。
+                    </p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title">细节的还原</h3>
+                <p style="color: var(--text-light); margin-bottom: 16px;">
+                    电影在细节还原上做到了极致：
+                </p>
+                <div class="grid grid-3">
+                    <div>
+                        <h4 style="color: var(--primary); margin-bottom: 8px;">器物</h4>
+                        <ul style="color: var(--text-light); font-size: 0.9rem; padding-left: 16px;">
+                            <li>侨批书信</li>
+                            <li>南洋布料</li>
+                            <li>藤编家具</li>
+                            <li>老式锅碗瓢盆</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 style="color: var(--primary); margin-bottom: 8px;">场景</h4>
+                        <ul style="color: var(--text-light); font-size: 0.9rem; padding-left: 16px;">
+                            <li>曼谷唐人街</li>
+                            <li>潮汕老厝</li>
+                            <li>银信局</li>
+                            <li>河船码头</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 style="color: var(--primary); margin-bottom: 8px;">文化</h4>
+                        <ul style="color: var(--text-light); font-size: 0.9rem; padding-left: 16px;">
+                            <li>工夫茶</li>
+                            <li>橄榄菜</li>
+                            <li>无米粿</li>
+                            <li>英歌舞</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title">重要道具的象征意义</h3>
+                <div class="grid grid-2">
+                    <div>
+                        <h4 style="color: var(--secondary); margin-bottom: 8px;">🚲 木单车</h4>
+                        <p style="color: var(--text-light); font-size: 0.9rem;">
+                            年轻的木生没有钱买自行车，于是自己用木头做了一辆木单车后带着淑柔私奔。这辆木单车象征着那个年代的爱情——简单、质朴、却充满勇气。
+                        </p>
+                    </div>
+                    <div>
+                        <h4 style="color: var(--secondary); margin-bottom: 8px;">🥩 咸猪肉</h4>
+                        <p style="color: var(--text-light); font-size: 0.9rem;">
+                            当年迈的南枝终于回忆起过去，认出淑柔问的第一句话是"咸猪肉收到了吗？"这句看似平常的问候，承载着数十年的牵挂与守候。
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title">女性形象的塑造</h3>
+                <p style="color: var(--text-light);">
+                    电影聚焦两位女性角色跨越时空与命运的互助关系，以"女性情义"取代俗套爱情竞逐，描绘潮汕女性在时代洪流中的隐忍、坚韧与文化传承。
+                </p>
+                <p style="color: var(--text-light); margin-top: 12px;">
+                    谢南枝和叶淑柔，一个是不被世俗捆绑、敢为自己做选择的泰国华裔，一个是独自守候家园、坚韧如竹的潮汕阿嬷。她们之间的守望相助，超越了血缘，跨越了国界，展现了华人女性独特的力量与温情。
+                </p>
+            </div>
+        </section>
+
+        <!-- Section 9: Social Impact -->
+        <section id="impact" class="section">
+            <div class="section-header">
+                <div class="section-icon">🌊</div>
+                <div>
+                    <h2 class="section-title">社会影响</h2>
+                    <p class="section-desc">一封情书如何治愈了整个中国</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title">票房逆袭之路</h3>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-year">第一阶段（4月18日-5月2日）</div>
+                        <div class="timeline-content">
+                            <strong>本土口碑积累期</strong>：影片在潮汕地区点映及路演，当地观众对文化细节有天然的亲切感，推荐意愿极高，点映场次实现票房逆跌。
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-year">第二阶段（5月3日-5月5日）</div>
+                        <div class="timeline-content">
+                            <strong>口碑扩散期</strong>：影片向全国扩映，第一波非广东省的观众进场，场均人次与上座率逐日稳步提升。
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-year">第三阶段（5月6日-5月9日）</div>
+                        <div class="timeline-content">
+                            <strong>口碑爆发期</strong>：5月6日豆瓣开分9.0，当日票房占比骤升至16.6%；5月8日评分升至9.1；5月9日累计票房破亿，诞生两个"影史第一"——首部票房破亿的潮汕方言电影、首部纯素人主演票房破亿的故事片。
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-year">第四阶段（5月10日起）</div>
+                        <div class="timeline-content">
+                            <strong>全国市场爆发期</strong>：母亲节当天，单日票房达3598万元，以不到20%的排片贡献了当日40%的大盘票房。影片已从一部地域特色电影，变成了一部真正意义上的全国性"爆款"。
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title">观众的共鸣</h3>
+                <p style="color: var(--text-light); margin-bottom: 16px;">
+                    电影引发了观众强烈的情感共鸣，许多观众表示"哭了半包纸巾"、"像一封写给家族与母语的长信"。
+                </p>
+                <div class="grid grid-2">
+                    <div>
+                        <h4 style="color: var(--primary); margin-bottom: 12px;">观众评论精选</h4>
+                        <ul style="color: var(--text-light); font-size: 0.9rem; padding-left: 20px;">
+                            <li>"看完想给阿嬷打电话"</li>
+                            <li>"像一封写给家乡与长辈的文化情书"</li>
+                            <li>"这是中国人刻在骨血里的情义"</li>
+                            <li>"算法算不出的中式深情"</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 style="color: var(--primary); margin-bottom: 12px;">引发的社会现象</h4>
+                        <ul style="color: var(--text-light); font-size: 0.9rem; padding-left: 20px;">
+                            <li>侨批文化热潮</li>
+                            <li>潮汕旅游热</li>
+                            <li>代际反思与文化认同</li>
+                            <li>母语传承的讨论</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title">媒体评价</h3>
+                <div class="quote">
+                    <div class="quote-text">这不只是一部电影，更像是一封写给祖辈、写给离散华人，也写给每一位仍在守护母语者的情书。</div>
+                    <div class="quote-author">—— 观众评论</div>
+                </div>
+                <div class="quote" style="margin-top: 16px;">
+                    <div class="quote-text">真正能穿透市场噪音的，依然是那些关于人、关于情义、关于文化记忆的故事。</div>
+                    <div class="quote-author">—— 影评人</div>
+                </div>
+                <div class="quote" style="margin-top: 16px;">
+                    <div class="quote-text">《给阿嬷的情书》通过"真诚"的叙事，在平凡的细节中积蓄情感，展现了中国电影的独特价值。</div>
+                    <div class="quote-author">—— IGN中国（9/10分）</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title">文化影响</h3>
+                <p style="color: var(--text-light); margin-bottom: 16px;">
+                    这部电影的成功，不仅在票房，更在于它让潮汕文化、侨批历史与华人家国记忆透过电影完成了一次真正的全面共情。
+                </p>
+                <div class="highlight-box">
+                    <div class="highlight-title">🌏 文化传承的意义</div>
+                    <p style="font-size: 0.9rem; color: var(--text-light);">
+                        电影证明，方言电影、小成本制作、素人演员，只要故事足够真诚，依然能够打动千万观众。它为中国电影提供了一个新的范本：深耕本土文化，讲好中国故事。
+                    </p>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-title">给阿嬷的情书</div>
+        <p class="footer-desc">
+            一封写给所有海外侨胞、写给家国故土的情书<br>
+            更是对中华儿女精神血脉的深情礼赞
+        </p>
+        <p style="margin-top: 24px; font-size: 0.85rem; opacity: 0.7;">
+            深度调研课程 · 资料来源：维基百科、人民日报、BBC中文、凤凰娱乐、36氪等
+        </p>
+    </footer>
+
+    <script>
+        // Collapsible functionality
+        document.querySelectorAll('.collapsible-header').forEach(header => {
+            header.addEventListener('click', () => {
+                const collapsible = header.parentElement;
+                collapsible.classList.toggle('active');
+            });
+        });
+
+        // Smooth scrolling for navigation
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = item.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Active navigation highlighting
+        const sections = document.querySelectorAll('.section');
+        const navItems = document.querySelectorAll('.nav-item');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (scrollY >= sectionTop - 200) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navItems.forEach(item => {
+                item.classList.remove('active');
+                if (item.getAttribute('href') === `#${current}`) {
+                    item.classList.add('active');
+                }
+            });
+        });
+
+        // Reading progress bar
+        window.addEventListener('scroll', () => {
+            const scrollTop = document.documentElement.scrollTop;
+            const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const progress = (scrollTop / scrollHeight) * 100;
+            document.getElementById('readingProgress').style.width = `${progress}%`;
+        });
+
+        // Animate elements on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.card, .character-card, .timeline-item').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>
