@@ -713,13 +713,21 @@
         }
 
         .music-control::before {
-            content: '♪';
+            content: '';
             position: absolute;
-            font-size: 28px;
-            color: #fff;
+            width: 18px;
+            height: 18px;
+            background: radial-gradient(circle, #fff 20%, #ddd 21%, #ddd 30%, #aaa 31%);
+            border-radius: 50%;
+            z-index: 1;
+        }
+
+        .music-icon {
+            width: 28px;
+            height: 28px;
+            position: relative;
             z-index: 2;
-            text-shadow: 0 1px 3px rgba(0,0,0,0.5);
-            line-height: 1;
+            filter: drop-shadow(0 1px 2px rgba(0,0,0,0.4));
         }
 
         .music-control::after {
@@ -758,7 +766,12 @@
                 height: 50px;
             }
             .music-control::before {
-                font-size: 22px;
+                width: 14px;
+                height: 14px;
+            }
+            .music-icon {
+                width: 22px;
+                height: 22px;
             }
         }
     </style>
@@ -768,7 +781,11 @@
         <source src="music.mp3" type="audio/mpeg">
     </audio>
     
-    <div class="music-control paused" id="musicControl" title="点击播放《月下煮茶》"></div>
+    <div class="music-control paused" id="musicControl" title="点击播放《月下煮茶》">
+        <svg class="music-icon" viewBox="0 0 24 24" fill="white">
+            <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55C7.79 13 6 14.79 6 17s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+        </svg>
+    </div>
 
     <div class="reading-progress" id="readingProgress"></div>
 
