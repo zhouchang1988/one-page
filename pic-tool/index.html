@@ -1176,11 +1176,10 @@
 
             const importantKeys = [
                 'Make', 'Model', 'LensModel', 'DateTimeOriginal',
-                'DateTimeDigitized', 'DateTime', 'FNumber',
-                'ExposureTime', 'ISOSpeedRatings', 'FocalLength',
+                'FNumber', 'ExposureTime', 'ISOSpeedRatings', 'FocalLength',
                 'FocalLengthIn35mmFilm', 'ExposureBiasValue',
                 'MeteringMode', 'Flash', 'WhiteBalance', 'Software',
-                'Orientation', 'ColorSpace', 'ResolutionUnit'
+                'Orientation'
             ];
 
             const allKeys = Object.keys(exifData);
@@ -1227,6 +1226,31 @@
                 item.innerHTML = `
                     <span class="exif-label">分辨率</span>
                     <span class="exif-value">${xRes} × ${yRes}${resUnit ? ' ' + resUnit : ''}</span>
+                `;
+                exifGrid.appendChild(item);
+            }
+
+            // 色彩空间
+            if (exifData.ColorSpace !== undefined) {
+                hasValidData = true;
+                const item = document.createElement('div');
+                item.className = 'exif-item';
+                item.innerHTML = `
+                    <span class="exif-label">色彩空间</span>
+                    <span class="exif-value">${formatExifValue('ColorSpace', exifData.ColorSpace)}</span>
+                `;
+                exifGrid.appendChild(item);
+            }
+
+            // 分辨率单位
+            if (exifData.ResolutionUnit !== undefined) {
+                hasValidData = true;
+                const item = document.createElement('div');
+                item.className = 'exif-item';
+                const unitText = exifData.ResolutionUnit === 2 ? '英寸' : exifData.ResolutionUnit === 3 ? '厘米' : exifData.ResolutionUnit;
+                item.innerHTML = `
+                    <span class="exif-label">分辨率单位</span>
+                    <span class="exif-value">${unitText}</span>
                 `;
                 exifGrid.appendChild(item);
             }
