@@ -1,3 +1,46 @@
+/* ═══════════════════════════════════════════════════════
+   水墨国风 · 技能五子棋
+   Ink-Wash Chinese Style for Skills Gomoku
+   ═══════════════════════════════════════════════════════ */
+
+:root {
+    /* 墨色系 */
+    --ink-deep: #2c2c2c;
+    --ink-medium: #3a3a3a;
+    --ink-light: #5a5a5a;
+    --ink-wash: #8a8070;
+    --ink-faint: #b0a898;
+
+    /* 宣纸色系 */
+    --paper-white: #f8f4ec;
+    --paper-warm: #f5f0e8;
+    --paper-mid: #ede5d8;
+    --paper-dark: #e0d8c8;
+
+    /* 朱红/印章 */
+    --vermillion: #c23a2b;
+    --vermillion-dark: #a02e22;
+    --vermillion-light: #d95548;
+
+    /* 黛青 */
+    --cyan-dark: #4a6670;
+    --cyan-medium: #5d7d88;
+    --cyan-light: #7a9aa5;
+
+    /* 藤黄 */
+    --gamboge: #d4a843;
+    --gamboge-light: #e0be6a;
+
+    /* 棋盘 */
+    --board-bg: #e8dcc8;
+    --board-line: #8B7355;
+    --board-line-light: #a89878;
+
+    /* 字体 */
+--font-calligraphy: 'Noto Serif SC', 'Songti SC', 'SimSun', serif;
+--font-body: 'Noto Serif SC', 'Songti SC', 'SimSun', serif;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -5,52 +48,86 @@
 }
 
 body {
-    font-family: 'Arial', sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    font-family: var(--font-body);
+    background:
+        /* 微妙纸张纹理 */
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E"),
+        linear-gradient(160deg, var(--paper-warm) 0%, var(--paper-mid) 40%, var(--paper-dark) 100%);
     min-height: 100vh;
     padding: 20px;
+    color: var(--ink-medium);
 }
 
+/* ─── 容器 ─── */
 .container {
     max-width: 1400px;
     margin: 0 auto;
     position: relative;
 }
 
+/* ─── 标题 ─── */
+h1 {
+    text-align: center;
+    color: var(--ink-deep);
+    font-family: var(--font-calligraphy);
+    font-size: 2.8em;
+    margin-bottom: 30px;
+    letter-spacing: 0.15em;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+h1::before,
+h1::after {
+    content: '';
+    display: inline-block;
+    width: 60px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--ink-wash), transparent);
+    vertical-align: middle;
+    margin: 0 16px;
+}
+
+/* ─── 顶部控制按钮（印章/古钱币样式） ─── */
 .top-right-controls {
     position: fixed;
     top: 20px;
     right: 20px;
     display: flex;
-    gap: 10px;
+    gap: 12px;
     z-index: 1000;
 }
 
 .icon-btn {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.95);
-    border: 2px solid #667eea;
+    width: 48px;
+    height: 48px;
+    border-radius: 6px;
+    background: var(--paper-white);
+    border: 2px solid var(--ink-wash);
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    box-shadow:
+        0 2px 8px rgba(0, 0, 0, 0.08),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+    position: relative;
 }
 
 .icon-btn:hover {
-    background: #667eea;
+    background: var(--vermillion);
+    border-color: var(--vermillion-dark);
     color: white;
-    transform: scale(1.1);
-    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    transform: scale(1.08);
+    box-shadow: 0 4px 16px rgba(194, 58, 43, 0.3);
 }
 
 .icon-btn svg {
-    width: 28px;
-    height: 28px;
-    color: #667eea;
+    width: 24px;
+    height: 24px;
+    color: var(--ink-light);
+    transition: color 0.3s ease;
 }
 
 .icon-btn:hover svg {
@@ -58,11 +135,12 @@ body {
 }
 
 .info-icon {
-    font-size: 28px;
+    font-size: 22px;
     font-weight: bold;
-    color: #667eea;
+    color: var(--ink-light);
     line-height: 1;
-    font-family: 'Arial Rounded MT Bold', 'Helvetica Rounded', Arial, sans-serif;
+    font-family: var(--font-calligraphy);
+    transition: color 0.3s ease;
 }
 
 .icon-btn:hover .info-icon {
@@ -76,224 +154,131 @@ body {
     top: 100%;
     right: 0;
     margin-top: 8px;
-    padding: 6px 12px;
-    background: rgba(0, 0, 0, 0.8);
-    color: white;
-    font-size: 14px;
-    border-radius: 6px;
+    padding: 6px 14px;
+    background: var(--ink-deep);
+    color: var(--paper-white);
+    font-size: 13px;
+    font-family: var(--font-body);
+    border-radius: 4px;
     white-space: nowrap;
     opacity: 0;
     visibility: hidden;
     transition: all 0.3s ease;
     z-index: 1001;
+    letter-spacing: 0.05em;
 }
 
 .icon-btn:hover::after {
     opacity: 1;
     visibility: visible;
-    transform: translateY(-5px);
+    transform: translateY(-4px);
 }
 
-/* 弹窗样式 */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 2000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(5px);
-}
-
-.modal.show {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.modal-content {
-    background: white;
-    border-radius: 20px;
-    max-width: 600px;
-    width: 90%;
-    max-height: 80vh;
-    overflow-y: auto;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-    animation: modalSlideIn 0.3s ease;
-    display: flex;
-    flex-direction: column;
-}
-
-@keyframes modalSlideIn {
-    from {
-        opacity: 0;
-        transform: translateY(-50px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 30px 40px 20px 40px;
-    border-bottom: 2px solid #f0f0f0;
-}
-
-.modal-header h2 {
-    margin: 0;
-    color: #667eea;
-    font-size: 28px;
-}
-
-.close-btn {
-    font-size: 36px;
-    font-weight: bold;
-    color: #999;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    line-height: 1;
-    padding: 5px;
-}
-
-.close-btn:hover {
-    color: #333;
-    transform: rotate(90deg);
-}
-
-.modal-body {
-    padding: 20px 40px 40px 40px;
-}
-
-.modal-body h3 {
-    margin: 20px 0 10px 0;
-    color: #333;
-    font-size: 18px;
-}
-
-.modal-body ul {
-    list-style: none;
-    padding: 0;
-}
-
-.modal-body li {
-    padding: 8px 0;
-    color: #555;
-    line-height: 1.6;
-}
-
-.modal-body strong {
-    color: #667eea;
-}
-
-/* 小型弹窗 */
-.modal-small {
-    max-width: 400px;
-}
-
-/* 确认消息 */
-.confirm-message {
-    font-size: 16px;
-    color: #555;
+/* ─── 状态栏（匾额样式） ─── */
+.status {
     text-align: center;
-    margin: 20px 0;
-    line-height: 1.6;
-}
-
-/* 弹窗按钮 */
-.modal-buttons {
-    display: flex;
-    gap: 15px;
-    justify-content: center;
-    margin-top: 30px;
-}
-
-.modal-btn {
+    font-size: 1.6em;
+    font-weight: bold;
+    font-family: var(--font-calligraphy);
+    color: var(--paper-white);
+    margin-bottom: 15px;
     padding: 12px 30px;
-    font-size: 16px;
-    font-weight: bold;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
+    background: linear-gradient(135deg, var(--ink-deep) 0%, #3a3530 100%);
+    border-radius: 4px;
+    box-shadow:
+        0 4px 12px rgba(0, 0, 0, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
     transition: all 0.3s ease;
-    min-width: 100px;
+    letter-spacing: 0.2em;
+    position: relative;
+    overflow: hidden;
 }
 
-.modal-btn-cancel {
-    background: #e0e0e0;
-    color: #333;
+.status::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gamboge), transparent);
 }
 
-.modal-btn-cancel:hover {
-    background: #d0d0d0;
-    transform: translateY(-2px);
-}
-
-.modal-btn-confirm {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-}
-
-.modal-btn-confirm:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-}
-
-h1 {
-    text-align: center;
-    color: white;
-    font-size: 2.5em;
-    margin-bottom: 30px;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-}
-
+/* ─── 游戏信息区 ─── */
 .game-info {
     display: flex;
     gap: 30px;
     margin-bottom: 30px;
 }
 
+/* ─── 玩家信息（卷轴样式） ─── */
 .player-info {
     flex: 1;
-    background: rgba(255, 255, 255, 0.95);
-    border-radius: 15px;
+    background: var(--paper-white);
+    border-radius: 8px;
     padding: 20px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
+    border: 1px solid var(--paper-dark);
+    box-shadow:
+        0 4px 16px rgba(0, 0, 0, 0.06),
+        inset 0 0 20px rgba(139, 115, 85, 0.03);
+    transition: all 0.4s ease;
+    position: relative;
 }
 
-.player-info:not(.active) {
-    opacity: 0.6;
-    transform: scale(0.98);
+/* 卷轴顶部装饰线 */
+.player-info::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 20px;
+    right: 20px;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--ink-faint), transparent);
+    border-radius: 0 0 2px 2px;
 }
 
 .player-info h3 {
     margin-bottom: 15px;
-    font-size: 1.3em;
+    font-size: 1.2em;
+    font-family: var(--font-calligraphy);
+    color: var(--ink-deep);
+    letter-spacing: 0.1em;
+}
+
+.player-info:not(.active) {
+    opacity: 0.55;
+    transform: scale(0.98);
+    filter: saturate(0.6);
 }
 
 .player-info.active {
-    border: 4px solid #4CAF50;
-    box-shadow: 0 0 30px rgba(76, 175, 80, 0.8);
-    background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+    border: 2px solid var(--vermillion);
+    box-shadow:
+        0 0 20px rgba(194, 58, 43, 0.15),
+        0 4px 20px rgba(0, 0, 0, 0.08);
+    background: linear-gradient(180deg, var(--paper-white) 0%, #fdf6f0 100%);
     transform: scale(1.02);
-    animation: pulse 2s infinite;
+    animation: scroll-glow 2.5s ease-in-out infinite;
 }
 
-@keyframes pulse {
+.player-info.active::before {
+    background: linear-gradient(90deg, transparent, var(--vermillion), transparent);
+}
+
+@keyframes scroll-glow {
     0%, 100% {
-        box-shadow: 0 0 30px rgba(76, 175, 80, 0.8);
+        box-shadow:
+            0 0 20px rgba(194, 58, 43, 0.15),
+            0 4px 20px rgba(0, 0, 0, 0.08);
     }
     50% {
-        box-shadow: 0 0 40px rgba(76, 175, 80, 1);
+        box-shadow:
+            0 0 30px rgba(194, 58, 43, 0.25),
+            0 4px 20px rgba(0, 0, 0, 0.08);
     }
 }
 
+/* ─── 技能按钮（印章/匾额样式） ─── */
 .skills {
     display: flex;
     flex-direction: column;
@@ -302,94 +287,155 @@ h1 {
 
 .skill-btn {
     padding: 12px 15px;
-    border: 2px solid #ddd;
-    border-radius: 8px;
-    background: white;
+    border: 1.5px solid var(--ink-wash);
+    border-radius: 4px;
+    background: var(--paper-white);
     cursor: pointer;
     font-size: 14px;
     font-weight: bold;
+    font-family: var(--font-body);
+    color: var(--ink-medium);
     transition: all 0.3s ease;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    letter-spacing: 0.08em;
+    position: relative;
+    overflow: hidden;
+}
+
+.skill-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--ink-faint);
+    transition: background 0.3s ease;
 }
 
 .skill-btn:hover:not(:disabled) {
-    background: #f0f0f0;
+    background: var(--paper-mid);
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-color: var(--ink-light);
+}
+
+.skill-btn:hover:not(:disabled)::before {
+    background: var(--ink-light);
 }
 
 .skill-btn:disabled {
-    opacity: 0.5;
+    opacity: 0.4;
     cursor: not-allowed;
-    background: #e0e0e0;
+    background: var(--paper-mid);
+    color: var(--ink-faint);
+    filter: grayscale(0.3);
 }
 
+/* 技能激活状态（朱红印章） */
 .skill-btn.active {
-    background: #4CAF50;
-    color: white;
-    border-color: #4CAF50;
+    background: var(--vermillion);
+    color: var(--paper-white);
+    border-color: var(--vermillion-dark);
+    box-shadow:
+        0 2px 12px rgba(194, 58, 43, 0.3),
+        inset 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
+.skill-btn.active::before {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* 终极技能（御赐/圣旨感） */
 .skill-btn.ultimate {
-    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-    color: white;
-    border: none;
+    background: linear-gradient(135deg, var(--vermillion) 0%, #a02e22 50%, var(--gamboge) 100%);
+    color: var(--paper-white);
+    border: 1.5px solid var(--vermillion-dark);
+    font-family: var(--font-calligraphy);
+    font-size: 15px;
+    letter-spacing: 0.15em;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.skill-btn.ultimate::before {
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    height: 1px;
 }
 
 .skill-btn.ultimate:hover:not(:disabled) {
-    background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%);
+    background: linear-gradient(135deg, var(--vermillion-light) 0%, var(--vermillion) 50%, var(--gamboge-light) 100%);
+    box-shadow: 0 4px 20px rgba(194, 58, 43, 0.4);
+    transform: translateY(-2px);
 }
 
 .skill-btn.ultimate:disabled {
-    background: #ccc;
+    background: var(--paper-dark);
+    color: var(--ink-faint);
+    border-color: var(--ink-faint);
+    text-shadow: none;
+    filter: grayscale(0.5);
 }
 
+/* 冷却标签 */
 .cooldown {
     font-size: 12px;
-    padding: 3px 8px;
-    border-radius: 10px;
-    background: #4CAF50;
-    color: white;
+    padding: 3px 10px;
+    border-radius: 3px;
+    background: var(--cyan-dark);
+    color: var(--paper-white);
+    font-family: var(--font-body);
+    letter-spacing: 0.05em;
 }
 
+/* ─── 棋盘容器 ─── */
 .board-container {
     flex: 0 0 auto;
 }
 
-.status {
-    text-align: center;
-    font-size: 1.8em;
-    font-weight: bold;
-    color: white;
-    margin-bottom: 15px;
-    padding: 15px;
-    background: rgba(0, 0, 0, 0.3);
-    border-radius: 10px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    transition: all 0.3s ease;
-}
-
+/* ─── 棋盘（宣纸质感） ─── */
 .board {
     display: grid;
     grid-template-columns: repeat(15, 40px);
     grid-template-rows: repeat(15, 40px);
     gap: 0;
-    background: #DEB887;
+    background:
+        /* 微妙纸纹 */
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"),
+        linear-gradient(145deg, #ebe3d3 0%, #e0d6c2 50%, #d8ceb8 100%);
     padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+    box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.12),
+        0 2px 8px rgba(0, 0, 0, 0.06),
+        inset 0 0 40px rgba(139, 115, 85, 0.05);
     position: relative;
+    border: 1px solid var(--ink-faint);
 }
 
+/* 棋盘水墨边框装饰 */
 .board::before {
     content: '';
     position: absolute;
-    top: 20px;
-    left: 20px;
-    right: 20px;
-    bottom: 20px;
+    top: 8px;
+    left: 8px;
+    right: 8px;
+    bottom: 8px;
+    border: 1px solid rgba(139, 115, 85, 0.2);
+    border-radius: 2px;
+    pointer-events: none;
+}
+
+.board::after {
+    content: '';
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
+    border: 1px solid rgba(139, 115, 85, 0.1);
+    border-radius: 2px;
     pointer-events: none;
 }
 
@@ -408,9 +454,10 @@ h1 {
     position: absolute;
     width: 100%;
     height: 1px;
-    background: #8B4513;
+    background: var(--board-line);
     top: 50%;
     left: 0;
+    opacity: 0.6;
 }
 
 .cell::after {
@@ -418,9 +465,10 @@ h1 {
     position: absolute;
     height: 100%;
     width: 1px;
-    background: #8B4513;
+    background: var(--board-line);
     left: 50%;
     top: 0;
+    opacity: 0.6;
 }
 
 .cell:hover .hover-indicator {
@@ -428,12 +476,12 @@ h1 {
 }
 
 .cell.skill-target {
-    background: rgba(255, 0, 0, 0.2);
+    background: rgba(194, 58, 43, 0.12);
     cursor: crosshair;
 }
 
 .cell.skill-target:hover {
-    background: rgba(255, 0, 0, 0.4);
+    background: rgba(194, 58, 43, 0.25);
 }
 
 .hover-indicator {
@@ -441,29 +489,47 @@ h1 {
     width: 12px;
     height: 12px;
     border-radius: 50%;
-    background: rgba(0, 0, 0, 0.3);
+    background: rgba(90, 80, 60, 0.25);
     position: absolute;
     z-index: 1;
 }
 
+/* ─── 棋子 ─── */
 .piece {
     width: 32px;
     height: 32px;
     border-radius: 50%;
-    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
     position: relative;
     z-index: 2;
 }
 
+/* 黑棋：水墨晕染效果 */
 .piece.black {
-    background: radial-gradient(circle at 30% 30%, #666, #000);
+    background: radial-gradient(circle at 35% 30%,
+        #5a5550 0%,
+        #3a3835 30%,
+        #2c2c2c 60%,
+        #1a1a1a 100%);
+    box-shadow:
+        2px 3px 6px rgba(0, 0, 0, 0.35),
+        inset 0 -2px 4px rgba(0, 0, 0, 0.3),
+        inset 0 2px 4px rgba(255, 255, 255, 0.08);
 }
 
+/* 白棋：温润玉石感 */
 .piece.white {
-    background: radial-gradient(circle at 30% 30%, #fff, #ccc);
+    background: radial-gradient(circle at 35% 30%,
+        #ffffff 0%,
+        #f5f2ee 30%,
+        #e8e2da 60%,
+        #d8d0c5 100%);
+    box-shadow:
+        2px 3px 6px rgba(0, 0, 0, 0.2),
+        inset 0 -2px 4px rgba(0, 0, 0, 0.06),
+        inset 0 2px 6px rgba(255, 255, 255, 0.8);
 }
 
-/* 力拔山兮炸飞特效 */
+/* ─── 力拔山兮特效 ─── */
 .board.shaking {
     animation: shake 0.5s ease-in-out;
 }
@@ -475,7 +541,7 @@ h1 {
     10%, 30%, 50%, 70%, 90% {
         transform: translateX(-10px) translateY(-5px);
     }
-    20%, 40%, 60%, 80% {
+    20%, 40%, 80% {
         transform: translateX(10px) translateY(5px);
     }
 }
@@ -514,39 +580,199 @@ h1 {
     }
 }
 
-@media (max-width: 1200px) {
-    .game-info {
-        flex-direction: column;
+/* ─── 弹窗样式 ─── */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(44, 44, 44, 0.5);
+    backdrop-filter: blur(6px);
+}
+
+.modal.show {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background: var(--paper-white);
+    border-radius: 8px;
+    max-width: 600px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.2),
+        0 0 0 1px rgba(139, 115, 85, 0.15);
+    animation: modalSlideIn 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+/* 弹窗水墨云纹装饰 */
+.modal-content::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg,
+        transparent 0%,
+        var(--ink-faint) 20%,
+        var(--ink-wash) 50%,
+        var(--ink-faint) 80%,
+        transparent 100%);
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-40px);
     }
-    
-    .board {
-        grid-template-columns: repeat(15, 32px);
-        grid-template-rows: repeat(15, 32px);
-    }
-    
-    .cell {
-        width: 32px;
-        height: 32px;
-    }
-    
-    .piece {
-        width: 26px;
-        height: 26px;
-    }
-    
-    .hover-indicator {
-        width: 10px;
-        height: 10px;
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }
 
-/* 模式选择弹窗样式 */
-.mode-select-message {
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 28px 36px 18px 36px;
+    border-bottom: 1px solid var(--paper-dark);
+}
+
+.modal-header h2 {
+    margin: 0;
+    color: var(--ink-deep);
+    font-family: var(--font-calligraphy);
+    font-size: 26px;
+    letter-spacing: 0.1em;
+}
+
+.close-btn {
+    font-size: 32px;
+    font-weight: bold;
+    color: var(--ink-wash);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    line-height: 1;
+    padding: 5px;
+}
+
+.close-btn:hover {
+    color: var(--vermillion);
+    transform: rotate(90deg);
+}
+
+.modal-body {
+    padding: 20px 36px 36px 36px;
+}
+
+.modal-body h3 {
+    margin: 20px 0 10px 0;
+    color: var(--ink-deep);
     font-size: 18px;
-    color: #555;
+    font-family: var(--font-calligraphy);
+    letter-spacing: 0.08em;
+}
+
+.modal-body ul {
+    list-style: none;
+    padding: 0;
+}
+
+.modal-body li {
+    padding: 8px 0;
+    color: var(--ink-light);
+    line-height: 1.7;
+    font-size: 15px;
+    border-bottom: 1px solid rgba(139, 115, 85, 0.08);
+}
+
+.modal-body li:last-child {
+    border-bottom: none;
+}
+
+.modal-body strong {
+    color: var(--vermillion);
+}
+
+/* 小型弹窗 */
+.modal-small {
+    max-width: 420px;
+}
+
+/* 确认消息 */
+.confirm-message {
+    font-size: 15px;
+    color: var(--ink-light);
+    text-align: center;
+    margin: 20px 0;
+    line-height: 1.7;
+    letter-spacing: 0.03em;
+}
+
+/* 弹窗按钮 */
+.modal-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 28px;
+}
+
+.modal-btn {
+    padding: 12px 30px;
+    font-size: 15px;
+    font-weight: bold;
+    font-family: var(--font-body);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 100px;
+    letter-spacing: 0.08em;
+}
+
+.modal-btn-cancel {
+    background: var(--paper-mid);
+    color: var(--ink-light);
+    border: 1px solid var(--ink-faint);
+}
+
+.modal-btn-cancel:hover {
+    background: var(--paper-dark);
+    transform: translateY(-2px);
+}
+
+.modal-btn-confirm {
+    background: linear-gradient(135deg, var(--ink-deep) 0%, #3a3530 100%);
+    color: var(--paper-white);
+}
+
+.modal-btn-confirm:hover {
+    background: linear-gradient(135deg, #3a3530 0%, var(--ink-deep) 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* ─── 模式选择弹窗 ─── */
+.mode-select-message {
+    font-size: 17px;
+    color: var(--ink-light);
     text-align: center;
     margin: 20px 0 30px 0;
-    line-height: 1.6;
+    line-height: 1.7;
+    font-family: var(--font-body);
+    letter-spacing: 0.05em;
 }
 
 .mode-buttons {
@@ -559,26 +785,44 @@ h1 {
 .mode-btn {
     flex: 1;
     max-width: 250px;
-    padding: 30px 20px;
-    border: 3px solid #ddd;
-    border-radius: 15px;
-    background: white;
+    padding: 28px 20px;
+    border: 1.5px solid var(--ink-faint);
+    border-radius: 6px;
+    background: var(--paper-white);
     cursor: pointer;
     font-size: 16px;
     font-weight: bold;
+    font-family: var(--font-body);
+    color: var(--ink-medium);
     transition: all 0.3s ease;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 15px;
+    gap: 12px;
+    position: relative;
+    overflow: hidden;
+}
+
+.mode-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--ink-faint);
+    transition: background 0.3s ease;
 }
 
 .mode-btn:hover {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    border-color: #667eea;
-    transform: translateY(-5px);
-    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+    background: linear-gradient(180deg, var(--paper-white) 0%, #fdf6f0 100%);
+    border-color: var(--vermillion);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(194, 58, 43, 0.15);
+}
+
+.mode-btn:hover::before {
+    background: var(--vermillion);
 }
 
 .mode-icon {
@@ -588,14 +832,71 @@ h1 {
 .mode-title {
     font-size: 20px;
     font-weight: bold;
+    font-family: var(--font-calligraphy);
+    color: var(--ink-deep);
+    letter-spacing: 0.1em;
 }
 
 .mode-desc {
     font-size: 14px;
     font-weight: normal;
-    opacity: 0.8;
+    opacity: 0.7;
+    color: var(--ink-light);
 }
 
 .mode-btn:hover .mode-desc {
     opacity: 1;
+}
+
+/* ─── 响应式布局 ─── */
+@media (max-width: 1200px) {
+    .game-info {
+        flex-direction: column;
+    }
+
+    .board {
+        grid-template-columns: repeat(15, 32px);
+        grid-template-rows: repeat(15, 32px);
+    }
+
+    .cell {
+        width: 32px;
+        height: 32px;
+    }
+
+    .piece {
+        width: 26px;
+        height: 26px;
+    }
+
+    .hover-indicator {
+        width: 10px;
+        height: 10px;
+    }
+}
+
+@media (max-width: 768px) {
+    h1 {
+        font-size: 2em;
+    }
+
+    h1::before,
+    h1::after {
+        width: 30px;
+        margin: 0 8px;
+    }
+
+    .status {
+        font-size: 1.3em;
+        padding: 10px 20px;
+    }
+
+    .player-info {
+        padding: 15px;
+    }
+
+    .skill-btn {
+        padding: 10px 12px;
+        font-size: 13px;
+    }
 }
