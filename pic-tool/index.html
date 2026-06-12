@@ -293,6 +293,77 @@
             font-weight: 500;
         }
 
+        /* EXIF 按钮 */
+        .exif-btn-wrapper {
+            margin-top: var(--space-5);
+            text-align: center;
+        }
+
+        .exif-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-2);
+            padding: var(--space-3) var(--space-6);
+            border: 1px solid var(--color-border-light);
+            border-radius: var(--radius-md);
+            background: var(--color-bg-sage);
+            color: var(--color-text-olive);
+            font-size: 14px;
+            font-weight: 500;
+            font-family: var(--font-display);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .exif-btn:hover {
+            border-color: var(--color-accent-orange);
+            color: var(--color-accent-orange);
+        }
+
+        .exif-btn:active {
+            transform: scale(0.97);
+        }
+
+        /* EXIF 弹层内网格 */
+        #exifModal .exif-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: var(--space-5);
+            max-height: 60vh;
+            overflow-y: auto;
+            padding-right: var(--space-2);
+        }
+
+        #exifModal .exif-item {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-1);
+        }
+
+        #exifModal .exif-label {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--color-text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        #exifModal .exif-value {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--color-text-deep-olive);
+            font-family: var(--font-mono);
+            word-break: break-all;
+        }
+
+        #exifModal .exif-empty {
+            text-align: center;
+            color: var(--color-text-muted);
+            font-size: 14px;
+            padding: var(--space-7);
+            grid-column: 1 / -1;
+        }
+
         /* 控制区域 */
         .controls-section {
             margin-bottom: var(--space-7);
@@ -591,7 +662,9 @@
             background: rgba(0, 0, 0, 0.4);
             z-index: 2000;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start;
+            padding: var(--space-10);
+            overflow-y: auto;
         }
 
         .modal-overlay.active {
@@ -745,7 +818,7 @@
 
     <!-- 英雄区域 -->
     <section class="hero">
-        <h1>图片调整大小</h1>
+        <h1>图片调整工具</h1>
         <p class="hero-subtitle">简单、快速、精准。调整图片尺寸，一键完成。支持裁剪和文件大小控制。</p>
     </section>
 
@@ -771,6 +844,9 @@
                         </div>
                     </div>
                     <div class="image-info" id="imageInfo"></div>
+                    <div class="exif-btn-wrapper" id="exifBtnWrapper" style="display: none;">
+                        <button class="exif-btn" id="exifBtn">📷 查看 EXIF 信息</button>
+                    </div>
                 </div>
 
                 <div class="controls-section">
@@ -867,6 +943,22 @@
 
                 <h4>下载结果</h4>
                 <p>点击「确认调整」后，在结果区域点击「下载图片」保存到本地。未设大小限制时输出 PNG，设限制时输出 JPEG。</p>
+
+                <h4>EXIF 信息</h4>
+                <p>上传图片后，可查看图片的 EXIF 元数据，包括相机型号、拍摄时间、光圈、快门速度、ISO 等参数。点击「查看 EXIF 信息」按钮查看详情。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- EXIF弹层 -->
+    <div class="modal-overlay" id="exifModal">
+        <div class="modal">
+            <div class="modal-header">
+                <span class="modal-title">📷 EXIF 信息</span>
+                <button class="modal-close" id="exifModalClose">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="exif-grid" id="exifGrid"></div>
             </div>
         </div>
     </div>
@@ -899,6 +991,12 @@
         const resultInfo = document.getElementById('resultInfo');
         const downloadLink = document.getElementById('downloadLink');
 
+        const exifBtnWrapper = document.getElementById('exifBtnWrapper');
+        const exifBtn = document.getElementById('exifBtn');
+        const exifModal = document.getElementById('exifModal');
+        const exifModalClose = document.getElementById('exifModalClose');
+        const exifGrid = document.getElementById('exifGrid');
+
         let originalImage = null;
         let originalWidth = 0;
         let originalHeight = 0;
@@ -917,6 +1015,227 @@
             helpModal.classList.add('active');
         });
 
+        exifBtn.addEventListener('click', () => {
+            exifModal.classList.add('active');
+        });
+
+        exifModalClose.addEventListener('click', () => {
+            exifModal.classList.remove('active');
+        });
+
+        exifModal.addEventListener('click', (e) => {
+            if (e.target === exifModal) {
+                exifModal.classList.remove('active');
+            }
+        });
+
+        function formatExifValue(key, value) {
+            if (value === null || value === undefined || value === '') return null;
+            
+            const formatters = {
+                'DateTimeOriginal': (v) => {
+                    if (typeof v === 'string') {
+                        return v.replace(/^(\d{4}):(\d{2}):(\d{2})/, '$1-$2-$3');
+                    }
+                    return v;
+                },
+                'ExposureTime': (v) => {
+                    if (Array.isArray(v) && v.length === 2) {
+                        return v[0] + '/' + v[1] + 's';
+                    }
+                    return v;
+                },
+                'FNumber': (v) => {
+                    if (Array.isArray(v) && v.length === 2) {
+                        return 'f/' + (v[0] / v[1]).toFixed(1);
+                    }
+                    return 'f/' + v;
+                },
+                'ISOSpeedRatings': (v) => v,
+                'FocalLength': (v) => {
+                    if (Array.isArray(v) && v.length === 2) {
+                        return (v[0] / v[1]).toFixed(0) + 'mm';
+                    }
+                    return v + 'mm';
+                },
+                'PixelXDimension': (v) => v + 'px',
+                'PixelYDimension': (v) => v + 'px',
+                'ImageWidth': (v) => v + 'px',
+                'ImageHeight': (v) => v + 'px',
+                'XResolution': (v) => v + ' dpi',
+                'YResolution': (v) => v + ' dpi',
+                'BrightnessValue': (v) => {
+                    if (Array.isArray(v) && v.length === 2) {
+                        return (v[0] / v[1]).toFixed(1) + ' EV';
+                    }
+                    return v;
+                },
+                'ExposureBiasValue': (v) => {
+                    if (Array.isArray(v) && v.length === 2) {
+                        const val = v[0] / v[1];
+                        return (val >= 0 ? '+' : '') + val.toFixed(1) + ' EV';
+                    }
+                    return v;
+                },
+                'MaxApertureValue': (v) => {
+                    if (Array.isArray(v) && v.length === 2) {
+                        return 'f/' + Math.pow(Math.sqrt(2), v[0] / v[1]).toFixed(1);
+                    }
+                    return v;
+                },
+                'MeteringMode': (v) => {
+                    const modes = {
+                        1: '平均测光', 2: '中央重点', 3: '点测光',
+                        4: '多点测光', 5: '评价测光', 6: '局部测光'
+                    };
+                    return modes[v] || v;
+                },
+                'ExposureProgram': (v) => {
+                    const programs = {
+                        0: '未定义', 1: '手动', 2: '程序自动',
+                        3: '光圈优先', 4: '快门优先', 5: '创意模式',
+                        6: '动作模式', 7: '人像模式', 8: '风景模式'
+                    };
+                    return programs[v] || v;
+                },
+                'Flash': (v) => {
+                    if (v === 0) return '未闪光';
+                    if (v === 1) return '已闪光';
+                    return v & 1 ? '已闪光' : '未闪光';
+                },
+                'WhiteBalance': (v) => {
+                    return v === 0 ? '自动' : v === 1 ? '手动' : v;
+                },
+                'Orientation': (v) => {
+                    const orientations = {
+                        1: '正常', 2: '水平翻转', 3: '旋转180°',
+                        4: '垂直翻转', 5: '顺时针90°+水平翻转',
+                        6: '顺时针90°', 7: '逆时针90°+水平翻转', 8: '逆时针90°'
+                    };
+                    return orientations[v] || v;
+                },
+                'ColorSpace': (v) => {
+                    return v === 1 ? 'sRGB' : v === 65535 ? '未校准' : v;
+                }
+            };
+
+            const formatter = formatters[key];
+            return formatter ? formatter(value) : value;
+        }
+
+        function getExifLabel(key) {
+            const labels = {
+                'Make': '相机厂商',
+                'Model': '相机型号',
+                'DateTimeOriginal': '拍摄时间',
+                'DateTimeDigitized': '数字化时间',
+                'DateTime': '修改时间',
+                'ExposureTime': '快门速度',
+                'FNumber': '光圈',
+                'ISOSpeedRatings': 'ISO',
+                'FocalLength': '焦距',
+                'FocalLengthIn35mmFilm': '等效焦距',
+                'ExposureBiasValue': '曝光补偿',
+                'MaxApertureValue': '最大光圈',
+                'MeteringMode': '测光模式',
+                'ExposureProgram': '曝光程序',
+                'Flash': '闪光灯',
+                'WhiteBalance': '白平衡',
+                'Orientation': '方向',
+                'XResolution': 'X分辨率',
+                'YResolution': 'Y分辨率',
+                'ResolutionUnit': '分辨率单位',
+                'Software': '软件',
+                'Artist': '作者',
+                'Copyright': '版权',
+                'ImageDescription': '描述',
+                'PixelXDimension': '图像宽度',
+                'PixelYDimension': '图像高度',
+                'ColorSpace': '色彩空间',
+                'LensModel': '镜头型号',
+                'ExifVersion': 'EXIF版本',
+                'ComponentsConfiguration': '分量配置',
+                'CompressedBitsPerPixel': '压缩比',
+                'ShutterSpeedValue': '快门速度值',
+                'ApertureValue': '光圈值',
+                'BrightnessValue': '亮度',
+                'SceneCaptureType': '场景类型',
+                'GainControl': '增益控制',
+                'Contrast': '对比度',
+                'Saturation': '饱和度',
+                'Sharpness': '锐度',
+                'SubjectDistanceRange': '拍摄距离',
+                'ImageWidth': '图像宽度',
+                'ImageHeight': '图像高度'
+            };
+            return labels[key] || key;
+        }
+
+        function displayExifData(exifData) {
+            exifGrid.innerHTML = '';
+
+            const importantKeys = [
+                'Make', 'Model', 'LensModel', 'DateTimeOriginal',
+                'DateTimeDigitized', 'DateTime', 'FNumber',
+                'ExposureTime', 'ISOSpeedRatings', 'FocalLength',
+                'FocalLengthIn35mmFilm', 'ExposureBiasValue',
+                'MeteringMode', 'Flash', 'WhiteBalance', 'Software',
+                'Orientation', 'ColorSpace', 'ResolutionUnit'
+            ];
+
+            const allKeys = Object.keys(exifData);
+            const sortedKeys = importantKeys.filter(k => allKeys.includes(k));
+
+            let hasValidData = false;
+
+            sortedKeys.forEach(key => {
+                const value = formatExifValue(key, exifData[key]);
+                if (value !== null && value !== undefined && value !== '') {
+                    hasValidData = true;
+                    const item = document.createElement('div');
+                    item.className = 'exif-item';
+                    item.innerHTML = `
+                        <span class="exif-label">${getExifLabel(key)}</span>
+                        <span class="exif-value">${value}</span>
+                    `;
+                    exifGrid.appendChild(item);
+                }
+            });
+
+            // 图像尺寸：宽 x 高
+            const imgWidth = exifData.PixelXDimension || exifData.ImageWidth;
+            const imgHeight = exifData.PixelYDimension || exifData.ImageHeight;
+            if (imgWidth && imgHeight) {
+                hasValidData = true;
+                const item = document.createElement('div');
+                item.className = 'exif-item';
+                item.innerHTML = `
+                    <span class="exif-label">图像尺寸</span>
+                    <span class="exif-value">${imgWidth} × ${imgHeight}</span>
+                `;
+                exifGrid.appendChild(item);
+            }
+
+            // 分辨率：X x Y
+            const xRes = exifData.XResolution;
+            const yRes = exifData.YResolution;
+            if (xRes && yRes) {
+                hasValidData = true;
+                const item = document.createElement('div');
+                item.className = 'exif-item';
+                const resUnit = exifData.ResolutionUnit === 2 ? 'dpi' : exifData.ResolutionUnit === 3 ? 'dpcm' : '';
+                item.innerHTML = `
+                    <span class="exif-label">分辨率</span>
+                    <span class="exif-value">${xRes} × ${yRes}${resUnit ? ' ' + resUnit : ''}</span>
+                `;
+                exifGrid.appendChild(item);
+            }
+
+            if (!hasValidData) {
+                exifGrid.innerHTML = '<div class="exif-empty">未找到 EXIF 信息</div>';
+            }
+        }
+
         helpModalClose.addEventListener('click', () => {
             helpModal.classList.remove('active');
         });
@@ -928,8 +1247,13 @@
         });
 
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && helpModal.classList.contains('active')) {
-                helpModal.classList.remove('active');
+            if (e.key === 'Escape') {
+                if (helpModal.classList.contains('active')) {
+                    helpModal.classList.remove('active');
+                }
+                if (exifModal.classList.contains('active')) {
+                    exifModal.classList.remove('active');
+                }
             }
         });
 
@@ -1218,6 +1542,24 @@
                     cropInfo.classList.add('hidden');
                     cropBox.style.display = 'none';
                     cropInfo.textContent = '裁剪区域: 0 × 0 像素';
+
+                    // 显示EXIF按钮并读取信息
+                    exifBtnWrapper.style.display = 'block';
+                    exifGrid.innerHTML = '<div class="exif-empty">正在读取 EXIF 信息...</div>';
+                    
+                    try {
+                        EXIF.getData(originalImage, function() {
+                            const exifData = EXIF.getAllTags(this);
+                            if (Object.keys(exifData).length > 0) {
+                                displayExifData(exifData);
+                            } else {
+                                exifGrid.innerHTML = '<div class="exif-empty">该图片未包含 EXIF 信息</div>';
+                            }
+                        });
+                    } catch (err) {
+                        console.error('EXIF读取错误:', err);
+                        exifGrid.innerHTML = '<div class="exif-empty">EXIF 信息读取失败</div>';
+                    }
                 };
                 originalImage.src = e.target.result;
             };
@@ -1359,7 +1701,253 @@
             cropInfo.classList.add('hidden');
             cropBox.style.display = 'none';
             cropInfo.textContent = '裁剪区域: 0 × 0 像素';
+            // 重置EXIF
+            exifBtnWrapper.style.display = 'none';
+            exifModal.classList.remove('active');
+            exifGrid.innerHTML = '';
         });
+
+        // 内联EXIF解析库
+        const EXIF = {
+            getData: function(img, callback) {
+                if (!img || !img.src) {
+                    callback.call(img);
+                    return;
+                }
+                
+                // 如果是data URL，解析EXIF
+                if (img.src.startsWith('data:image')) {
+                    try {
+                        const base64 = img.src.split(',')[1];
+                        const binary = atob(base64);
+                        const bytes = new Uint8Array(binary.length);
+                        for (let i = 0; i < binary.length; i++) {
+                            bytes[i] = binary.charCodeAt(i);
+                        }
+                        this._extractEXIF(bytes.buffer, img);
+                    } catch (e) {
+                        console.error('EXIF解析错误:', e);
+                    }
+                }
+                callback.call(img);
+            },
+            
+            getAllTags: function(img) {
+                return img._exifData || {};
+            },
+            
+            _extractEXIF: function(buffer, img) {
+                const view = new DataView(buffer);
+                img._exifData = {};
+                
+                // 检查JPEG SOI标记
+                if (view.getUint16(0) !== 0xFFD8) return;
+                
+                let offset = 2;
+                while (offset < view.byteLength) {
+                    const marker = view.getUint16(offset);
+                    
+                    // APP1标记 (EXIF)
+                    if (marker === 0xFFE1) {
+                        const length = view.getUint16(offset + 2);
+                        const exifData = this._parseAPP1(view, offset + 4, length - 2);
+                        img._exifData = exifData;
+                        return;
+                    }
+                    
+                    // 其他标记，跳过
+                    if ((marker & 0xFF00) === 0xFF00) {
+                        offset += 2 + view.getUint16(offset + 2);
+                    } else {
+                        break;
+                    }
+                }
+            },
+            
+            _parseAPP1: function(view, start, length) {
+                const data = {};
+                
+                // 检查Exif标识
+                if (view.getUint32(start) !== 0x45786966 || view.getUint16(start + 4) !== 0x0000) {
+                    return data;
+                }
+                
+                const tiffStart = start + 6;
+                const byteOrder = view.getUint16(tiffStart);
+                const littleEndian = (byteOrder === 0x4949);
+                
+                // 检查TIFF标记
+                if (view.getUint16(tiffStart + 2, littleEndian) !== 0x002A) return data;
+                
+                const ifd0Offset = view.getUint32(tiffStart + 4, littleEndian);
+                this._readIFD(view, tiffStart, tiffStart + ifd0Offset, littleEndian, data);
+                
+                // 读取EXIF子IFD
+                if (data.ExifIFDPointer) {
+                    this._readIFD(view, tiffStart, tiffStart + data.ExifIFDPointer, littleEndian, data);
+                }
+                
+                return data;
+            },
+            
+            _readIFD: function(view, tiffStart, ifdStart, littleEndian, data) {
+                const entries = view.getUint16(ifdStart, littleEndian);
+                
+                for (let i = 0; i < entries; i++) {
+                    const entryOffset = ifdStart + 2 + (i * 12);
+                    const tag = view.getUint16(entryOffset, littleEndian);
+                    const type = view.getUint16(entryOffset + 2, littleEndian);
+                    const count = view.getUint32(entryOffset + 4, littleEndian);
+                    
+                    const tagName = this._getTagName(tag);
+                    if (!tagName) continue;
+                    
+                    const value = this._readValue(view, tiffStart, entryOffset + 8, type, count, littleEndian);
+                    if (value !== undefined) {
+                        data[tagName] = value;
+                    }
+                }
+            },
+            
+            _readValue: function(view, tiffStart, valueOffset, type, count, littleEndian) {
+                const typeSizes = [0, 1, 1, 2, 4, 8, 1, 1, 2, 4, 8, 4, 8];
+                const totalSize = typeSizes[type] * count;
+                
+                let offset;
+                if (totalSize > 4) {
+                    offset = tiffStart + view.getUint32(valueOffset, littleEndian);
+                } else {
+                    offset = valueOffset;
+                }
+                
+                switch (type) {
+                    case 1: // BYTE
+                        return count === 1 ? view.getUint8(offset) : this._readByteArray(view, offset, count);
+                    case 2: // ASCII
+                        return this._readString(view, offset, count);
+                    case 3: // SHORT
+                        return count === 1 ? view.getUint16(offset, littleEndian) : this._readShortArray(view, offset, count, littleEndian);
+                    case 4: // LONG
+                        return count === 1 ? view.getUint32(offset, littleEndian) : this._readLongArray(view, offset, count, littleEndian);
+                    case 5: // RATIONAL
+                        return this._readRationalArray(view, offset, count, littleEndian);
+                    case 7: // UNDEFINED
+                        return this._readByteArray(view, offset, count);
+                    case 9: // SLONG
+                        return count === 1 ? view.getInt32(offset, littleEndian) : undefined;
+                    case 10: // SRATIONAL
+                        return this._readSRationalArray(view, offset, count, littleEndian);
+                    default:
+                        return undefined;
+                }
+            },
+            
+            _readString: function(view, offset, count) {
+                let str = '';
+                for (let i = 0; i < count - 1; i++) {
+                    str += String.fromCharCode(view.getUint8(offset + i));
+                }
+                return str.trim();
+            },
+            
+            _readByteArray: function(view, offset, count) {
+                const arr = [];
+                for (let i = 0; i < count; i++) {
+                    arr.push(view.getUint8(offset + i));
+                }
+                return arr;
+            },
+            
+            _readShortArray: function(view, offset, count, littleEndian) {
+                const arr = [];
+                for (let i = 0; i < count; i++) {
+                    arr.push(view.getUint16(offset + i * 2, littleEndian));
+                }
+                return count === 1 ? arr[0] : arr;
+            },
+            
+            _readLongArray: function(view, offset, count, littleEndian) {
+                const arr = [];
+                for (let i = 0; i < count; i++) {
+                    arr.push(view.getUint32(offset + i * 4, littleEndian));
+                }
+                return count === 1 ? arr[0] : arr;
+            },
+            
+            _readRationalArray: function(view, offset, count, littleEndian) {
+                const arr = [];
+                for (let i = 0; i < count; i++) {
+                    const num = view.getUint32(offset + i * 8, littleEndian);
+                    const den = view.getUint32(offset + i * 8 + 4, littleEndian);
+                    arr.push([num, den]);
+                }
+                return count === 1 ? arr[0] : arr;
+            },
+            
+            _readSRationalArray: function(view, offset, count, littleEndian) {
+                const arr = [];
+                for (let i = 0; i < count; i++) {
+                    const num = view.getInt32(offset + i * 8, littleEndian);
+                    const den = view.getInt32(offset + i * 8 + 4, littleEndian);
+                    arr.push([num, den]);
+                }
+                return count === 1 ? arr[0] : arr;
+            },
+            
+            _getTagName: function(tag) {
+                const tags = {
+                    0x010F: 'Make',
+                    0x0110: 'Model',
+                    0x0112: 'Orientation',
+                    0x011A: 'XResolution',
+                    0x011B: 'YResolution',
+                    0x0128: 'ResolutionUnit',
+                    0x0131: 'Software',
+                    0x0132: 'DateTime',
+                    0x013E: 'WhitePoint',
+                    0x013F: 'PrimaryChromaticities',
+                    0x0211: 'YCbCrCoefficients',
+                    0x0213: 'YCbCrPositioning',
+                    0x0214: 'ReferenceBlackWhite',
+                    0x8298: 'Copyright',
+                    0x8769: 'ExifIFDPointer',
+                    0x8825: 'GPSInfoIFDPointer',
+                    0x9000: 'ExifVersion',
+                    0x9003: 'DateTimeOriginal',
+                    0x9004: 'DateTimeDigitized',
+                    0x920A: 'FocalLength',
+                    0xA001: 'ColorSpace',
+                    0xA002: 'PixelXDimension',
+                    0xA003: 'PixelYDimension',
+                    0xA405: 'FocalLengthIn35mmFilm',
+                    0xA431: 'SerialNumber',
+                    0xA432: 'LensInfo',
+                    0xA434: 'LensModel',
+                    0x829A: 'ExposureTime',
+                    0x829D: 'FNumber',
+                    0x8827: 'ISOSpeedRatings',
+                    0x9201: 'ShutterSpeedValue',
+                    0x9202: 'ApertureValue',
+                    0x9203: 'BrightnessValue',
+                    0x9204: 'ExposureBiasValue',
+                    0x9205: 'MaxApertureValue',
+                    0x9206: 'SubjectDistance',
+                    0x9207: 'MeteringMode',
+                    0x9208: 'LightSource',
+                    0x9209: 'Flash',
+                    0x920A: 'FocalLength',
+                    0xA404: 'DigitalZoomRatio',
+                    0xA406: 'SceneCaptureType',
+                    0xA407: 'GainControl',
+                    0xA408: 'Contrast',
+                    0xA409: 'Saturation',
+                    0xA40A: 'Sharpness',
+                    0xA40C: 'SubjectDistanceRange',
+                    0xA420: 'ImageUniqueID'
+                };
+                return tags[tag];
+            }
+        };
     </script>
 </body>
 </html>
