@@ -713,13 +713,13 @@
         }
 
         .music-control::before {
-            content: '';
+            content: '♪';
             position: absolute;
-            width: 18px;
-            height: 18px;
-            background: radial-gradient(circle, #fff 20%, #ddd 21%, #ddd 30%, #aaa 31%);
-            border-radius: 50%;
+            font-size: 28px;
+            color: #fff;
             z-index: 2;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+            line-height: 1;
         }
 
         .music-control::after {
@@ -758,8 +758,7 @@
                 height: 50px;
             }
             .music-control::before {
-                width: 14px;
-                height: 14px;
+                font-size: 22px;
             }
         }
     </style>
