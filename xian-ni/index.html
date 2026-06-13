@@ -192,6 +192,14 @@
             scrollbar-width: none;
         }
 
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: var(--space-4);
+            position: absolute;
+            right: 0;
+        }
+
         .nav-progress {
             display: flex;
             align-items: center;
@@ -199,8 +207,6 @@
             font-size: 0.8rem;
             color: var(--text-muted);
             white-space: nowrap;
-            position: absolute;
-            right: 0;
         }
 
         .nav-links::-webkit-scrollbar { display: none; }
@@ -220,6 +226,24 @@
         .nav-link.active {
             color: var(--gold-primary);
             background: var(--gold-subtle);
+        }
+
+        .nav-link-ext {
+            color: var(--jade);
+            font-weight: 500;
+            text-decoration: none;
+            font-size: 0.85rem;
+            padding: var(--space-2) var(--space-3);
+            border-radius: var(--radius-sm);
+            border: 1px solid rgba(45, 212, 168, 0.3);
+            transition: all var(--duration-normal) var(--ease-out);
+        }
+
+        .nav-link-ext:hover {
+            color: var(--jade);
+            background: rgba(45, 212, 168, 0.1);
+            border-color: var(--jade);
+        }
         }
 
         .nav-link.active::after {
@@ -1540,13 +1564,16 @@
             <li><a href="#ch5" class="nav-link" data-chapter="5">修仙哲学</a></li>
             <li><a href="#ch6" class="nav-link" data-chapter="6">重要人物</a></li>
         </ul>
-        <div class="nav-progress">
-            <svg class="nav-progress-ring" viewBox="0 0 36 36">
-                <circle class="bg" cx="18" cy="18" r="15" />
-                <circle class="fill" id="progressRing" cx="18" cy="18" r="15"
-                    stroke-dasharray="94.25" stroke-dashoffset="94.25" />
-            </svg>
-            <span id="progressText">0%</span>
+        <div class="nav-right">
+            <a href="analysis.html" class="nav-link-ext">深度分析 →</a>
+            <div class="nav-progress">
+                <svg class="nav-progress-ring" viewBox="0 0 36 36">
+                    <circle class="bg" cx="18" cy="18" r="15" />
+                    <circle class="fill" id="progressRing" cx="18" cy="18" r="15"
+                        stroke-dasharray="94.25" stroke-dashoffset="94.25" />
+                </svg>
+                <span id="progressText">0%</span>
+            </div>
         </div>
     </div>
 </nav>
@@ -1559,6 +1586,8 @@
     <a href="#ch4" class="mobile-menu-link" data-chapter="4">重要战役</a>
     <a href="#ch5" class="mobile-menu-link" data-chapter="5">修仙哲学</a>
     <a href="#ch6" class="mobile-menu-link" data-chapter="6">重要人物</a>
+    <div style="width:40px;height:1px;background:var(--border-subtle);margin:var(--space-4) 0;"></div>
+    <a href="analysis.html" class="mobile-menu-link" style="color:var(--jade);">深度分析 →</a>
 </div>
 
 <!-- Hero Section -->
@@ -5178,8 +5207,11 @@ function toggleBattle(card) {
 // ===== SMOOTH SCROLL FOR NAV LINKS =====
 navLinks.forEach(link => {
     link.addEventListener('click', function(e) {
+        const href = this.getAttribute('href');
+        // Skip external links (page navigation)
+        if (href && !href.startsWith('#')) return;
         e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
+        const target = document.querySelector(href);
         if (target) {
             target.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
@@ -5206,8 +5238,14 @@ navHamburger.addEventListener('click', toggleMobileMenu);
 
 mobileMenuLinks.forEach(link => {
     link.addEventListener('click', function(e) {
+        const href = this.getAttribute('href');
+        // Skip external links (page navigation)
+        if (href && !href.startsWith('#')) {
+            toggleMobileMenu();
+            return;
+        }
         e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
+        const target = document.querySelector(href);
         toggleMobileMenu();
         if (target) {
             setTimeout(() => {

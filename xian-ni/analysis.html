@@ -1,0 +1,2983 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>《仙逆》深度文学分析 — 顺为凡，逆则仙</title>
+    <link rel="preconnect" href="https://fonts.loli.net">
+    <link href="https://fonts.loli.net/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* ===== DESIGN TOKENS ===== */
+        :root {
+            --bg-primary: #0a0e1a;
+            --bg-secondary: #111827;
+            --bg-card: rgba(15, 23, 42, 0.85);
+            --bg-card-hover: rgba(30, 41, 59, 0.95);
+            --bg-glass: rgba(255, 255, 255, 0.03);
+
+            --gold-primary: #d4a853;
+            --gold-light: #f0d78c;
+            --gold-glow: rgba(212, 168, 83, 0.4);
+            --gold-subtle: rgba(212, 168, 83, 0.1);
+
+            --jade: #2dd4a8;
+            --jade-glow: rgba(45, 212, 168, 0.3);
+
+            --crimson: #ef4444;
+            --crimson-glow: rgba(239, 68, 68, 0.3);
+
+            --violet: #a78bfa;
+            --violet-glow: rgba(167, 139, 250, 0.3);
+
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+
+            --border-subtle: rgba(212, 168, 83, 0.15);
+            --border-active: rgba(212, 168, 83, 0.5);
+
+            --space-1: 4px;
+            --space-2: 8px;
+            --space-3: 12px;
+            --space-4: 16px;
+            --space-5: 20px;
+            --space-6: 24px;
+            --space-8: 32px;
+            --space-10: 40px;
+            --space-12: 48px;
+            --space-16: 64px;
+
+            --font-display: 'Noto Serif SC', 'STSong', 'SimSun', serif;
+            --font-body: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 20px;
+            --radius-xl: 28px;
+
+            --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.4), 0 1px 2px rgba(0, 0, 0, 0.3);
+            --shadow-glow: 0 0 40px rgba(212, 168, 83, 0.15);
+            --shadow-hover: 0 12px 48px rgba(212, 168, 83, 0.25), 0 4px 16px rgba(0, 0, 0, 0.5);
+
+            --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+            --duration-normal: 0.3s;
+            --duration-slow: 0.6s;
+        }
+
+        /* ===== RESET & BASE ===== */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 80px;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.7;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* ===== BACKGROUND ATMOSPHERE ===== */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 800px 600px at 20% 20%, rgba(45, 212, 168, 0.06), transparent),
+                radial-gradient(ellipse 600px 800px at 80% 80%, rgba(167, 139, 250, 0.05), transparent),
+                radial-gradient(ellipse 1000px 400px at 50% 50%, rgba(212, 168, 83, 0.04), transparent);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ===== PARTICLES ===== */
+        .particles {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: var(--gold-primary);
+            border-radius: 50%;
+            opacity: 0;
+            animation: float-up linear infinite;
+        }
+
+        @keyframes float-up {
+            0% { opacity: 0; transform: translateY(100vh) scale(0); }
+            10% { opacity: 0.8; }
+            90% { opacity: 0.3; }
+            100% { opacity: 0; transform: translateY(-10vh) scale(1); }
+        }
+
+        /* ===== PROGRESS BAR ===== */
+        .progress-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--jade), var(--gold-primary), var(--violet));
+            transition: width 0.15s linear;
+            box-shadow: 0 0 12px var(--gold-glow);
+        }
+
+        /* ===== NAVIGATION ===== */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: var(--space-4) var(--space-8);
+            background: rgba(10, 14, 26, 0.85);
+            backdrop-filter: blur(20px) saturate(1.5);
+            -webkit-backdrop-filter: blur(20px) saturate(1.5);
+            border-bottom: 1px solid var(--border-subtle);
+            transition: transform var(--duration-normal) var(--ease-out);
+        }
+
+        .nav-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-4);
+            position: relative;
+        }
+
+        .nav-brand {
+            font-family: var(--font-display);
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--gold-primary);
+            white-space: nowrap;
+            letter-spacing: 0.05em;
+            position: absolute;
+            left: 0;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: var(--space-2);
+            list-style: none;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .nav-links::-webkit-scrollbar { display: none; }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: var(--space-4);
+            position: absolute;
+            right: 0;
+        }
+
+        .nav-progress {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            white-space: nowrap;
+        }
+
+        .nav-link {
+            padding: var(--space-2) var(--space-3);
+            border-radius: var(--radius-sm);
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.85rem;
+            white-space: nowrap;
+            transition: all var(--duration-normal) var(--ease-out);
+            position: relative;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: var(--gold-primary);
+            background: var(--gold-subtle);
+        }
+
+        .nav-divider {
+            color: var(--text-muted);
+            opacity: 0.3;
+            user-select: none;
+        }
+
+        .nav-link-ext {
+            color: var(--jade);
+            font-weight: 500;
+            text-decoration: none;
+            font-size: 0.85rem;
+            padding: var(--space-2) var(--space-3);
+            border-radius: var(--radius-sm);
+            border: 1px solid rgba(45, 212, 168, 0.3);
+            transition: all var(--duration-normal) var(--ease-out);
+        }
+
+        .nav-link-ext:hover {
+            color: var(--jade);
+            background: rgba(45, 212, 168, 0.1);
+            border-color: var(--jade);
+        }
+
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 16px;
+            height: 2px;
+            background: var(--gold-primary);
+            border-radius: 1px;
+        }
+
+        .nav-progress-ring { width: 28px; height: 28px; }
+        .nav-progress-ring circle { fill: none; stroke-width: 3; }
+        .nav-progress-ring .bg { stroke: rgba(255,255,255,0.1); }
+        .nav-progress-ring .fill {
+            stroke: var(--gold-primary);
+            stroke-linecap: round;
+            transform: rotate(-90deg);
+            transform-origin: center;
+            transition: stroke-dashoffset 0.5s var(--ease-out);
+        }
+
+        /* ===== HERO SECTION ===== */
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: var(--space-16) var(--space-6);
+            text-align: center;
+            z-index: 1;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-2);
+            padding: var(--space-2) var(--space-4);
+            background: var(--gold-subtle);
+            border: 1px solid var(--border-subtle);
+            border-radius: 999px;
+            font-size: 0.85rem;
+            color: var(--gold-light);
+            margin-bottom: var(--space-8);
+            animation: fadeInDown 0.8s var(--ease-out) both;
+        }
+
+        .hero-badge-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--jade);
+            border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        .hero-title {
+            font-family: var(--font-display);
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: var(--space-6);
+            animation: fadeInUp 1s var(--ease-out) 0.2s both;
+        }
+
+        .hero-title .char-gold {
+            background: linear-gradient(135deg, var(--gold-light), var(--gold-primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-title .char-jade {
+            color: var(--jade);
+            -webkit-text-fill-color: var(--jade);
+        }
+
+        .hero-subtitle {
+            font-family: var(--font-display);
+            font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+            color: var(--text-secondary);
+            margin-bottom: var(--space-10);
+            letter-spacing: 0.15em;
+            animation: fadeInUp 1s var(--ease-out) 0.4s both;
+        }
+
+        .hero-quote {
+            max-width: 600px;
+            font-family: var(--font-display);
+            font-size: 1.15rem;
+            color: var(--text-muted);
+            font-style: italic;
+            margin-bottom: var(--space-10);
+            padding: var(--space-6);
+            border-left: 2px solid var(--gold-primary);
+            text-align: left;
+            animation: fadeInUp 1s var(--ease-out) 0.5s both;
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: var(--space-10);
+            margin-bottom: var(--space-10);
+            animation: fadeInUp 1s var(--ease-out) 0.6s both;
+        }
+
+        .hero-stat { text-align: center; }
+
+        .hero-stat-value {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--gold-primary);
+        }
+
+        .hero-stat-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: var(--space-1);
+        }
+
+        .hero-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-3);
+            padding: var(--space-4) var(--space-8);
+            background: linear-gradient(135deg, var(--gold-primary), #b8942e);
+            color: var(--bg-primary);
+            font-family: var(--font-body);
+            font-weight: 700;
+            font-size: 1rem;
+            border: none;
+            border-radius: var(--radius-lg);
+            cursor: pointer;
+            transition: all var(--duration-normal) var(--ease-out);
+            animation: fadeInUp 1s var(--ease-out) 0.7s both;
+            text-decoration: none;
+        }
+
+        .hero-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .hero-cta-arrow { transition: transform var(--duration-normal) var(--ease-out); }
+        .hero-cta:hover .hero-cta-arrow { transform: translateX(4px); }
+
+        .hero-scroll-hint {
+            position: absolute;
+            bottom: var(--space-10);
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--space-2);
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            animation: scrollHintFadeIn 1s var(--ease-out) 1s both;
+        }
+
+        @keyframes scrollHintFadeIn {
+            from { opacity: 0; transform: translateX(-50%) translateY(30px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+
+        .scroll-line {
+            width: 1px;
+            height: 40px;
+            background: linear-gradient(to bottom, var(--gold-primary), transparent);
+            animation: scroll-bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes scroll-bounce {
+            0%, 100% { opacity: 0.3; transform: scaleY(0.5); }
+            50% { opacity: 1; transform: scaleY(1); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        .main {
+            position: relative;
+            z-index: 1;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 var(--space-6) var(--space-16);
+        }
+
+        /* ===== CHAPTER SECTION ===== */
+        .chapter { margin-bottom: var(--space-16); }
+
+        .chapter-header {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--space-6);
+            margin-bottom: var(--space-8);
+        }
+
+        .chapter-number {
+            flex-shrink: 0;
+            width: 56px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: var(--gold-primary);
+            background: var(--gold-subtle);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+        }
+
+        .chapter-meta { flex: 1; }
+
+        .chapter-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: var(--space-1);
+        }
+
+        .chapter-title {
+            font-family: var(--font-display);
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
+            font-weight: 900;
+            line-height: 1.2;
+            margin-bottom: var(--space-3);
+        }
+
+        .chapter-title .highlight {
+            background: linear-gradient(135deg, var(--gold-light), var(--gold-primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .chapter-desc {
+            font-size: 1.05rem;
+            color: var(--text-secondary);
+            line-height: 1.8;
+            max-width: 700px;
+        }
+
+        /* ===== CARDS ===== */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--space-5);
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: var(--space-6);
+            cursor: pointer;
+            transition: all var(--duration-normal) var(--ease-out);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, transparent, rgba(212, 168, 83, 0.05));
+            opacity: 0;
+            transition: opacity var(--duration-normal) var(--ease-out);
+        }
+
+        .card:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--border-active);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .card:hover::before { opacity: 1; }
+
+        .card-icon {
+            font-size: 2rem;
+            margin-bottom: var(--space-4);
+        }
+
+        .card-title {
+            font-family: var(--font-display);
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: var(--space-3);
+        }
+
+        .card-text {
+            font-size: 0.92rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        .card-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--space-2);
+            margin-top: var(--space-4);
+        }
+
+        .tag {
+            padding: var(--space-1) var(--space-3);
+            background: var(--gold-subtle);
+            border: 1px solid var(--border-subtle);
+            border-radius: 999px;
+            font-size: 0.78rem;
+            color: var(--gold-light);
+        }
+
+        .tag.jade {
+            background: rgba(45, 212, 168, 0.08);
+            border-color: rgba(45, 212, 168, 0.2);
+            color: var(--jade);
+        }
+
+        .tag.violet {
+            background: rgba(167, 139, 250, 0.08);
+            border-color: rgba(167, 139, 250, 0.2);
+            color: var(--violet);
+        }
+
+        .tag.crimson {
+            background: rgba(239, 68, 68, 0.08);
+            border-color: rgba(239, 68, 68, 0.2);
+            color: var(--crimson);
+        }
+
+        /* Expandable detail */
+        .card-detail {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s var(--ease-out), margin-top 0.3s var(--ease-out);
+            margin-top: 0;
+        }
+
+        .card.expanded .card-detail {
+            max-height: 800px;
+            margin-top: var(--space-4);
+        }
+
+        .card-detail-content {
+            padding-top: var(--space-4);
+            border-top: 1px solid var(--border-subtle);
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.8;
+        }
+
+        .card-expand-hint {
+            display: flex;
+            align-items: center;
+            gap: var(--space-1);
+            margin-top: var(--space-3);
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            transition: color var(--duration-normal) var(--ease-out);
+        }
+
+        .card:hover .card-expand-hint { color: var(--gold-primary); }
+
+        .card-expand-icon {
+            transition: transform var(--duration-normal) var(--ease-out);
+            display: inline-block;
+        }
+
+        .card.expanded .card-expand-icon {
+            transform: rotate(180deg);
+        }
+
+        /* ===== PHILOSOPHY CARD (Large) ===== */
+        .philosophy-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-xl);
+            padding: var(--space-10);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: var(--space-8);
+        }
+
+        .philosophy-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(from 0deg, transparent, rgba(212, 168, 83, 0.03), transparent, rgba(45, 212, 168, 0.03), transparent);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate { to { transform: rotate(360deg); } }
+
+        .philosophy-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .philosophy-quote {
+            font-family: var(--font-display);
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            font-weight: 900;
+            line-height: 1.3;
+            margin-bottom: var(--space-6);
+        }
+
+        .philosophy-quote .char-reverse {
+            color: var(--crimson);
+            text-shadow: 0 0 30px var(--crimson-glow);
+        }
+
+        .philosophy-quote .char-forward {
+            color: var(--jade);
+        }
+
+        .philosophy-quote .char-immortal {
+            background: linear-gradient(135deg, var(--gold-light), var(--gold-primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .philosophy-explain {
+            font-size: 1.05rem;
+            color: var(--text-secondary);
+            line-height: 2;
+            max-width: 700px;
+            margin: 0 auto var(--space-8);
+        }
+
+        /* ===== TIMELINE ===== */
+        .timeline {
+            position: relative;
+            padding: var(--space-4) 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 24px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, var(--gold-primary), var(--jade), var(--violet), var(--gold-primary));
+            opacity: 0.3;
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-left: 64px;
+            padding-bottom: var(--space-8);
+            cursor: pointer;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: 16px;
+            top: 4px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--bg-primary);
+            border: 2px solid var(--gold-primary);
+            transition: all var(--duration-normal) var(--ease-out);
+            z-index: 1;
+        }
+
+        .timeline-item:hover .timeline-dot {
+            background: var(--gold-primary);
+            box-shadow: 0 0 16px var(--gold-glow);
+        }
+
+        .timeline-title {
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: var(--space-2);
+            transition: color var(--duration-normal) var(--ease-out);
+        }
+
+        .timeline-item:hover .timeline-title { color: var(--gold-primary); }
+
+        .timeline-text {
+            font-size: 0.92rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        .timeline-detail {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s var(--ease-out);
+        }
+
+        .timeline-item.expanded .timeline-detail {
+            max-height: 400px;
+        }
+
+        .timeline-detail-inner {
+            padding-top: var(--space-3);
+            font-size: 0.88rem;
+            color: var(--text-muted);
+            line-height: 1.8;
+        }
+
+        .timeline-expand-hint {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: var(--space-2);
+        }
+
+        .timeline-item.expanded .timeline-expand-hint { display: none; }
+
+        /* ===== COMPARISON TABLE ===== */
+        .comparison-table-wrapper {
+            overflow-x: auto;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-subtle);
+            background: var(--bg-card);
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        .comparison-table thead th {
+            font-family: var(--font-display);
+            font-weight: 700;
+            color: var(--gold-primary);
+            padding: var(--space-4) var(--space-5);
+            text-align: left;
+            border-bottom: 2px solid var(--border-subtle);
+            background: rgba(212, 168, 83, 0.05);
+            white-space: nowrap;
+        }
+
+        .comparison-table tbody td {
+            padding: var(--space-4) var(--space-5);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            color: var(--text-secondary);
+            line-height: 1.7;
+            vertical-align: top;
+        }
+
+        .comparison-table tbody tr:hover {
+            background: rgba(212, 168, 83, 0.03);
+        }
+
+        .comparison-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .comparison-table .label-cell {
+            font-weight: 600;
+            color: var(--text-primary);
+            white-space: nowrap;
+            min-width: 100px;
+        }
+
+        /* ===== NESTED UNIVERSE ===== */
+        .universe-nesting {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--space-4);
+            padding: var(--space-8) 0;
+        }
+
+        .universe-layer {
+            border: 2px solid;
+            border-radius: var(--radius-lg);
+            padding: var(--space-6);
+            text-align: center;
+            position: relative;
+            transition: all var(--duration-normal) var(--ease-out);
+            cursor: pointer;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .universe-layer:hover {
+            transform: scale(1.02);
+        }
+
+        .universe-layer.outer {
+            border-color: rgba(212, 168, 83, 0.3);
+            background: rgba(212, 168, 83, 0.03);
+        }
+        .universe-layer.outer:hover {
+            border-color: var(--gold-primary);
+            box-shadow: 0 0 30px var(--gold-glow);
+        }
+
+        .universe-layer.mid {
+            border-color: rgba(167, 139, 250, 0.3);
+            background: rgba(167, 139, 250, 0.03);
+            max-width: 650px;
+        }
+        .universe-layer.mid:hover {
+            border-color: var(--violet);
+            box-shadow: 0 0 30px var(--violet-glow);
+        }
+
+        .universe-layer.inner {
+            border-color: rgba(45, 212, 168, 0.3);
+            background: rgba(45, 212, 168, 0.03);
+            max-width: 500px;
+        }
+        .universe-layer.inner:hover {
+            border-color: var(--jade);
+            box-shadow: 0 0 30px var(--jade-glow);
+        }
+
+        .universe-layer.core {
+            border-color: rgba(239, 68, 68, 0.4);
+            background: rgba(239, 68, 68, 0.05);
+            max-width: 350px;
+        }
+        .universe-layer.core:hover {
+            border-color: var(--crimson);
+            box-shadow: 0 0 30px var(--crimson-glow);
+        }
+
+        .universe-layer-title {
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: var(--space-2);
+        }
+
+        .universe-layer.outer .universe-layer-title { color: var(--gold-primary); }
+        .universe-layer.mid .universe-layer-title { color: var(--violet); }
+        .universe-layer.inner .universe-layer-title { color: var(--jade); }
+        .universe-layer.core .universe-layer-title { color: var(--crimson); }
+
+        .universe-layer-desc {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        /* ===== RADAR CHART (CSS only) ===== */
+        .radar-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--space-8);
+            justify-content: center;
+            align-items: flex-start;
+            padding: var(--space-6) 0;
+        }
+
+        .radar-chart {
+            position: relative;
+            width: 280px;
+            height: 280px;
+        }
+
+        .radar-bg {
+            position: absolute;
+            inset: 0;
+        }
+
+        .radar-bg circle {
+            fill: none;
+            stroke: rgba(255, 255, 255, 0.06);
+            stroke-width: 1;
+        }
+
+        .radar-bg line {
+            stroke: rgba(255, 255, 255, 0.06);
+            stroke-width: 1;
+        }
+
+        .radar-label {
+            position: absolute;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            white-space: nowrap;
+        }
+
+        .radar-label.top { top: -20px; left: 50%; transform: translateX(-50%); }
+        .radar-label.right { right: -60px; top: 50%; transform: translateY(-50%); }
+        .radar-label.bottom { bottom: -20px; left: 50%; transform: translateX(-50%); }
+        .radar-label.left { left: -60px; top: 50%; transform: translateY(-50%); }
+
+        .radar-legend {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-3);
+        }
+
+        .radar-legend-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            padding: var(--space-3) var(--space-4);
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            transition: all var(--duration-normal) var(--ease-out);
+        }
+
+        .radar-legend-item:hover {
+            border-color: var(--border-active);
+            background: var(--bg-card-hover);
+        }
+
+        .radar-legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .radar-legend-text {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        /* ===== CHARACTER RELATIONSHIP CARDS ===== */
+        .character-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: var(--space-5);
+        }
+
+        .character-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: var(--space-6);
+            position: relative;
+            overflow: hidden;
+            transition: all var(--duration-normal) var(--ease-out);
+        }
+
+        .character-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+        }
+
+        .character-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .character-card.love::before { background: linear-gradient(90deg, var(--crimson), #f97316); }
+        .character-card.love:hover { border-color: var(--crimson); }
+
+        .character-card.brother::before { background: linear-gradient(90deg, var(--jade), #06b6d4); }
+        .character-card.brother:hover { border-color: var(--jade); }
+
+        .character-card.family::before { background: linear-gradient(90deg, var(--gold-primary), var(--gold-light)); }
+        .character-card.family:hover { border-color: var(--gold-primary); }
+
+        .character-card.complex::before { background: linear-gradient(90deg, var(--violet), #c084fc); }
+        .character-card.complex:hover { border-color: var(--violet); }
+
+        .character-card.villain::before { background: linear-gradient(90deg, #6b7280, #374151); }
+        .character-card.villain:hover { border-color: #6b7280; }
+
+        .character-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: var(--space-4);
+        }
+
+        .character-card.love .character-avatar { background: rgba(239, 68, 68, 0.15); }
+        .character-card.brother .character-avatar { background: rgba(45, 212, 168, 0.15); }
+        .character-card.family .character-avatar { background: rgba(212, 168, 83, 0.15); }
+        .character-card.complex .character-avatar { background: rgba(167, 139, 250, 0.15); }
+        .character-card.villain .character-avatar { background: rgba(107, 114, 128, 0.15); }
+
+        .character-name {
+            font-family: var(--font-display);
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: var(--space-1);
+        }
+
+        .character-role {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            margin-bottom: var(--space-3);
+        }
+
+        .character-desc {
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        /* ===== FOUR ACT STRUCTURE ===== */
+        .act-structure {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: var(--space-4);
+            margin: var(--space-6) 0;
+        }
+
+        .act-block {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: var(--space-5);
+            text-align: center;
+            transition: all var(--duration-normal) var(--ease-out);
+            cursor: pointer;
+        }
+
+        .act-block:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .act-block:nth-child(1) { border-color: rgba(107, 114, 128, 0.3); }
+        .act-block:nth-child(1):hover { border-color: #6b7280; }
+        .act-block:nth-child(2) { border-color: rgba(45, 212, 168, 0.3); }
+        .act-block:nth-child(2):hover { border-color: var(--jade); box-shadow: 0 0 20px var(--jade-glow); }
+        .act-block:nth-child(3) { border-color: rgba(167, 139, 250, 0.3); }
+        .act-block:nth-child(3):hover { border-color: var(--violet); box-shadow: 0 0 20px var(--violet-glow); }
+        .act-block:nth-child(4) { border-color: rgba(212, 168, 83, 0.3); }
+        .act-block:nth-child(4):hover { border-color: var(--gold-primary); box-shadow: 0 0 20px var(--gold-glow); }
+
+        .act-percent {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            font-weight: 900;
+            margin-bottom: var(--space-2);
+        }
+
+        .act-block:nth-child(1) .act-percent { color: #6b7280; }
+        .act-block:nth-child(2) .act-percent { color: var(--jade); }
+        .act-block:nth-child(3) .act-percent { color: var(--violet); }
+        .act-block:nth-child(4) .act-percent { color: var(--gold-primary); }
+
+        .act-name {
+            font-family: var(--font-display);
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: var(--space-2);
+        }
+
+        .act-desc {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        /* ===== FLOW CHART (Cultivation) ===== */
+        .flow-container {
+            padding: var(--space-8) 0;
+        }
+
+        .flow-track {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            overflow-x: auto;
+            padding: var(--space-4) 0;
+            scrollbar-width: none;
+        }
+
+        .flow-track::-webkit-scrollbar { display: none; }
+
+        .flow-node {
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--space-2);
+            padding: var(--space-4);
+            cursor: pointer;
+            transition: all var(--duration-normal) var(--ease-out);
+            position: relative;
+        }
+
+        .flow-node:hover { transform: translateY(-4px); }
+
+        .flow-orb {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--bg-primary);
+            position: relative;
+            transition: all var(--duration-normal) var(--ease-out);
+        }
+
+        .flow-node:hover .flow-orb {
+            transform: scale(1.15);
+            box-shadow: 0 0 24px var(--gold-glow);
+        }
+
+        .flow-node:nth-child(odd) .flow-orb {
+            background: linear-gradient(135deg, var(--gold-light), var(--gold-primary));
+        }
+
+        .flow-node:nth-child(even) .flow-orb {
+            background: linear-gradient(135deg, var(--jade), #1a9e7a);
+        }
+
+        .flow-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            white-space: nowrap;
+            text-align: center;
+            transition: color var(--duration-normal) var(--ease-out);
+        }
+
+        .flow-node:hover .flow-label { color: var(--gold-primary); }
+
+        .flow-arrow {
+            flex-shrink: 0;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            opacity: 0.4;
+        }
+
+        .flow-tooltip {
+            position: absolute;
+            bottom: calc(100% + 12px);
+            left: 50%;
+            transform: translateX(-50%) translateY(8px);
+            background: var(--bg-card-hover);
+            border: 1px solid var(--border-active);
+            border-radius: var(--radius-md);
+            padding: var(--space-4);
+            width: 220px;
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            opacity: 0;
+            pointer-events: none;
+            transition: all var(--duration-normal) var(--ease-out);
+            z-index: 10;
+            box-shadow: var(--shadow-card);
+        }
+
+        .flow-node:hover .flow-tooltip {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .flow-tooltip-title {
+            font-weight: 700;
+            color: var(--gold-primary);
+            margin-bottom: var(--space-2);
+        }
+
+        /* ===== EMOTION TABLE ===== */
+        .emotion-table-wrapper {
+            overflow-x: auto;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-subtle);
+            background: var(--bg-card);
+        }
+
+        .emotion-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .emotion-table thead th {
+            font-family: var(--font-display);
+            font-weight: 700;
+            padding: var(--space-4) var(--space-5);
+            text-align: center;
+            border-bottom: 2px solid var(--border-subtle);
+            font-size: 0.9rem;
+        }
+
+        .emotion-table thead th:first-child { text-align: left; }
+
+        .emotion-table thead th:nth-child(2) { color: var(--crimson); }
+        .emotion-table thead th:nth-child(3) { color: var(--jade); }
+        .emotion-table thead th:nth-child(4) { color: var(--violet); }
+
+        .emotion-table tbody td {
+            padding: var(--space-4) var(--space-5);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            color: var(--text-secondary);
+            font-size: 0.88rem;
+            line-height: 1.6;
+            vertical-align: top;
+        }
+
+        .emotion-table tbody td:first-child {
+            font-weight: 600;
+            color: var(--text-primary);
+            white-space: nowrap;
+        }
+
+        .emotion-table tbody tr:hover { background: rgba(212, 168, 83, 0.03); }
+        .emotion-table tbody tr:last-child td { border-bottom: none; }
+
+        /* ===== QUOTE CARDS ===== */
+        .quote-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--space-5);
+        }
+
+        .quote-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: var(--space-6);
+            position: relative;
+            overflow: hidden;
+            transition: all var(--duration-normal) var(--ease-out);
+        }
+
+        .quote-card::before {
+            content: '"';
+            position: absolute;
+            top: var(--space-3);
+            left: var(--space-4);
+            font-family: var(--font-display);
+            font-size: 4rem;
+            color: var(--gold-primary);
+            opacity: 0.1;
+            line-height: 1;
+        }
+
+        .quote-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--border-active);
+        }
+
+        .quote-text {
+            font-family: var(--font-display);
+            font-size: 1.05rem;
+            color: var(--text-primary);
+            line-height: 1.8;
+            margin-bottom: var(--space-4);
+            position: relative;
+            z-index: 1;
+        }
+
+        .quote-source {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ===== SCENE TABLE ===== */
+        .scene-table-wrapper {
+            overflow-x: auto;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-subtle);
+            background: var(--bg-card);
+            margin-bottom: var(--space-8);
+        }
+
+        .scene-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .scene-table thead th {
+            font-family: var(--font-display);
+            font-weight: 700;
+            color: var(--gold-primary);
+            padding: var(--space-4) var(--space-5);
+            text-align: left;
+            border-bottom: 2px solid var(--border-subtle);
+            background: rgba(212, 168, 83, 0.05);
+            font-size: 0.9rem;
+        }
+
+        .scene-table tbody td {
+            padding: var(--space-3) var(--space-5);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            line-height: 1.6;
+            vertical-align: top;
+        }
+
+        .scene-table tbody tr:hover { background: rgba(212, 168, 83, 0.03); }
+        .scene-table tbody tr:last-child td { border-bottom: none; }
+
+        .scene-table .scene-chapter {
+            white-space: nowrap;
+            color: var(--text-muted);
+            font-size: 0.78rem;
+        }
+
+        /* ===== SECTION DIVIDER ===== */
+        .divider {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-4);
+            margin: var(--space-16) 0;
+            color: var(--text-muted);
+        }
+
+        .divider-line {
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border-subtle), transparent);
+        }
+
+        .divider-icon {
+            font-size: 1.2rem;
+            opacity: 0.5;
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            padding: var(--space-10) var(--space-6);
+            border-top: 1px solid var(--border-subtle);
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .footer-brand {
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+            color: var(--gold-primary);
+            margin-bottom: var(--space-2);
+        }
+
+        /* ===== BACK TO TOP ===== */
+        .back-to-top {
+            position: fixed;
+            bottom: var(--space-8);
+            right: var(--space-8);
+            width: 44px;
+            height: 44px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gold-primary);
+            font-size: 1.2rem;
+            cursor: pointer;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all var(--duration-normal) var(--ease-out);
+            z-index: 50;
+        }
+
+        .back-to-top.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .back-to-top:hover {
+            background: var(--gold-subtle);
+            border-color: var(--gold-primary);
+            box-shadow: 0 0 20px var(--gold-glow);
+        }
+
+        /* ===== MOBILE MENU ===== */
+        .nav-hamburger {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            gap: 5px;
+            width: 36px;
+            height: 36px;
+            padding: 6px;
+            background: none;
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+            transition: border-color var(--duration-normal) var(--ease-out);
+        }
+
+        .nav-hamburger span {
+            display: block;
+            width: 100%;
+            height: 2px;
+            background: var(--gold-primary);
+            border-radius: 1px;
+            transition: all var(--duration-normal) var(--ease-out);
+        }
+
+        .nav-hamburger:hover { border-color: var(--gold-primary); }
+
+        .nav-hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+        .nav-hamburger.active span:nth-child(2) { opacity: 0; }
+        .nav-hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 99;
+            background: rgba(10, 14, 26, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-4);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity var(--duration-normal) var(--ease-out), visibility var(--duration-normal) var(--ease-out);
+        }
+
+        .mobile-menu.open {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .mobile-menu-link {
+            font-family: var(--font-display);
+            font-size: 1.3rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: var(--space-3) var(--space-6);
+            border-radius: var(--radius-md);
+            transition: all var(--duration-normal) var(--ease-out);
+            letter-spacing: 0.05em;
+        }
+
+        .mobile-menu-link:hover,
+        .mobile-menu-link.active {
+            color: var(--gold-primary);
+            background: var(--gold-subtle);
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .nav-hamburger { display: flex; }
+            .mobile-menu { display: flex; }
+
+            .hero { min-height: 100vh; padding: 80px var(--space-4) var(--space-10); justify-content: flex-start; }
+            .hero-scroll-hint { display: none; }
+            .hero-badge { margin-bottom: var(--space-4); }
+            .hero-title { margin-bottom: var(--space-3); }
+            .hero-subtitle { margin-bottom: var(--space-5); }
+            .hero-quote { margin-bottom: var(--space-5); }
+            .hero-stats { gap: var(--space-6); margin-bottom: var(--space-5); }
+            .hero-stat-value { font-size: 1.5rem; }
+
+            .chapter-header { flex-direction: column; gap: var(--space-3); }
+            .chapter-number { width: 44px; height: 44px; font-size: 1.2rem; }
+
+            .card-grid { grid-template-columns: 1fr; }
+            .character-grid { grid-template-columns: 1fr; }
+            .quote-grid { grid-template-columns: 1fr; }
+
+            .act-structure { grid-template-columns: repeat(2, 1fr); }
+
+            .philosophy-card { padding: var(--space-6); }
+
+            .flow-track { padding: var(--space-2); }
+            .flow-orb { width: 40px; height: 40px; font-size: 0.65rem; }
+            .flow-label { font-size: 0.7rem; }
+
+            .radar-container { flex-direction: column; align-items: center; }
+
+            .universe-layer { max-width: 100% !important; }
+        }
+
+        @media (max-width: 480px) {
+            .hero-stats { flex-direction: column; gap: var(--space-4); }
+            .act-structure { grid-template-columns: 1fr; }
+        }
+
+        /* ===== STAGGER ANIMATIONS ===== */
+        .stagger-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s var(--ease-out), transform 0.6s var(--ease-out);
+        }
+
+        .stagger-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ===== SECTION INTRO TEXT ===== */
+        .section-intro {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            line-height: 1.9;
+            margin-bottom: var(--space-8);
+            max-width: 800px;
+        }
+
+        .section-intro strong {
+            color: var(--gold-primary);
+            font-weight: 600;
+        }
+
+        /* ===== SUBSECTION TITLE ===== */
+        .subsection-title {
+            font-family: var(--font-display);
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--gold-primary);
+            margin-bottom: var(--space-6);
+            margin-top: var(--space-10);
+            position: relative;
+            padding-left: var(--space-4);
+        }
+
+        .subsection-title::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(to bottom, var(--gold-primary), var(--jade));
+            border-radius: 2px;
+        }
+
+        /* ===== WANG LIN TRAJECTORY ===== */
+        .trajectory-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: var(--space-4);
+            margin: var(--space-6) 0;
+        }
+
+        .trajectory-phase {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: var(--space-5);
+            transition: all var(--duration-normal) var(--ease-out);
+            cursor: pointer;
+        }
+
+        .trajectory-phase:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .trajectory-phase:nth-child(1) { border-left: 3px solid #6b7280; }
+        .trajectory-phase:nth-child(2) { border-left: 3px solid var(--crimson); }
+        .trajectory-phase:nth-child(3) { border-left: 3px solid var(--violet); }
+        .trajectory-phase:nth-child(4) { border-left: 3px solid var(--gold-primary); }
+
+        .trajectory-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: var(--space-2);
+        }
+
+        .trajectory-name {
+            font-family: var(--font-display);
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: var(--space-2);
+        }
+
+        .trajectory-traits {
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        @media (max-width: 768px) {
+            .trajectory-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 480px) {
+            .trajectory-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Progress Bar -->
+<div class="progress-container">
+    <div class="progress-bar" id="progressBar"></div>
+</div>
+
+<!-- Particles -->
+<div class="particles" id="particles"></div>
+
+<!-- Navigation -->
+<nav class="nav" id="nav">
+    <div class="nav-inner">
+        <div class="nav-brand">仙逆 · 深度分析</div>
+        <button class="nav-hamburger" id="navHamburger" aria-label="菜单">
+            <span></span><span></span><span></span>
+        </button>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="#ch1" class="nav-link" data-chapter="1">哲学命题</a></li>
+            <li><a href="#ch2" class="nav-link" data-chapter="2">叙事结构</a></li>
+            <li><a href="#ch3" class="nav-link" data-chapter="3">人物塑造</a></li>
+            <li><a href="#ch4" class="nav-link" data-chapter="4">世界观</a></li>
+            <li><a href="#ch5" class="nav-link" data-chapter="5">经典情节</a></li>
+            <li><a href="#ch6" class="nav-link" data-chapter="6">对比分析</a></li>
+            <li><a href="#ch7" class="nav-link" data-chapter="7">名场面</a></li>
+        </ul>
+        <div class="nav-right">
+            <a href="index.html" class="nav-link-ext">← 修仙课程</a>
+            <div class="nav-progress">
+                <svg class="nav-progress-ring" viewBox="0 0 36 36">
+                    <circle class="bg" cx="18" cy="18" r="15" />
+                    <circle class="fill" id="progressRing" cx="18" cy="18" r="15"
+                        stroke-dasharray="94.25" stroke-dashoffset="94.25" />
+                </svg>
+                <span id="progressText">0%</span>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobileMenu">
+    <a href="#ch1" class="mobile-menu-link" data-chapter="1">哲学命题</a>
+    <a href="#ch2" class="mobile-menu-link" data-chapter="2">叙事结构</a>
+    <a href="#ch3" class="mobile-menu-link" data-chapter="3">人物塑造</a>
+    <a href="#ch4" class="mobile-menu-link" data-chapter="4">世界观</a>
+    <a href="#ch5" class="mobile-menu-link" data-chapter="5">经典情节</a>
+    <a href="#ch6" class="mobile-menu-link" data-chapter="6">对比分析</a>
+    <a href="#ch7" class="mobile-menu-link" data-chapter="7">名场面</a>
+    <div style="width:40px;height:1px;background:var(--border-subtle);margin:var(--space-4) 0;"></div>
+    <a href="index.html" class="mobile-menu-link" style="color:var(--jade);">← 修仙课程</a>
+</div>
+
+<!-- Hero Section -->
+<section class="hero" id="hero">
+    <div class="hero-badge">
+        <span class="hero-badge-dot"></span>
+        耳根 · 深度文学分析
+    </div>
+
+    <h1 class="hero-title">
+        <span class="char-gold">仙</span><span class="char-jade">逆</span>
+    </h1>
+
+    <p class="hero-subtitle">顺为凡，逆则仙 — 存在主义的东方解法</p>
+
+    <blockquote class="hero-quote">
+        "修仙之路，本就是逆天而行。天地不仁，以万物为刍狗。唯有以逆天之志，方能超脱轮回，成就大道。"
+    </blockquote>
+
+    <div class="hero-stats">
+        <div class="hero-stat">
+            <div class="hero-stat-value">7</div>
+            <div class="hero-stat-label">分析维度</div>
+        </div>
+        <div class="hero-stat">
+            <div class="hero-stat-value">2000+</div>
+            <div class="hero-stat-label">原文章节</div>
+        </div>
+        <div class="hero-stat">
+            <div class="hero-stat-value">∞</div>
+            <div class="hero-stat-label">解读深度</div>
+        </div>
+    </div>
+
+    <a href="#ch1" class="hero-cta">
+        开始深度解读
+        <span class="hero-cta-arrow">→</span>
+    </a>
+
+    <div class="hero-scroll-hint">
+        <div class="scroll-line"></div>
+        <span>向下滚动</span>
+    </div>
+</section>
+
+<!-- Main Content -->
+<main class="main">
+
+    <!-- ===== Chapter 1: 核心哲学命题 ===== -->
+    <section class="chapter" id="ch1" data-chapter="1">
+        <div class="chapter-header stagger-in">
+            <div class="chapter-number">壹</div>
+            <div class="chapter-meta">
+                <div class="chapter-label">第一章</div>
+                <h2 class="chapter-title">核心哲学命题：<span class="highlight">"逆"的存在主义解读</span></h2>
+                <p class="chapter-desc">
+                    "顺为凡，逆则仙"不仅是修炼法门，更是一份存在主义宣言。它追问的终极问题是：
+                    在被书写的人生中，人能否成为自己的执笔者？
+                </p>
+            </div>
+        </div>
+
+        <!-- Central Philosophy Card -->
+        <div class="philosophy-card stagger-in">
+            <div class="philosophy-content">
+                <div class="philosophy-quote">
+                    <span class="char-forward">顺为凡</span>，
+                    <span class="char-reverse">逆则仙</span>
+                </div>
+                <p class="philosophy-explain">
+                    这六个字，是整部《仙逆》的灵魂纲领。它不是简单的"反抗天命"，
+                    而是在追问：当一切都被安排好，当你的命运不过是更高存在的棋局，
+                    <strong style="color: var(--gold-primary);">你还要不要按自己的意志走下去？</strong>
+                </p>
+            </div>
+        </div>
+
+        <!-- Philosophy Cards Grid -->
+        <div class="card-grid">
+            <!-- Card 1: 道家渊源 -->
+            <div class="card stagger-in" onclick="this.classList.toggle('expanded')">
+                <div class="card-icon">☯</div>
+                <div class="card-title">道家渊源</div>
+                <div class="card-text">
+                    从《易经》的阴阳逆转，到道教内丹术的"逆则成仙"，再到张三丰《无根树》的修炼哲学——"逆"的基因深植东方文化。
+                </div>
+                <div class="card-tags">
+                    <span class="tag">易经</span>
+                    <span class="tag jade">内丹术</span>
+                    <span class="tag violet">无根树</span>
+                </div>
+                <div class="card-expand-hint">
+                    <span class="card-expand-icon">▼</span> 点击展开详解
+                </div>
+                <div class="card-detail">
+                    <div class="card-detail-content">
+                        <p><strong>《易经》层</strong>：坤卦"龙战于野，其血玄黄"——阳气被压制到极点后的反噬与重生。这是"逆"最原始的文化基因。</p>
+                        <br>
+                        <p><strong>道教内丹层</strong>：内丹术的核心就是"逆转"——将后天返先天，将精气神逆炼归元。"顺则成人，逆则成仙"直接成为修炼法门。</p>
+                        <br>
+                        <p><strong>张三丰《无根树》</strong>："无根树，花正幽，贪恋荣华谁肯休"——将"逆"从技术层面提升到哲学层面：不仅要逆修炼之序，更要逆人心之贪。</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 2: 自由意志 vs 宿命论 -->
+            <div class="card stagger-in" onclick="this.classList.toggle('expanded')">
+                <div class="card-icon">♟</div>
+                <div class="card-title">自由意志 vs 宿命论</div>
+                <div class="card-text">
+                    王林是"被书写者"，天运子与掌尊是"执笔者"。整部小说的核心冲突，就是棋子能否跳出棋盘。
+                </div>
+                <div class="card-tags">
+                    <span class="tag crimson">王林</span>
+                    <span class="tag">天运子</span>
+                    <span class="tag violet">掌尊</span>
+                </div>
+                <div class="card-expand-hint">
+                    <span class="card-expand-icon">▼</span> 点击展开详解
+                </div>
+                <div class="card-detail">
+                    <div class="card-detail-content">
+                        <p><strong>被书写者</strong>：王林的一生看似偶然，实则被天运子等更高存在精心安排。每一次"奇遇"都是棋局的落子。</p>
+                        <br>
+                        <p><strong>执笔者</strong>：天运子以万古布局操控王林的成长轨迹，掌尊则代表更宏观的命运书写者。他们不是简单的反派，而是"命运"本身的具象化。</p>
+                        <br>
+                        <p><strong>核心张力</strong>：当王林意识到自己不过是棋子时，他选择的不是愤怒，而是——<strong style="color: var(--crimson);">成为自己的执笔者</strong>。这才是"逆"的终极含义。</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 3: 执念与道心 -->
+            <div class="card stagger-in" onclick="this.classList.toggle('expanded')">
+                <div class="card-icon">💎</div>
+                <div class="card-title">执念与道心</div>
+                <div class="card-text">
+                    打破"太上忘情"的修仙范式，证明情至极处可通天道。王林的道心不是无情，而是将执念炼化为力量。
+                </div>
+                <div class="card-tags">
+                    <span class="tag crimson">太上忘情</span>
+                    <span class="tag jade">执念成道</span>
+                </div>
+                <div class="card-expand-hint">
+                    <span class="card-expand-icon">▼</span> 点击展开详解
+                </div>
+                <div class="card-detail">
+                    <div class="card-detail-content">
+                        <p>传统修仙小说的范式是"太上忘情"——斩断七情六欲方能成就大道。《仙逆》彻底颠覆了这一设定。</p>
+                        <br>
+                        <p>王林的道心建立在<strong style="color: var(--crimson);">执念</strong>之上：对李慕婉的爱、对父母的愧、对天运子的恨——这些"凡心"不仅没有阻碍他的修炼，反而成为他突破境界的核心驱动力。</p>
+                        <br>
+                        <p>这提出了一个深刻的哲学命题：<strong style="color: var(--gold-primary);">真正的超脱，不是斩断情感，而是将情感升华为道。</strong></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 4: 术与道 -->
+            <div class="card stagger-in" onclick="this.classList.toggle('expanded')">
+                <div class="card-icon">🎯</div>
+                <div class="card-title">术与道：跳出棋盘看棋盘</div>
+                <div class="card-text">
+                    "术"是棋盘内的博弈技巧，"道"是跳出棋盘的视角。王林最终领悟的，不是更强的术，而是看穿棋局本身的能力。
+                </div>
+                <div class="card-tags">
+                    <span class="tag">术</span>
+                    <span class="tag jade">道</span>
+                    <span class="tag violet">超越</span>
+                </div>
+                <div class="card-expand-hint">
+                    <span class="card-expand-icon">▼</span> 点击展开详解
+                </div>
+                <div class="card-detail">
+                    <div class="card-detail-content">
+                        <p>小说中的修炼者大多在"术"的层面竞争——更强的法宝、更高的修为、更精妙的神通。但真正的分水岭在于"道"的领悟。</p>
+                        <br>
+                        <p>王林的三次化凡，本质上都是从"术"的层面暂时退出，在"道"的层面获得升华。当他看清了棋盘的规则，棋盘本身就成了可以被改写的东西。</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 5: 尼采式超人 -->
+            <div class="card stagger-in" onclick="this.classList.toggle('expanded')">
+                <div class="card-icon">⚡</div>
+                <div class="card-title">尼采式超人：从法西斯美学向自我超越</div>
+                <div class="card-text">
+                    尼采的"超人"曾被法西斯挪用，但其本意是自我超越。王林的"逆"，是对这一概念的东方重写。
+                </div>
+                <div class="card-tags">
+                    <span class="tag crimson">尼采</span>
+                    <span class="tag">超人</span>
+                </div>
+                <div class="card-expand-hint">
+                    <span class="card-expand-icon">▼</span> 点击展开详解
+                </div>
+                <div class="card-detail">
+                    <div class="card-detail-content">
+                        <p>尼采的"超人"（Übermensch）核心是：<strong style="color: var(--gold-primary);">在上帝死后，人必须成为自己的立法者。</strong></p>
+                        <br>
+                        <p>王林面对的是类似的存在困境——当"天道"不过是更高存在的意志，当"命运"不过是被安排的剧本，他选择不接受任何外在的价值体系，而是以自己的执念为基石，构建独属于自己的"道"。</p>
+                        <br>
+                        <p>这不是法西斯式的"强者通吃"，而是存在主义式的"自我立法"——<strong style="color: var(--jade);">我的道，由我定义。</strong></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 6: 西西弗斯 -->
+            <div class="card stagger-in" onclick="this.classList.toggle('expanded')">
+                <div class="card-icon">🪨</div>
+                <div class="card-title">西西弗斯式挣扎</div>
+                <div class="card-text">
+                    加缪说"应当想象西西弗斯是幸福的"。王林的一次次重生与突破，何尝不是推石上山的变体？
+                </div>
+                <div class="card-tags">
+                    <span class="tag violet">加缪</span>
+                    <span class="tag">荒诞</span>
+                </div>
+                <div class="card-expand-hint">
+                    <span class="card-expand-icon">▼</span> 点击展开详解
+                </div>
+                <div class="card-detail">
+                    <div class="card-detail-content">
+                        <p>西西弗斯被罚永远推石上山，石头到达山顶又会滚落。加缪的解读是：正因为荒诞，所以反抗本身就是意义。</p>
+                        <br>
+                        <p>王林的经历惊人地相似——每次以为到达了终点，发现不过是新的起点；每次以为战胜了命运，发现不过是更高层次的安排。</p>
+                        <br>
+                        <p>但他从未停止。<strong style="color: var(--crimson);">不是因为有希望才坚持，而是坚持本身就是希望。</strong></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 7: 东方解法 -->
+            <div class="card stagger-in" onclick="this.classList.toggle('expanded')">
+                <div class="card-icon">🏔</div>
+                <div class="card-title">东方解法：内圣外王，以心证道</div>
+                <div class="card-text">
+                    西方存在主义止步于"荒诞中的反抗"，《仙逆》给出了东方答案：内圣外王，以心证道——超越不是逃离，而是回归。
+                </div>
+                <div class="card-tags">
+                    <span class="tag jade">内圣外王</span>
+                    <span class="tag">以心证道</span>
+                </div>
+                <div class="card-expand-hint">
+                    <span class="card-expand-icon">▼</span> 点击展开详解
+                </div>
+                <div class="card-detail">
+                    <div class="card-detail-content">
+                        <p>尼采止步于"超人"，加缪止步于"荒诞中的反抗"。但《仙逆》走得更远。</p>
+                        <br>
+                        <p>王林最终的"踏天"，不是逃离这个世界，而是<strong style="color: var(--gold-primary);">以自己的方式重新定义了这个世界</strong>。他用一界本源复活了所有人——这不是征服，是慈悲。</p>
+                        <br>
+                        <p>儒家的"内圣外王"、道家的"以心证道"，在这里找到了完美的叙事表达：<strong style="color: var(--jade);">真正的逆天，不是打碎天道，而是在天道之上建立自己的道。</strong></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider">
+        <div class="divider-line"></div>
+        <span class="divider-icon">◈</span>
+        <div class="divider-line"></div>
+    </div>
+
+    <!-- ===== Chapter 2: 叙事结构与文学价值 ===== -->
+    <section class="chapter" id="ch2" data-chapter="2">
+        <div class="chapter-header stagger-in">
+            <div class="chapter-number">贰</div>
+            <div class="chapter-meta">
+                <div class="chapter-label">第二章</div>
+                <h2 class="chapter-title">叙事结构与<span class="highlight">文学价值</span></h2>
+                <p class="chapter-desc">
+                    《仙逆》采用独特的四幕剧结构，"化神必须先化凡"的叙事创新，
+                    以及层层揭秘的悬疑架构，构成了它在网文界的独特地位。
+                </p>
+            </div>
+        </div>
+
+        <!-- Four Act Structure -->
+        <h3 class="subsection-title stagger-in">四幕剧结构</h3>
+        <p class="section-intro stagger-in">
+            《仙逆》的叙事节奏极其独特——它不是线性升级，而是<strong>螺旋上升</strong>。
+            每一幕都有独立的主题和情感基调，共同构成一部宏大的存在主义史诗。
+        </p>
+
+        <div class="act-structure stagger-in">
+            <div class="act-block" onclick="this.classList.toggle('expanded')">
+                <div class="act-percent">1%</div>
+                <div class="act-name">凡人期</div>
+                <div class="act-desc">赵国小村少年<br>命运的齿轮开始转动</div>
+            </div>
+            <div class="act-block">
+                <div class="act-percent">40%</div>
+                <div class="act-name">修真界崛起</div>
+                <div class="act-desc">从凝气到化神<br>复仇与成长的交织</div>
+            </div>
+            <div class="act-block">
+                <div class="act-percent">10%</div>
+                <div class="act-name">化凡悟道</div>
+                <div class="act-desc">木雕店掌柜六年<br>生死意境的顿悟</div>
+            </div>
+            <div class="act-block">
+                <div class="act-percent">50%</div>
+                <div class="act-name">仙罡大陆</div>
+                <div class="act-desc">最终的战场<br>万古棋局的终章</div>
+            </div>
+        </div>
+
+        <!-- Narrative Innovation Cards -->
+        <h3 class="subsection-title stagger-in">叙事创新</h3>
+        <div class="card-grid">
+            <div class="card stagger-in" onclick="this.classList.toggle('expanded')">
+                <div class="card-icon">🌀</div>
+                <div class="card-title">层层揭秘的悬疑结构</div>
+                <div class="card-text">
+                    《仙逆》的悬疑不是简单的"打怪揭秘"，而是层层嵌套的俄罗斯套瓷——每揭开一层，下面还有更深的秘密。
+                </div>
+                <div class="card-expand-hint">
+                    <span class="card-expand-icon">▼</span> 点击展开详解
+                </div>
+                <div class="card-detail">
+                    <div class="card-detail-content">
+                        <p>读者以为王林是主角 → 发现他是天运子的棋子 → 发现天运子也是更大棋局的一部分 → 发现整个修真界不过是仙罡大陆的投影……</p>
+                        <br>
+                        <p>这种叙事结构让读者和主角一起经历"认知颠覆"——每次以为看清了真相，真相又往后退了一步。</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card stagger-in" onclick="this.classList.toggle('expanded')">
+                <div class="card-icon">🎭</div>
+                <div class="card-title">"化神必须先化凡"的独创叙事</div>
+                <div class="card-text">
+                    在修仙小说普遍追求"爽感"的年代，《仙逆》敢让主角"退化"为凡人，在最平淡的生活中寻找最高的道。
+                </div>
+                <div class="card-expand-hint">
+                    <span class="card-expand-icon">▼</span> 点击展开详解
+                </div>
+                <div class="card-detail">
+                    <div class="card-detail-content">
+                        <p>第一次化凡：王林成为木雕店掌柜，六年凡人生活，领悟生死意境。这是网文史上最反套路的叙事之一——在高潮之后，不是更大的高潮，而是沉入最深的静默。</p>
+                        <br>
+                        <p>第二次化凡：救赎儿子王平，在父爱中领悟因果。第三次化凡：梦道与本源大成。</p>
+                        <br>
+                        <p>这种"退一步进两步"的叙事，是《仙逆》最独特的文学贡献。</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card stagger-in" onclick="this.classList.toggle('expanded')">
+                <div class="card-icon">✍</div>
+                <div class="card-title">文笔争议</div>
+                <div class="card-text">
+                    关于耳根的文笔，读者群体存在明显分歧。正方认为其意境深远，反方认为其重复啰嗦。
+                </div>
+                <div class="card-tags">
+                    <span class="tag">争议</span>
+                    <span class="tag jade">正方</span>
+                    <span class="tag crimson">反方</span>
+                </div>
+                <div class="card-expand-hint">
+                    <span class="card-expand-icon">▼</span> 点击展开详解
+                </div>
+                <div class="card-detail">
+                    <div class="card-detail-content">
+                        <p><strong style="color: var(--jade);">正方观点：</strong>耳根擅长以极简的文字营造深远的意境，尤其是化凡段落的描写，平淡中见真章，是网文中罕见的"留白"式写作。</p>
+                        <br>
+                        <p><strong style="color: var(--crimson);">反方观点：</strong>战斗描写重复度高，部分情节拖沓，心理描写过于直白，缺乏文学性的隐喻和象征。</p>
+                        <br>
+                        <p><strong>客观评价：</strong>耳根的文笔在"意境营造"上确实是网文顶级，但在"文字精炼"上确实有提升空间。他的优势在于叙事节奏和情感张力，而非文字本身的密度。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider">
+        <div class="divider-line"></div>
+        <span class="divider-icon">◈</span>
+        <div class="divider-line"></div>
+    </div>
+
+    <!-- ===== Chapter 3: 人物塑造深度分析 ===== -->
+    <section class="chapter" id="ch3" data-chapter="3">
+        <div class="chapter-header stagger-in">
+            <div class="chapter-number">叁</div>
+            <div class="chapter-meta">
+                <div class="chapter-label">第三章</div>
+                <h2 class="chapter-title">人物塑造<span class="highlight">深度分析</span></h2>
+                <p class="chapter-desc">
+                    王林不是传统意义上的"爽文主角"。他是一个被命运反复碾压、
+                    却始终不肯低头的人。他的人物弧光，是《仙逆》最核心的文学成就。
+                </p>
+            </div>
+        </div>
+
+        <!-- Wang Lin Trajectory -->
+        <h3 class="subsection-title stagger-in">王林性格转变轨迹</h3>
+        <div class="trajectory-grid stagger-in">
+            <div class="trajectory-phase">
+                <div class="trajectory-label">第一阶段</div>
+                <div class="trajectory-name">少年期</div>
+                <div class="trajectory-traits">
+                    天真、坚韧、不服输。赵国小村的普通少年，因缘际会踏入修真之路。此时的王林，还相信"努力就能改变命运"。
+                </div>
+            </div>
+            <div class="trajectory-phase">
+                <div class="trajectory-label">第二阶段</div>
+                <div class="trajectory-name">复仇期</div>
+                <div class="trajectory-traits">
+                    冷酷、决绝、心狠手辣。经历了背叛与失去后，王林的性格发生剧变。他不再相信任何人，只相信力量。
+                </div>
+            </div>
+            <div class="trajectory-phase">
+                <div class="trajectory-label">第三阶段</div>
+                <div class="trajectory-name">化凡期</div>
+                <div class="trajectory-traits">
+                    沉静、内敛、返璞归真。六年木雕店掌柜的生活，让王林重新理解了"活着"的意义。这是他性格的第二次蜕变。
+                </div>
+            </div>
+            <div class="trajectory-phase">
+                <div class="trajectory-label">第四阶段</div>
+                <div class="trajectory-name">踏天期</div>
+                <div class="trajectory-traits">
+                    超然、慈悲、王者气度。最终的王林，既不是少年的天真，也不是复仇期的冷酷，而是一种"看透一切后依然选择温柔"的境界。
+                </div>
+            </div>
+        </div>
+
+        <!-- Character Relationship Cards -->
+        <h3 class="subsection-title stagger-in">核心人物关系</h3>
+        <div class="character-grid">
+            <!-- 李慕婉 -->
+            <div class="character-card love stagger-in">
+                <div class="character-avatar">💕</div>
+                <div class="character-name">王林 × 李慕婉</div>
+                <div class="character-role">生死不渝的执念</div>
+                <div class="character-desc">
+                    李慕婉是王林心中永远的痛。她的死，成为王林修炼之路最原始的动力。
+                    "我要逆天改命，只为再见你一面"——这份执念贯穿全书，最终以一界本源复活告终。
+                    这不是简单的"爱情故事"，而是<strong style="color: var(--crimson);">执念成道</strong>的终极演绎。
+                </div>
+            </div>
+
+            <!-- 司徒南 -->
+            <div class="character-card brother stagger-in">
+                <div class="character-avatar">🤝</div>
+                <div class="character-name">王林 × 司徒南</div>
+                <div class="character-role">此生唯敬</div>
+                <div class="character-desc">
+                    司徒南是王林修真路上最重要的引路人。他教给王林的不只是修炼技巧，
+                    更是"修真者应有的气度"。王林对司徒南的感情，是超越血缘的师徒之情，
+                    是"此生唯敬"的深沉敬意。
+                </div>
+            </div>
+
+            <!-- 父母 -->
+            <div class="character-card family stagger-in">
+                <div class="character-avatar">🏠</div>
+                <div class="character-name">王林 × 父母</div>
+                <div class="character-role">无法复活的遗憾</div>
+                <div class="character-desc">
+                    王林能复活李慕婉，能复活整个修真界，却唯独<strong style="color: var(--gold-primary);">无法复活自己的父母</strong>。
+                    这是《仙逆》最残忍的设定，也是最深刻的隐喻——有些遗憾，是任何力量都无法弥补的。
+                    正是这份遗憾，让王林的"逆天"始终带着人性的温度。
+                </div>
+            </div>
+
+            <!-- 柳眉/木冰眉 -->
+            <div class="character-card complex stagger-in">
+                <div class="character-avatar">🎭</div>
+                <div class="character-name">王林 × 柳眉/木冰眉</div>
+                <div class="character-role">最复杂的感情</div>
+                <div class="character-desc">
+                    柳眉与木冰眉的关系，是《仙逆》中最复杂的情感线。
+                    她们既是同一个人的两面，又代表着王林内心最深处的矛盾——
+                    是选择平静的温柔，还是选择激烈的深情？
+                    这条线的处理，体现了耳根在人物塑造上的最高水准。
+                </div>
+            </div>
+
+            <!-- 天运子 -->
+            <div class="character-card villain stagger-in">
+                <div class="character-avatar">♟</div>
+                <div class="character-name">天运子</div>
+                <div class="character-role">最深度的反派</div>
+                <div class="character-desc">
+                    天运子不是传统意义上的"坏人"。他是一个<strong style="color: var(--text-primary);">看透了棋局的棋手</strong>，
+                    他操控王林，不是出于恶意，而是出于对"道"的极致追求。
+                    他是王林的镜像——如果王林选择了另一条路，可能就会成为天运子。
+                    这种"反派即主角的另一种可能"的设定，是《仙逆》人物塑造的巅峰。
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider">
+        <div class="divider-line"></div>
+        <span class="divider-icon">◈</span>
+        <div class="divider-line"></div>
+    </div>
+
+    <!-- ===== Chapter 4: 世界观架构解读 ===== -->
+    <section class="chapter" id="ch4" data-chapter="4">
+        <div class="chapter-header stagger-in">
+            <div class="chapter-number">肆</div>
+            <div class="chapter-meta">
+                <div class="chapter-label">第四章</div>
+                <h2 class="chapter-title">世界观架构<span class="highlight">解读</span></h2>
+                <p class="chapter-desc">
+                    《仙逆》的世界观不是简单的"升级打怪"，而是一个层层嵌套的宇宙牢笼。
+                    每一层境界、每一种意境，都对应着对天地法则更深的领悟。
+                </p>
+            </div>
+        </div>
+
+        <!-- Cultivation System Flow -->
+        <h3 class="subsection-title stagger-in">修炼体系：从凝气到踏天</h3>
+        <p class="section-intro stagger-in">
+            《仙逆》的修炼体系可分为<strong>四大步</strong>，每一步都是对前一步的否定与超越。
+        </p>
+
+        <div class="flow-container stagger-in">
+            <div class="flow-track">
+                <div class="flow-node">
+                    <div class="flow-orb">凡</div>
+                    <div class="flow-label">凡人修炼</div>
+                    <div class="flow-tooltip">
+                        <div class="flow-tooltip-title">凡人修炼四境</div>
+                        凝气 → 筑基 → 结丹 → 元婴。这是修真世界的"基础教育"，绝大多数修士终其一生困于此。
+                    </div>
+                </div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-node">
+                    <div class="flow-orb">仙</div>
+                    <div class="flow-label">仙人境界</div>
+                    <div class="flow-tooltip">
+                        <div class="flow-tooltip-title">仙人四境</div>
+                        化神 → 婴变 → 问鼎 → 窥涅。踏入此境，方可称"仙"。化神期是关键分水岭——必须先"化凡"。
+                    </div>
+                </div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-node">
+                    <div class="flow-orb">天</div>
+                    <div class="flow-label">天人合一</div>
+                    <div class="flow-tooltip">
+                        <div class="flow-tooltip-title">天人三境</div>
+                        净涅 → 碎涅 → 大涅槃。此境修士已能触碰天道法则，但仍受制于天道。
+                    </div>
+                </div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-node">
+                    <div class="flow-orb">逆</div>
+                    <div class="flow-label">踏天之境</div>
+                    <div class="flow-tooltip">
+                        <div class="flow-tooltip-title">超越一切</div>
+                        踏天境——不再是修炼天道，而是<strong style="color: var(--crimson);">踏在天道之上</strong>。这是"逆"的终极形态。
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 意境系统 -->
+        <h3 class="subsection-title stagger-in">意境系统</h3>
+        <p class="section-intro stagger-in">
+            意境是《仙逆》修炼体系中最具创新性的设计。它不是简单的"技能"，而是<strong>修士对天地法则的个人化理解</strong>。
+        </p>
+
+        <div class="emotion-table-wrapper stagger-in">
+            <table class="emotion-table">
+                <thead>
+                    <tr>
+                        <th>层次</th>
+                        <th>情感层</th>
+                        <th>规则层</th>
+                        <th>本源层</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>意境类型</td>
+                        <td>生死、爱恨、因果</td>
+                        <td>时间、空间、轮回</td>
+                        <td>本源、大道、天道</td>
+                    </tr>
+                    <tr>
+                        <td>代表人物</td>
+                        <td>王林（生死→因果）</td>
+                        <td>天运子（时间）</td>
+                        <td>掌尊（天道）</td>
+                    </tr>
+                    <tr>
+                        <td>核心特征</td>
+                        <td>以情感驱动法则</td>
+                        <td>以规则驾驭万物</td>
+                        <td>以本源创造一切</td>
+                    </tr>
+                    <tr>
+                        <td>突破关键</td>
+                        <td>化凡悟道</td>
+                        <td>跳出棋盘</td>
+                        <td>成为执笔者</td>
+                    </tr>
+                    <tr>
+                        <td>王林进化</td>
+                        <td>生死意境（第一次化凡）</td>
+                        <td>因果意境（仙罡大陆）</td>
+                        <td>一界本源（踏天）</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 宇宙结构 -->
+        <h3 class="subsection-title stagger-in">宇宙结构：层层嵌套的牢笼</h3>
+        <p class="section-intro stagger-in">
+            《仙逆》的宇宙不是单一的平面世界，而是<strong>层层嵌套的立体结构</strong>——每一层都是上一层的"牢笼"。
+        </p>
+
+        <div class="universe-nesting stagger-in">
+            <div class="universe-layer outer">
+                <div class="universe-layer-title">仙罡大陆</div>
+                <div class="universe-layer-desc">最高层宇宙 · 踏天者的战场 · 万古棋局的棋盘</div>
+            </div>
+            <div class="universe-layer mid">
+                <div class="universe-layer-title">修真界</div>
+                <div class="universe-layer-desc">中层宇宙 · 无数界面的集合 · 仙人的囚笼</div>
+            </div>
+            <div class="universe-layer inner">
+                <div class="universe-layer-title">赵国/朱雀星</div>
+                <div class="universe-layer-desc">底层界面 · 凡人与低阶修士的世界 · 命运的起点</div>
+            </div>
+            <div class="universe-layer core">
+                <div class="universe-layer-title">古神之地</div>
+                <div class="universe-layer-desc">隐藏空间 · 古神传承 · 三损七劫的秘密</div>
+            </div>
+        </div>
+
+        <!-- 古神修炼体系 -->
+        <h3 class="subsection-title stagger-in">古神修炼体系与三损七劫</h3>
+        <div class="card-grid">
+            <div class="card stagger-in" onclick="this.classList.toggle('expanded')">
+                <div class="card-icon">👁</div>
+                <div class="card-title">古神传承</div>
+                <div class="card-text">
+                    古神是远古时代的至高存在，其修炼体系独立于常规修真。王林获得古神传承后，走上了与所有修士截然不同的道路。
+                </div>
+                <div class="card-expand-hint">
+                    <span class="card-expand-icon">▼</span> 点击展开详解
+                </div>
+                <div class="card-detail">
+                    <div class="card-detail-content">
+                        <p>古神修炼的核心是<strong style="color: var(--crimson);">以身证道</strong>——不依赖法宝、不依赖神通，而是将自身修炼为最强的"法宝"。</p>
+                        <br>
+                        <p>古神之眼、古神之体、古神之血——每一步都是对肉身极限的突破。三损七劫更是将修炼推向了生死边缘。</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card stagger-in" onclick="this.classList.toggle('expanded')">
+                <div class="card-icon">⚡</div>
+                <div class="card-title">三损七劫</div>
+                <div class="card-text">
+                    古神修炼的致命考验。每一损都是对修士根基的毁灭性打击，每一劫都是生死一线的抉择。
+                </div>
+                <div class="card-expand-hint">
+                    <span class="card-expand-icon">▼</span> 点击展开详解
+                </div>
+                <div class="card-detail">
+                    <div class="card-detail-content">
+                        <p><strong>三损</strong>：损精、损气、损神——分别对应肉身、灵力、神识的极限消耗。每一次"损"都是在死亡边缘试探。</p>
+                        <br>
+                        <p><strong>七劫</strong>：七重天劫，一重比一重凶险。王林在古神之地经历三损七劫，是全书最惊心动魄的段落之一。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 耳根宇宙 -->
+        <h3 class="subsection-title stagger-in">耳根宇宙五部曲关联</h3>
+        <div class="card stagger-in" onclick="this.classList.toggle('expanded')" style="max-width: 800px;">
+            <div class="card-icon">🌌</div>
+            <div class="card-title">耳根宇宙：五部曲的宏大叙事</div>
+            <div class="card-text">
+                《仙逆》并非孤立存在，它与《一念永恒》《三寸人间》《我欲封天》《大主宰》共同构成了耳根的宏大宇宙观。
+            </div>
+            <div class="card-tags">
+                <span class="tag">仙逆</span>
+                <span class="tag jade">一念永恒</span>
+                <span class="tag violet">三寸人间</span>
+                <span class="tag crimson">我欲封天</span>
+            </div>
+            <div class="card-expand-hint">
+                <span class="card-expand-icon">▼</span> 点击展开详解
+            </div>
+            <div class="card-detail">
+                <div class="card-detail-content">
+                    <p>五部曲共享同一个宇宙背景，但在时间线和空间尺度上各有侧重。《仙逆》的时间线最早，奠定了整个宇宙的基础设定。</p>
+                    <br>
+                    <p>王林的"踏天"境界，在后续作品中成为了传说中的存在——这形成了一个有趣的叙事闭环：<strong style="color: var(--gold-primary);">主角成为后世故事中的"神话"。</strong></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider">
+        <div class="divider-line"></div>
+        <span class="divider-icon">◈</span>
+        <div class="divider-line"></div>
+    </div>
+
+    <!-- ===== Chapter 5: 经典情节深度解读 ===== -->
+    <section class="chapter" id="ch5" data-chapter="5">
+        <div class="chapter-header stagger-in">
+            <div class="chapter-number">伍</div>
+            <div class="chapter-meta">
+                <div class="chapter-label">第五章</div>
+                <h2 class="chapter-title">经典情节<span class="highlight">深度解读</span></h2>
+                <p class="chapter-desc">
+                    《仙逆》中有太多令人难忘的情节。但最深刻的，往往是那些最安静的时刻——
+                    化凡、悟道、以及最终的放手。
+                </p>
+            </div>
+        </div>
+
+        <!-- 三次化凡 Timeline -->
+        <h3 class="subsection-title stagger-in">三次化凡：从人到神的蜕变之路</h3>
+        <p class="section-intro stagger-in">
+            "化凡"是《仙逆》最核心的叙事创新。<strong>化神必须先化凡</strong>——
+            这不仅是修炼法门，更是存在主义的终极隐喻：要理解超凡，必须先理解平凡。
+        </p>
+
+        <div class="timeline stagger-in">
+            <!-- 第一次化凡 -->
+            <div class="timeline-item" onclick="this.classList.toggle('expanded')">
+                <div class="timeline-dot"></div>
+                <div class="timeline-title">第一次化凡：六年木雕店掌柜</div>
+                <div class="timeline-text">
+                    王林放弃修为，成为赵国小镇上的木雕店掌柜。六年间，他雕刻了无数作品，
+                    在最平凡的生活中领悟了<strong style="color: var(--gold-primary);">生死意境</strong>。
+                </div>
+                <div class="timeline-expand-hint">▼ 点击展开</div>
+                <div class="timeline-detail">
+                    <div class="timeline-detail-inner">
+                        <p>这是全书最反套路的段落之一。在主角刚刚崛起、读者期待更大高潮时，耳根让王林"退化"为凡人。</p>
+                        <br>
+                        <p>六年的木雕生活，王林观察着来来往往的客人——有人出生，有人老去，有人欢笑，有人哭泣。在这些最平凡的生命中，他看到了"生死"的本质：<strong style="color: var(--jade);">生与死不是对立，而是一体两面。</strong></p>
+                        <br>
+                        <p>这段叙事的文学价值在于：它证明了"静"可以比"动"更有力量。</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 第二次化凡 -->
+            <div class="timeline-item" onclick="this.classList.toggle('expanded')">
+                <div class="timeline-dot"></div>
+                <div class="timeline-title">第二次化凡：救赎儿子王平</div>
+                <div class="timeline-text">
+                    王林以凡人之身养育儿子王平，在父爱中领悟了<strong style="color: var(--violet);">因果意境</strong>。
+                    这一次化凡，比第一次更加深沉。
+                </div>
+                <div class="timeline-expand-hint">▼ 点击展开</div>
+                <div class="timeline-detail">
+                    <div class="timeline-detail-inner">
+                        <p>王平是王林在化凡期间的儿子。作为一个"假凡人"，王林必须用凡人的方式保护和养育这个孩子。</p>
+                        <br>
+                        <p>在与王平的相处中，王林理解了"因果"——不是简单的"善有善报"，而是<strong style="color: var(--crimson);">每一个选择都会产生连锁反应，每一个生命都与无数其他生命交织</strong>。</p>
+                        <br>
+                        <p>这次化凡的情感重量远超第一次——因为它涉及到"失去"。王林最终不得不面对王平的死亡，而这份痛苦成为了他领悟因果意境的催化剂。</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 第三次化凡 -->
+            <div class="timeline-item" onclick="this.classList.toggle('expanded')">
+                <div class="timeline-dot"></div>
+                <div class="timeline-title">第三次化凡：梦道与本源大成</div>
+                <div class="timeline-text">
+                    最后的化凡，王林在梦境与现实的边界上，完成了对"道"的终极领悟——
+                    <strong style="color: var(--gold-primary);">本源大成</strong>。
+                </div>
+                <div class="timeline-expand-hint">▼ 点击展开</div>
+                <div class="timeline-detail">
+                    <div class="timeline-detail-inner">
+                        <p>第三次化凡是最抽象、也最深刻的。王林不再是在现实中"化凡"，而是在梦境中"化道"。</p>
+                        <br>
+                        <p>他看到了无数个"可能的自己"——有的成为了天运子那样的操控者，有的成为了普通凡人，有的甚至从未踏入修真之路。</p>
+                        <br>
+                        <p>在这些可能性中，王林选择了<strong style="color: var(--gold-primary);">"我就是我"</strong>——不是否定其他可能，而是接受所有可能，然后坚定地走自己的路。这就是"本源大成"的真正含义。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Other Key Scenes -->
+        <h3 class="subsection-title stagger-in">其他经典情节</h3>
+        <div class="card-grid">
+            <div class="card stagger-in" onclick="this.classList.toggle('expanded')">
+                <div class="card-icon">💀</div>
+                <div class="card-title">古神之地：三损七劫</div>
+                <div class="card-text">
+                    王林在古神之地经历的三损七劫，是全书最惊心动魄的段落。每一次"损"都是在死亡边缘试探，每一重"劫"都是对意志的极限考验。
+                </div>
+                <div class="card-expand-hint">
+                    <span class="card-expand-icon">▼</span> 点击展开详解
+                </div>
+                <div class="card-detail">
+                    <div class="card-detail-content">
+                        <p>三损七劫的恐怖之处在于：它不是外在的敌人，而是<strong style="color: var(--crimson);">自身力量的反噬</strong>。你越强大，反噬越猛烈。</p>
+                        <br>
+                        <p>王林在这里第一次真正面对"死亡"——不是战斗中的危险，而是修炼本身带来的必死之局。他能活下来，靠的不是运气，而是<strong style="color: var(--gold-primary);">对"逆"的极致理解</strong>。</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card stagger-in" onclick="this.classList.toggle('expanded')">
+                <div class="card-icon">♟</div>
+                <div class="card-title">王林与天运子的万古棋局</div>
+                <div class="card-text">
+                    这不是一场简单的"正邪对决"，而是两种"道"的碰撞——天运子的"以万物为棋子"与王林的"我命由我不由天"。
+                </div>
+                <div class="card-expand-hint">
+                    <span class="card-expand-icon">▼</span> 点击展开详解
+                </div>
+                <div class="card-detail">
+                    <div class="card-detail-content">
+                        <p>天运子的可怕之处在于：他<strong style="color: var(--violet);">从不亲自出手</strong>。他只是布下棋局，让棋子们自己走到他安排好的位置。</p>
+                        <br>
+                        <p>王林与天运子的对决，本质上是"被书写者"挑战"执笔者"。王林的胜利不是打败了天运子，而是<strong style="color: var(--jade);">证明了棋子也可以选择不走棋手安排的路</strong>。</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card stagger-in" onclick="this.classList.toggle('expanded')">
+                <div class="card-icon">🌟</div>
+                <div class="card-title">结局解读：踏天而去</div>
+                <div class="card-text">
+                    王林最终"踏天"——不是逃离这个世界，而是站在了天道之上。戮默分身、一界本源复活，构成了最震撼的结局。
+                </div>
+                <div class="card-tags">
+                    <span class="tag">踏天</span>
+                    <span class="tag crimson">戮默</span>
+                    <span class="tag jade">本源复活</span>
+                </div>
+                <div class="card-expand-hint">
+                    <span class="card-expand-icon">▼</span> 点击展开详解
+                </div>
+                <div class="card-detail">
+                    <div class="card-detail-content">
+                        <p><strong>踏天</strong>：王林最终站在了天道之上——不是毁灭天道，而是超越了天道的范畴。这是"逆"的终极形态。</p>
+                        <br>
+                        <p><strong>戮默分身</strong>：王林将自己的黑暗面分离为独立的存在"戮默"，象征着他与内心阴影的和解。</p>
+                        <br>
+                        <p><strong>一界本源复活</strong>：王林用一界本源复活了所有人——包括曾经的敌人。这不是"圣母"，而是<strong style="color: var(--gold-primary);">看透一切后的慈悲</strong>。当他站在天道之上，仇恨已经没有意义。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider">
+        <div class="divider-line"></div>
+        <span class="divider-icon">◈</span>
+        <div class="divider-line"></div>
+    </div>
+
+    <!-- ===== Chapter 6: 与凡人修仙传对比 ===== -->
+    <section class="chapter" id="ch6" data-chapter="6">
+        <div class="chapter-header stagger-in">
+            <div class="chapter-number">陆</div>
+            <div class="chapter-meta">
+                <div class="chapter-label">第六章</div>
+                <h2 class="chapter-title">与《凡人修仙传》<span class="highlight">对比分析</span></h2>
+                <p class="chapter-desc">
+                    《仙逆》与《凡人修仙传》是修仙小说的两座高峰。
+                    它们代表了两种截然不同的创作理念和审美取向。
+                </p>
+            </div>
+        </div>
+
+        <!-- Core Differences Table -->
+        <h3 class="subsection-title stagger-in">核心差异对比</h3>
+        <div class="comparison-table-wrapper stagger-in">
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>维度</th>
+                        <th style="color: var(--gold-primary);">仙逆</th>
+                        <th style="color: var(--jade);">凡人修仙传</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="label-cell">核心主题</td>
+                        <td>"逆"的存在主义追问——在命运面前，人能否成为自己的执笔者</td>
+                        <td>"凡"的生存哲学——在残酷世界中，如何以最小代价活下去</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">主角性格</td>
+                        <td>执念深重、情感激烈、为爱可以不顾一切</td>
+                        <td>谨慎冷静、理性计算、永远留有后手</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">修炼理念</td>
+                        <td>化神必须先化凡——退一步海阔天空</td>
+                        <td>稳扎稳打——每一步都要确保安全</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">感情线</td>
+                        <td>浓墨重彩，是推动剧情的核心动力</td>
+                        <td>点到为止，感情从不影响理性判断</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">战斗风格</td>
+                        <td>以命相搏、不死不休、热血沸腾</td>
+                        <td>以智取胜、能跑就跑、保存实力</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">世界观深度</td>
+                        <td>层层嵌套的宇宙牢笼，哲学意味浓厚</td>
+                        <td>严谨自洽的修炼体系，逻辑性极强</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">文学追求</td>
+                        <td>意境营造 > 文字精炼</td>
+                        <td>逻辑严谨 > 情感渲染</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">读者体验</td>
+                        <td>沉浸感强，情感冲击大，容易"上头"</td>
+                        <td>代入感强，智力博弈有趣，适合"细品"</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Literary Value Comparison -->
+        <h3 class="subsection-title stagger-in">文学价值对比</h3>
+        <div class="card-grid">
+            <div class="card stagger-in">
+                <div class="card-icon">📖</div>
+                <div class="card-title">仙逆的文学贡献</div>
+                <div class="card-text">
+                    <strong style="color: var(--gold-primary);">独创"化凡"叙事</strong>——在修仙小说中开创了"退一步进两步"的叙事范式。
+                    <br><br>
+                    <strong style="color: var(--jade);">存在主义内核</strong>——将西方哲学融入东方修仙，提升了网文的思想深度。
+                    <br><br>
+                    <strong style="color: var(--violet);">意境系统</strong>——将"感悟"具象化为可量化的修炼体系，影响了后续无数作品。
+                </div>
+            </div>
+
+            <div class="card stagger-in">
+                <div class="card-icon">📚</div>
+                <div class="card-title">凡人修仙传的文学贡献</div>
+                <div class="card-text">
+                    <strong style="color: var(--jade);">严谨的世界观</strong>——建立了网文中最自洽的修炼体系之一。
+                    <br><br>
+                    <strong style="color: var(--gold-primary);">"凡人流"开创者</strong>——证明了"普通人视角"也能写出精彩的修仙故事。
+                    <br><br>
+                    <strong style="color: var(--violet);">逻辑至上</strong>——将"合理性"提升为修仙小说的核心评价标准。
+                </div>
+            </div>
+        </div>
+
+        <!-- Reading Experience -->
+        <h3 class="subsection-title stagger-in">阅读体验对比</h3>
+        <div class="card-grid">
+            <div class="card stagger-in">
+                <div class="card-icon">🔥</div>
+                <div class="card-title">读《仙逆》的体验</div>
+                <div class="card-text">
+                    像喝烈酒——入口辛辣，回味悠长。你会为主角的遭遇揪心，会为他的胜利欢呼，
+                    会在化凡段落突然安静下来，然后在结局时泪流满面。
+                    <br><br>
+                    <strong style="color: var(--crimson);">适合：</strong>喜欢情感冲击、愿意接受"不完美结局"、追求思想深度的读者。
+                </div>
+            </div>
+
+            <div class="card stagger-in">
+                <div class="card-icon">🍵</div>
+                <div class="card-title">读《凡人修仙传》的体验</div>
+                <div class="card-text">
+                    像品清茶——平淡中见真味。你会为主角的机智叫好，会为精妙的布局拍案，
+                    会在漫长的故事中感受到一种"陪伴感"。
+                    <br><br>
+                    <strong style="color: var(--jade);">适合：</strong>喜欢智力博弈、追求逻辑合理性、享受"慢热"叙事的读者。
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider">
+        <div class="divider-line"></div>
+        <span class="divider-icon">◈</span>
+        <div class="divider-line"></div>
+    </div>
+
+    <!-- ===== Chapter 7: 经典语录与名场面 ===== -->
+    <section class="chapter" id="ch7" data-chapter="7">
+        <div class="chapter-header stagger-in">
+            <div class="chapter-number">柒</div>
+            <div class="chapter-meta">
+                <div class="chapter-label">第七章</div>
+                <h2 class="chapter-title">经典语录与<span class="highlight">名场面</span></h2>
+                <p class="chapter-desc">
+                    有些文字，只看一遍就能刻进骨子里。有些场景，即使过去多年，
+                    想起来依然会热泪盈眶。这就是《仙逆》的力量。
+                </p>
+            </div>
+        </div>
+
+        <!-- 催泪名场面 -->
+        <h3 class="subsection-title stagger-in">催泪名场面</h3>
+        <div class="scene-table-wrapper stagger-in">
+            <table class="scene-table">
+                <thead>
+                    <tr>
+                        <th>场景</th>
+                        <th>情节</th>
+                        <th>催泪指数</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>李慕婉之死</td>
+                        <td>王林眼睁睁看着李慕婉在怀中消散，却无能为力。那一刻，他的世界崩塌了。</td>
+                        <td style="color: var(--crimson);">★★★★★</td>
+                    </tr>
+                    <tr>
+                        <td>父母无法复活</td>
+                        <td>王林能复活整个修真界，却唯独无法复活自己的父母。这是全书最残忍的设定。</td>
+                        <td style="color: var(--crimson);">★★★★★</td>
+                    </tr>
+                    <tr>
+                        <td>王平之死</td>
+                        <td>第二次化凡中，王林以凡人之身养育的儿子王平最终离世。父爱与无力感交织。</td>
+                        <td style="color: var(--crimson);">★★★★☆</td>
+                    </tr>
+                    <tr>
+                        <td>司徒南的牺牲</td>
+                        <td>司徒南为了保护王林，不惜牺牲自己。"此生唯敬"四个字，重于泰山。</td>
+                        <td style="color: var(--crimson);">★★★★☆</td>
+                    </tr>
+                    <tr>
+                        <td>六年木雕</td>
+                        <td>王林在木雕店的六年，看似平淡，实则是全书最深情的段落。每一刀雕刻，都是对生命的沉思。</td>
+                        <td style="color: var(--crimson);">★★★★☆</td>
+                    </tr>
+                    <tr>
+                        <td>最终复活</td>
+                        <td>王林用一界本源复活所有人——包括曾经的敌人。这一刻，所有的仇恨都化为了慈悲。</td>
+                        <td style="color: var(--crimson);">★★★★★</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 高燃时刻 -->
+        <h3 class="subsection-title stagger-in">高燃时刻</h3>
+        <div class="scene-table-wrapper stagger-in">
+            <table class="scene-table">
+                <thead>
+                    <tr>
+                        <th>场景</th>
+                        <th>情节</th>
+                        <th>燃度</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>第一次斩杀元婴</td>
+                        <td>王林以低阶修为斩杀元婴老怪，一战成名。"逆"的第一次具象化展现。</td>
+                        <td style="color: var(--gold-primary);">★★★★★</td>
+                    </tr>
+                    <tr>
+                        <td>古神之地突破</td>
+                        <td>三损七劫中死里逃生，古神之力觉醒。从此，王林走上了一条前无古人的道路。</td>
+                        <td style="color: var(--gold-primary);">★★★★★</td>
+                    </tr>
+                    <tr>
+                        <td>化凡归来的第一次出手</td>
+                        <td>六年凡人生活后重新出手，实力暴涨。"退一步"的效果在这一刻完美展现。</td>
+                        <td style="color: var(--gold-primary);">★★★★☆</td>
+                    </tr>
+                    <tr>
+                        <td>与天运子的最终对决</td>
+                        <td>万古棋局的终章。棋子 vs 棋手，自由意志 vs 宿命论的终极碰撞。</td>
+                        <td style="color: var(--gold-primary);">★★★★★</td>
+                    </tr>
+                    <tr>
+                        <td>踏天</td>
+                        <td>王林最终踏在天道之上——不是毁灭，而是超越。这是"逆"的终极形态。</td>
+                        <td style="color: var(--gold-primary);">★★★★★</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 经典语录 -->
+        <h3 class="subsection-title stagger-in">经典语录</h3>
+        <div class="quote-grid">
+            <div class="quote-card stagger-in">
+                <div class="quote-text">"顺为凡，逆则仙，只在一念间。"</div>
+                <div class="quote-source">—— 全书纲领</div>
+            </div>
+            <div class="quote-card stagger-in">
+                <div class="quote-text">"我王林一生，不求天地，不求仙神，只求无愧于心。"</div>
+                <div class="quote-source">—— 王林</div>
+            </div>
+            <div class="quote-card stagger-in">
+                <div class="quote-text">"修仙之路，本就是逆天而行。"</div>
+                <div class="quote-source">—— 全书主题</div>
+            </div>
+            <div class="quote-card stagger-in">
+                <div class="quote-text">"天地不仁，以万物为刍狗。"</div>
+                <div class="quote-source">—— 《道德经》· 全书引用</div>
+            </div>
+            <div class="quote-card stagger-in">
+                <div class="quote-text">"此生唯敬。"</div>
+                <div class="quote-source">—— 王林对司徒南</div>
+            </div>
+            <div class="quote-card stagger-in">
+                <div class="quote-text">"我要逆天改命，只为再见你一面。"</div>
+                <div class="quote-source">—— 王林对李慕婉</div>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="footer-brand">仙逆 · 深度文学分析</div>
+    <p>顺为凡，逆则仙 — 耳根著</p>
+    <p style="margin-top: var(--space-2); font-size: 0.78rem;">
+        本页面为文学分析与解读，致敬原作
+    </p>
+</footer>
+
+<!-- Back to Top -->
+<button class="back-to-top" id="backToTop" aria-label="回到顶部">↑</button>
+
+<script>
+    // ===== PARTICLES =====
+    (function() {
+        const container = document.getElementById('particles');
+        const count = 30;
+        for (let i = 0; i < count; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.animationDuration = (8 + Math.random() * 12) + 's';
+            particle.style.animationDelay = Math.random() * 10 + 's';
+            particle.style.width = (1 + Math.random() * 2) + 'px';
+            particle.style.height = particle.style.width;
+            if (Math.random() > 0.7) {
+                particle.style.background = 'var(--jade)';
+            } else if (Math.random() > 0.5) {
+                particle.style.background = 'var(--violet)';
+            }
+            container.appendChild(particle);
+        }
+    })();
+
+    // ===== PROGRESS BAR =====
+    const progressBar = document.getElementById('progressBar');
+    const progressRing = document.getElementById('progressRing');
+    const progressText = document.getElementById('progressText');
+    const ringCircumference = 94.25;
+
+    function updateProgress() {
+        const scrollTop = window.scrollY;
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+
+        progressBar.style.width = progress + '%';
+
+        const offset = ringCircumference - (progress / 100) * ringCircumference;
+        progressRing.style.strokeDashoffset = offset;
+
+        progressText.textContent = Math.round(progress) + '%';
+    }
+
+    window.addEventListener('scroll', updateProgress, { passive: true });
+    updateProgress();
+
+    // ===== NAV ACTIVE STATE =====
+    const navLinks = document.querySelectorAll('.nav-link');
+    const mobileLinks = document.querySelectorAll('.mobile-menu-link');
+    const chapters = document.querySelectorAll('.chapter');
+
+    function updateNavActive() {
+        let currentChapter = '';
+        chapters.forEach(chapter => {
+            const rect = chapter.getBoundingClientRect();
+            if (rect.top <= 120) {
+                currentChapter = chapter.getAttribute('data-chapter');
+            }
+        });
+
+        navLinks.forEach(link => {
+            link.classList.toggle('active', link.getAttribute('data-chapter') === currentChapter);
+        });
+
+        mobileLinks.forEach(link => {
+            link.classList.toggle('active', link.getAttribute('data-chapter') === currentChapter);
+        });
+    }
+
+    window.addEventListener('scroll', updateNavActive, { passive: true });
+
+    // ===== MOBILE MENU =====
+    const hamburger = document.getElementById('navHamburger');
+    const mobileMenu = document.getElementById('mobileMenu');
+
+    hamburger.addEventListener('click', () => {
+        hamburger.classList.toggle('active');
+        mobileMenu.classList.toggle('open');
+        document.body.style.overflow = mobileMenu.classList.contains('open') ? 'hidden' : '';
+    });
+
+    mobileLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            hamburger.classList.remove('active');
+            mobileMenu.classList.remove('open');
+            document.body.style.overflow = '';
+        });
+    });
+
+    // ===== BACK TO TOP =====
+    const backToTop = document.getElementById('backToTop');
+
+    window.addEventListener('scroll', () => {
+        backToTop.classList.toggle('visible', window.scrollY > 500);
+    }, { passive: true });
+
+    backToTop.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    // ===== STAGGER ANIMATIONS =====
+    const staggerElements = document.querySelectorAll('.stagger-in');
+
+    const staggerObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry, index) => {
+            if (entry.isIntersecting) {
+                setTimeout(() => {
+                    entry.target.classList.add('visible');
+                }, index * 80);
+                staggerObserver.unobserve(entry.target);
+            }
+        });
+    }, {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    });
+
+    staggerElements.forEach(el => staggerObserver.observe(el));
+</script>
+
+</body>
+</html>
