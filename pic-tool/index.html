@@ -1178,8 +1178,7 @@
                 'Make', 'Model', 'LensModel', 'DateTimeOriginal',
                 'FNumber', 'ExposureTime', 'ISOSpeedRatings', 'FocalLength',
                 'FocalLengthIn35mmFilm', 'ExposureBiasValue',
-                'MeteringMode', 'Flash', 'WhiteBalance', 'Software',
-                'Orientation'
+                'MeteringMode', 'WhiteBalance', 'Orientation'
             ];
 
             const allKeys = Object.keys(exifData);
@@ -1215,44 +1214,19 @@
                 exifGrid.appendChild(item);
             }
 
-            // 分辨率：X x Y
-            const xRes = exifData.XResolution;
-            const yRes = exifData.YResolution;
-            if (xRes && yRes) {
+            // Software 字段单独显示在最后
+            if (exifData.Software) {
                 hasValidData = true;
-                const item = document.createElement('div');
-                item.className = 'exif-item';
-                const resUnit = exifData.ResolutionUnit === 2 ? 'dpi' : exifData.ResolutionUnit === 3 ? 'dpcm' : '';
-                item.innerHTML = `
-                    <span class="exif-label">分辨率</span>
-                    <span class="exif-value">${xRes} × ${yRes}${resUnit ? ' ' + resUnit : ''}</span>
-                `;
-                exifGrid.appendChild(item);
-            }
-
-            // 色彩空间
-            if (exifData.ColorSpace !== undefined) {
-                hasValidData = true;
-                const item = document.createElement('div');
-                item.className = 'exif-item';
-                item.innerHTML = `
-                    <span class="exif-label">色彩空间</span>
-                    <span class="exif-value">${formatExifValue('ColorSpace', exifData.ColorSpace)}</span>
-                `;
-                exifGrid.appendChild(item);
-            }
-
-            // 分辨率单位
-            if (exifData.ResolutionUnit !== undefined) {
-                hasValidData = true;
-                const item = document.createElement('div');
-                item.className = 'exif-item';
-                const unitText = exifData.ResolutionUnit === 2 ? '英寸' : exifData.ResolutionUnit === 3 ? '厘米' : exifData.ResolutionUnit;
-                item.innerHTML = `
-                    <span class="exif-label">分辨率单位</span>
-                    <span class="exif-value">${unitText}</span>
-                `;
-                exifGrid.appendChild(item);
+                const value = formatExifValue('Software', exifData.Software);
+                if (value !== null && value !== undefined && value !== '') {
+                    const item = document.createElement('div');
+                    item.className = 'exif-item';
+                    item.innerHTML = `
+                        <span class="exif-label">${getExifLabel('Software')}</span>
+                        <span class="exif-value">${value}</span>
+                    `;
+                    exifGrid.appendChild(item);
+                }
             }
 
             if (!hasValidData) {
