@@ -1,0 +1,2067 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>幻城 - 郭敬明玄幻经典</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --ice-deep: #0a1628;
+            --ice-dark: #0d1f3c;
+            --ice-medium: #1a2a4a;
+            --ice-light: #2d4a6f;
+            --ice-glow: #4a9eff;
+            --ice-bright: #a8d8ff;
+            --ice-white: #e8f4ff;
+            --frost: rgba(200, 230, 255, 0.15);
+            --frost-border: rgba(150, 210, 255, 0.2);
+            --fire-deep: #8b0000;
+            --fire-bright: #ff4500;
+            --fire-glow: #ff6b35;
+            --snow: rgba(255, 255, 255, 0.8);
+        }
+        
+        body {
+            font-family: 'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.8;
+            color: var(--ice-white);
+            background: var(--ice-deep);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(ellipse at 20% 20%, rgba(74, 158, 255, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(74, 158, 255, 0.05) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(168, 216, 255, 0.03) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        header {
+            background: linear-gradient(180deg, rgba(10, 22, 40, 0.95) 0%, rgba(13, 31, 60, 0.9) 100%);
+            backdrop-filter: blur(20px);
+            padding: 60px 0 50px;
+            text-align: center;
+            border-bottom: 1px solid var(--frost-border);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(ellipse at 30% 40%, rgba(74, 158, 255, 0.12) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 60%, rgba(168, 216, 255, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 50% 0%, rgba(200, 230, 255, 0.1) 0%, transparent 40%);
+        }
+        
+        header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 100px;
+            background: linear-gradient(to top, var(--ice-deep), transparent);
+            pointer-events: none;
+        }
+        
+        header h1 {
+            font-size: 4.5rem;
+            color: #fff;
+            margin-bottom: 15px;
+            text-shadow: 
+                0 0 30px rgba(74, 158, 255, 0.4),
+                0 0 60px rgba(74, 158, 255, 0.2);
+            background: linear-gradient(180deg, #ffffff 0%, #c8e6ff 40%, #a8d8ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+            z-index: 1;
+            letter-spacing: 0.25em;
+            font-weight: 700;
+            font-family: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+        }
+        
+        header .subtitle {
+            font-size: 1.1rem;
+            color: var(--ice-bright);
+            max-width: 800px;
+            margin: 0 auto 20px;
+            position: relative;
+            z-index: 1;
+            opacity: 0.85;
+            letter-spacing: 0.05em;
+            font-weight: 300;
+        }
+        
+        header .author-info {
+            font-size: 0.9rem;
+            color: var(--ice-glow);
+            position: relative;
+            z-index: 1;
+            opacity: 0.7;
+            font-weight: 300;
+        }
+        
+        .snowflakes {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 9999;
+        }
+        
+        .snowflake {
+            position: absolute;
+            color: var(--snow);
+            animation: snowfall linear infinite;
+            opacity: 0;
+        }
+        
+        @keyframes snowfall {
+            0% {
+                transform: translateY(-5vh) translateX(0) rotate(0deg);
+                opacity: 0;
+            }
+            5% {
+                opacity: 0.7;
+            }
+            50% {
+                transform: translateY(50vh) translateX(80px) rotate(360deg);
+                opacity: 0.5;
+            }
+            95% {
+                opacity: 0.3;
+            }
+            100% {
+                transform: translateY(105vh) translateX(-30px) rotate(720deg);
+                opacity: 0;
+            }
+        }
+        
+        .ice-crystal {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(168,216,255,0.4) 50%, transparent 70%);
+            border-radius: 50%;
+            animation: crystal-float linear infinite;
+            pointer-events: none;
+        }
+        
+        @keyframes crystal-float {
+            0%, 100% {
+                transform: translateY(0) scale(1);
+                opacity: 0.6;
+            }
+            50% {
+                transform: translateY(-30px) scale(1.2);
+                opacity: 1;
+            }
+        }
+        
+        nav {
+            background: rgba(10, 22, 40, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--frost-border);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        nav ul {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        nav ul li a {
+            color: var(--ice-bright);
+            text-decoration: none;
+            padding: 8px 18px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            border: 1px solid transparent;
+            position: relative;
+        }
+        
+        nav ul li a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: var(--ice-glow);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+        
+        nav ul li a:hover {
+            color: #fff;
+            background: rgba(74, 158, 255, 0.1);
+        }
+        
+        nav ul li a:hover::after {
+            width: 80%;
+        }
+        
+        nav ul li a.active {
+            color: #fff;
+            background: rgba(74, 158, 255, 0.15);
+            border-color: rgba(74, 158, 255, 0.3);
+        }
+        
+        nav ul li a.active::after {
+            width: 100%;
+            background: var(--ice-glow);
+            box-shadow: 0 0 10px var(--ice-glow);
+        }
+        
+        main {
+            padding: 60px 0;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .section {
+            background: linear-gradient(135deg, rgba(13, 31, 60, 0.8) 0%, rgba(10, 22, 40, 0.9) 100%);
+            border-radius: 2px;
+            padding: 45px;
+            margin-bottom: 40px;
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--frost-border);
+            box-shadow: 
+                0 10px 40px rgba(0, 0, 0, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(168, 216, 255, 0.3), transparent);
+        }
+        
+        .section-title {
+            font-size: 1.8rem;
+            color: #fff;
+            margin-bottom: 30px;
+            padding-bottom: 18px;
+            border-bottom: 1px solid rgba(74, 158, 255, 0.2);
+            display: flex;
+            align-items: center;
+            font-weight: 300;
+            letter-spacing: 0.08em;
+        }
+        
+        .section-title::before {
+            content: '';
+            display: inline-block;
+            width: 4px;
+            height: 40px;
+            background: linear-gradient(to bottom, var(--ice-glow), transparent);
+            margin-right: 20px;
+            box-shadow: 0 0 10px var(--ice-glow);
+        }
+        
+        .intro-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: start;
+        }
+        
+        .intro-text p {
+            color: rgba(232, 244, 255, 0.85);
+            margin-bottom: 18px;
+            text-align: justify;
+            font-size: 1rem;
+            font-weight: 300;
+            line-height: 1.9;
+        }
+        
+        .intro-text .highlight {
+            color: var(--ice-bright);
+            font-weight: bold;
+            text-shadow: 0 0 20px rgba(168, 216, 255, 0.3);
+        }
+        
+        .intro-stats {
+            background: rgba(74, 158, 255, 0.05);
+            border: 1px solid rgba(74, 158, 255, 0.15);
+            padding: 30px;
+        }
+        
+        .stats-title {
+            color: var(--ice-bright);
+            font-size: 1.2rem;
+            margin-bottom: 25px;
+            text-align: center;
+            letter-spacing: 0.1em;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(74, 158, 255, 0.1);
+        }
+        
+        .stat-item .number {
+            font-size: 2rem;
+            color: var(--ice-bright);
+            font-weight: bold;
+            display: block;
+            text-shadow: 0 0 30px rgba(168, 216, 255, 0.4);
+        }
+        
+        .stat-item .label {
+            color: rgba(168, 216, 255, 0.6);
+            font-size: 0.85rem;
+            margin-top: 5px;
+        }
+        
+        .author-section {
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            gap: 40px;
+            align-items: center;
+        }
+        
+        .author-avatar {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--ice-dark), var(--ice-light));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            color: var(--ice-bright);
+            margin: 0 auto;
+            border: 2px solid rgba(74, 158, 255, 0.3);
+            box-shadow: 
+                0 0 40px rgba(74, 158, 255, 0.2),
+                inset 0 0 30px rgba(74, 158, 255, 0.1);
+        }
+        
+        .author-bio h3 {
+            color: var(--ice-bright);
+            font-size: 1.5rem;
+            margin-bottom: 12px;
+            font-weight: 400;
+            letter-spacing: 0.05em;
+        }
+        
+        .author-bio p {
+            color: rgba(232, 244, 255, 0.85);
+            margin-bottom: 12px;
+            text-align: justify;
+            font-weight: 300;
+            font-size: 0.95rem;
+        }
+        
+        .author-bio .achievement {
+            background: rgba(74, 158, 255, 0.05);
+            padding: 20px;
+            border-left: 2px solid var(--ice-glow);
+        }
+        
+        .worldview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .worldview-card {
+            background: rgba(255, 255, 255, 0.02);
+            padding: 25px;
+            border: 1px solid rgba(74, 158, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .worldview-card:hover {
+            background: rgba(74, 158, 255, 0.05);
+            border-color: rgba(74, 158, 255, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .worldview-card h4 {
+            color: var(--ice-bright);
+            font-size: 1.1rem;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            font-weight: 400;
+            letter-spacing: 0.03em;
+        }
+        
+        .worldview-card h4::before {
+            content: '';
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            background: var(--ice-glow);
+            border-radius: 50%;
+            margin-right: 12px;
+            box-shadow: 0 0 8px var(--ice-glow);
+        }
+        
+        .worldview-card p {
+            color: rgba(232, 244, 255, 0.75);
+            font-size: 0.9rem;
+            line-height: 1.8;
+            font-weight: 300;
+        }
+        
+        .race-row {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 25px;
+        }
+        
+        .race-card {
+            flex: 1;
+            min-width: 160px;
+            max-width: 200px;
+            padding: 30px 20px;
+            text-align: center;
+            color: white;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .race-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 50%);
+            pointer-events: none;
+        }
+        
+        .race-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+        
+        .race-card .race-icon { font-size: 2.5rem; margin-bottom: 12px; display: block; }
+        .race-card .race-name { font-size: 1.2rem; font-weight: bold; margin-bottom: 8px; }
+        .race-card .race-desc { font-size: 0.8rem; opacity: 0.9; }
+        
+        .race-ice { 
+            background: linear-gradient(135deg, #1a3a5c, #2d6aa0);
+            border: 1px solid rgba(74, 158, 255, 0.4);
+        }
+        .race-fire { 
+            background: linear-gradient(135deg, #5c1a1a, #a02d2d);
+            border: 1px solid rgba(255, 69, 0, 0.4);
+        }
+        .race-mermaid { 
+            background: linear-gradient(135deg, #1a4a5c, #2d7a8a);
+            border: 1px solid rgba(32, 178, 170, 0.4);
+        }
+        
+        .characters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .character-card {
+            background: rgba(255, 255, 255, 0.02);
+            padding: 30px;
+            border: 1px solid rgba(74, 158, 255, 0.1);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .character-card:hover {
+            background: rgba(74, 158, 255, 0.05);
+            border-color: rgba(74, 158, 255, 0.3);
+            transform: translateY(-3px);
+        }
+        
+        .character-avatar {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--ice-dark), var(--ice-light));
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.2rem;
+            color: var(--ice-bright);
+            border: 2px solid rgba(74, 158, 255, 0.3);
+            box-shadow: 0 0 20px rgba(74, 158, 255, 0.15);
+        }
+        
+        .character-card h4 {
+            color: #fff;
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+            font-weight: 400;
+            letter-spacing: 0.05em;
+        }
+        
+        .character-card .role {
+            color: var(--ice-glow);
+            font-size: 0.85rem;
+            margin-bottom: 12px;
+            opacity: 0.8;
+            font-weight: 300;
+        }
+        
+        .character-card p {
+            color: rgba(232, 244, 255, 0.75);
+            font-size: 0.9rem;
+            line-height: 1.8;
+            font-weight: 300;
+        }
+            line-height: 1.8;
+        }
+        
+        .quotes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            margin-top: 25px;
+        }
+        
+        .quote-card {
+            background: rgba(255, 255, 255, 0.02);
+            padding: 25px;
+            border-left: 2px solid var(--ice-glow);
+            transition: all 0.3s ease;
+        }
+        
+        .quote-card:hover {
+            background: rgba(74, 158, 255, 0.05);
+            transform: translateX(5px);
+        }
+        
+        .quote-card .quote-text {
+            color: var(--ice-white);
+            font-size: 1rem;
+            line-height: 2;
+            font-style: italic;
+            margin-bottom: 12px;
+            font-weight: 300;
+        }
+        
+        .quote-card .quote-source {
+            color: rgba(168, 216, 255, 0.5);
+            font-size: 0.8rem;
+            text-align: right;
+            font-weight: 300;
+        }
+        
+        .themes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 25px;
+        }
+        
+        .theme-card {
+            background: rgba(255, 255, 255, 0.02);
+            padding: 25px;
+            border: 1px solid rgba(74, 158, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .theme-card:hover {
+            background: rgba(74, 158, 255, 0.05);
+            border-color: rgba(74, 158, 255, 0.3);
+            transform: translateY(-3px);
+        }
+        
+        .theme-card .theme-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            display: block;
+        }
+        
+        .theme-card h4 {
+            color: var(--ice-bright);
+            font-size: 1rem;
+            margin-bottom: 10px;
+            font-weight: 400;
+            letter-spacing: 0.03em;
+        }
+        
+        .theme-card p {
+            color: rgba(232, 244, 255, 0.75);
+            font-size: 0.85rem;
+            line-height: 1.8;
+            font-weight: 300;
+        }
+        
+        .volume-list {
+            margin-top: 30px;
+        }
+        
+        .volume-item {
+            background: rgba(255, 255, 255, 0.02);
+            padding: 30px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(74, 158, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .volume-item:hover {
+            background: rgba(74, 158, 255, 0.04);
+            border-color: rgba(74, 158, 255, 0.2);
+            transform: translateX(5px);
+        }
+        
+        .volume-item h4 {
+            color: var(--ice-bright);
+            font-size: 1.15rem;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            font-weight: 400;
+            letter-spacing: 0.03em;
+        }
+        
+        .volume-item h4::before {
+            content: '';
+            display: inline-block;
+            width: 4px;
+            height: 24px;
+            background: linear-gradient(to bottom, var(--ice-glow), transparent);
+            margin-right: 15px;
+            box-shadow: 0 0 8px var(--ice-glow);
+        }
+        
+        .volume-item p {
+            color: rgba(232, 244, 255, 0.75);
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+            line-height: 1.8;
+            font-weight: 300;
+        }
+        
+        .volume-item .chapters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 15px;
+        }
+        
+        .volume-item .chapter-tag {
+            background: rgba(74, 158, 255, 0.06);
+            padding: 6px 14px;
+            font-size: 0.85rem;
+            color: var(--ice-bright);
+            border: 1px solid rgba(74, 158, 255, 0.15);
+            transition: all 0.3s ease;
+        }
+        
+        .volume-item .chapter-tag:hover {
+            background: rgba(74, 158, 255, 0.12);
+            border-color: rgba(74, 158, 255, 0.3);
+        }
+        
+        .chapter-detail {
+            margin-top: 25px;
+        }
+        
+        .chapter-item {
+            display: flex;
+            gap: 20px;
+            padding: 18px 0;
+            border-bottom: 1px solid rgba(74, 158, 255, 0.08);
+            transition: all 0.3s ease;
+        }
+        
+        .chapter-item:hover {
+            background: rgba(74, 158, 255, 0.03);
+            padding-left: 10px;
+        }
+        
+        .chapter-item:last-child {
+            border-bottom: none;
+        }
+        
+        .chapter-num {
+            background: linear-gradient(135deg, var(--ice-dark), var(--ice-light));
+            color: var(--ice-bright);
+            padding: 6px 14px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            white-space: nowrap;
+            height: fit-content;
+            min-width: 70px;
+            text-align: center;
+            border: 1px solid rgba(74, 158, 255, 0.2);
+        }
+        
+        .chapter-info {
+            flex: 1;
+        }
+        
+        .chapter-info h5 {
+            color: var(--ice-bright);
+            font-size: 1rem;
+            margin-bottom: 8px;
+            font-weight: 400;
+            letter-spacing: 0.03em;
+        }
+        
+        .chapter-info p {
+            color: rgba(168, 216, 255, 0.6);
+            font-size: 0.85rem;
+            line-height: 1.7;
+            font-weight: 300;
+        }
+        
+        .volume-summary {
+            background: rgba(74, 158, 255, 0.04);
+            padding: 18px 22px;
+            margin-top: 25px;
+            border-left: 2px solid var(--ice-glow);
+            color: rgba(232, 244, 255, 0.8);
+            font-size: 0.9rem;
+            font-weight: 300;
+        }
+        
+        .volume-summary strong {
+            color: var(--ice-bright);
+        }
+        
+        .analysis-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .analysis-item {
+            background: rgba(255, 255, 255, 0.02);
+            padding: 25px;
+            border: 1px solid rgba(74, 158, 255, 0.1);
+        }
+        
+        .analysis-item h4 {
+            color: var(--ice-bright);
+            font-size: 1rem;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            font-weight: 400;
+            letter-spacing: 0.03em;
+        }
+        
+        .analysis-item h4::before {
+            content: '';
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            background: var(--ice-glow);
+            border-radius: 50%;
+            margin-right: 12px;
+            box-shadow: 0 0 8px var(--ice-glow);
+        }
+        
+        .analysis-item p {
+            color: rgba(232, 244, 255, 0.7);
+            font-size: 0.9rem;
+            line-height: 1.8;
+            font-weight: 300;
+        }
+        
+        footer {
+            background: rgba(10, 22, 40, 0.95);
+            color: rgba(168, 216, 255, 0.6);
+            text-align: center;
+            padding: 50px 0;
+            margin-top: 60px;
+            border-top: 1px solid rgba(74, 158, 255, 0.15);
+        }
+        
+        footer p {
+            margin-bottom: 10px;
+        }
+        
+        footer .copyright {
+            font-size: 0.85rem;
+            opacity: 0.7;
+        }
+        
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--ice-dark), var(--ice-light));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--ice-bright);
+            font-size: 1.5rem;
+            cursor: pointer;
+            border: 1px solid rgba(74, 158, 255, 0.3);
+            box-shadow: 0 5px 20px rgba(74, 158, 255, 0.2);
+            transition: all 0.3s ease;
+            opacity: 0;
+            visibility: hidden;
+        }
+        
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .back-to-top:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(74, 158, 255, 0.4);
+            border-color: var(--ice-glow);
+        }
+        
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 3rem;
+                letter-spacing: 0.2em;
+            }
+            
+            header .subtitle {
+                font-size: 0.95rem;
+            }
+            
+            .intro-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .author-section {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            
+            .section {
+                padding: 20px;
+            }
+            
+            .section-title {
+                font-size: 1.5rem;
+            }
+            
+            .characters-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .section {
+            animation: fadeIn 0.6s ease forwards;
+        }
+    </style>
+</head>
+<body>
+    <div class="snowflakes">
+        <div class="snowflake" style="left: 3%; animation-duration: 15s; animation-delay: 0s; font-size: 1rem;">❄</div>
+        <div class="snowflake" style="left: 8%; animation-duration: 18s; animation-delay: 2s; font-size: 0.6rem;">❅</div>
+        <div class="snowflake" style="left: 13%; animation-duration: 12s; animation-delay: 4s; font-size: 1.3rem;">❆</div>
+        <div class="snowflake" style="left: 18%; animation-duration: 20s; animation-delay: 1s; font-size: 0.5rem;">❄</div>
+        <div class="snowflake" style="left: 23%; animation-duration: 14s; animation-delay: 3s; font-size: 1.1rem;">❅</div>
+        <div class="snowflake" style="left: 28%; animation-duration: 16s; animation-delay: 5s; font-size: 0.8rem;">❆</div>
+        <div class="snowflake" style="left: 33%; animation-duration: 19s; animation-delay: 0.5s; font-size: 1.4rem;">❄</div>
+        <div class="snowflake" style="left: 38%; animation-duration: 13s; animation-delay: 2.5s; font-size: 0.7rem;">❅</div>
+        <div class="snowflake" style="left: 43%; animation-duration: 17s; animation-delay: 4.5s; font-size: 1rem;">❆</div>
+        <div class="snowflake" style="left: 48%; animation-duration: 21s; animation-delay: 1.5s; font-size: 0.9rem;">❄</div>
+        <div class="snowflake" style="left: 53%; animation-duration: 15s; animation-delay: 3.5s; font-size: 1.2rem;">❅</div>
+        <div class="snowflake" style="left: 58%; animation-duration: 18s; animation-delay: 0.8s; font-size: 0.6rem;">❆</div>
+        <div class="snowflake" style="left: 63%; animation-duration: 14s; animation-delay: 5.5s; font-size: 1.5rem;">❄</div>
+        <div class="snowflake" style="left: 68%; animation-duration: 20s; animation-delay: 2.8s; font-size: 0.7rem;">❅</div>
+        <div class="snowflake" style="left: 73%; animation-duration: 16s; animation-delay: 1.2s; font-size: 1.1rem;">❆</div>
+        <div class="snowflake" style="left: 78%; animation-duration: 19s; animation-delay: 4.2s; font-size: 0.8rem;">❄</div>
+        <div class="snowflake" style="left: 83%; animation-duration: 13s; animation-delay: 3.2s; font-size: 1.3rem;">❅</div>
+        <div class="snowflake" style="left: 88%; animation-duration: 17s; animation-delay: 0.3s; font-size: 0.5rem;">❆</div>
+        <div class="snowflake" style="left: 93%; animation-duration: 22s; animation-delay: 5.2s; font-size: 1rem;">❄</div>
+        <div class="snowflake" style="left: 97%; animation-duration: 15s; animation-delay: 1.8s; font-size: 0.9rem;">❅</div>
+    </div>
+    <header>
+        <div class="container">
+            <div style="margin-bottom: 20px; opacity: 0.5;">
+                <span style="font-size: 1.5rem; letter-spacing: 0.5em;">❄ ❅ ❆</span>
+            </div>
+            <h1>幻城</h1>
+            <p class="subtitle">冰雪与火焰交织的奇幻史诗 · 一段跨越生死的兄弟情谊</p>
+            <p class="author-info">郭敬明 著 · 2003年 · "80后"文学代表作</p>
+            <div style="margin-top: 25px; opacity: 0.4;">
+                <span style="font-size: 0.8rem; letter-spacing: 0.2em; color: var(--ice-glow);">— 你是冰雪的王爵，你是末世的苍雪 —</span>
+            </div>
+        </div>
+    </header>
+    
+    <nav>
+        <div class="container">
+            <ul>
+                <li><a href="#intro" class="active">作品简介</a></li>
+                <li><a href="#author">作者介绍</a></li>
+                <li><a href="#worldview">世界观</a></li>
+                <li><a href="#characters">主要人物</a></li>
+                <li><a href="#themes">主题思想</a></li>
+                <li><a href="#structure">卷章结构</a></li>
+                <li><a href="#quotes">经典语录</a></li>
+                <li><a href="#analysis">作品评价</a></li>
+            </ul>
+        </div>
+    </nav>
+    
+    <main class="container">
+        <!-- 作品简介 -->
+        <section class="section" id="intro">
+            <h2 class="section-title">作品简介</h2>
+            <div class="intro-content">
+                <div class="intro-text">
+                    <p>
+                        《幻城》是<span class="highlight">郭敬明</span>的首部长篇小说，于2003年1月由春风文艺出版社出版。小说构建了一个宏大的奇幻世界，讲述了冰族与火族之间的百年恩怨，以及冰族皇子<span class="highlight">卡索</span>与弟弟<span class="highlight">樱空释</span>之间跨越生死的兄弟情谊。
+                    </p>
+                    <p>
+                        故事发生在虚构的幻雪帝国，一边是火族，一边是冰族；一边是火焰之城，一边是幻雪帝国。卡索渴望自由，不想当王；樱空释为了让哥哥获得自由，不惜一切代价争夺王位，甚至学习火族幻术。最终被不明真相的卡索杀死，转世后成为火族王子罹天烬。
+                    </p>
+                    <p>
+                        小说语言华丽唯美，想象天马行空，采用动漫叙事手法，开创了"大幻想"的写作风格。作品蕴含了友情、爱情、亲情，悲剧性的苍凉中渗透着人物略为病态的行为，成为"80后"青春文学的代表作品。
+                    </p>
+                </div>
+                <div class="intro-stats">
+                    <div class="stats-title">📊 作品数据</div>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <span class="number">13.1万</span>
+                            <span class="label">总字数</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="number">29</span>
+                            <span class="label">章节数</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="number">2003</span>
+                            <span class="label">出版年份</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="number">3</span>
+                            <span class="label">主要种族</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="number">10+</span>
+                            <span class="label">主要人物</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="number">100万+</span>
+                            <span class="label">销量</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 作者介绍 -->
+        <section class="section" id="author">
+            <h2 class="section-title">作者介绍</h2>
+            <div class="author-section">
+                <div class="author-avatar">郭</div>
+                <div class="author-bio">
+                    <h3>郭敬明</h3>
+                    <p>
+                        郭敬明，网络名"第四维"，1983年6月6日出生于四川省自贡市，中国作家、导演、编剧。曾连获中国"新概念作文大赛"第三届、第四届一等奖。著有散文集《爱与痛的边缘》，长篇小说《幻城》《梦里花落知多少》《小时代》系列等。
+                    </p>
+                    <p>
+                        "80后"作家群的代表人物，连续十年登上中国福布斯名人榜，连续八年国内出版销售纪录的创造者，多次荣登年度销量总冠军宝座。2008年5月4日美国《纽约时报》以《China's Pop Fiction》为题报道，评价他为"中国最成功的作家"。
+                    </p>
+                    <div class="achievement">
+                        <strong style="color: var(--ice-bright);">主要成就：</strong>
+                        <span style="color: var(--ice-white);">开创"大幻想"写作风格，成为"80后"青春文学领军人物，作品销量突破千万册，被改编为电视剧、电影、游戏等多种形式。</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 世界观设定 -->
+        <section class="section" id="worldview">
+            <h2 class="section-title">世界观设定</h2>
+            
+            <div class="worldview-grid">
+                <div class="worldview-card">
+                    <h4>❄️ 冰族</h4>
+                    <p>
+                        幻雪帝国的统治者，拥有白色长发、蓝色瞳孔。精通冰系幻术，千年寿命。都城为刃雪城，崇尚秩序与血统纯正。
+                    </p>
+                </div>
+                
+                <div class="worldview-card">
+                    <h4>🔥 火族</h4>
+                    <p>
+                        与冰族对立的种族，拥有红色头发、红色瞳孔。精通火系幻术，野心勃勃，渴望统一三界。土地贫瘠，渴望占领冰族领土。
+                    </p>
+                </div>
+                
+                <div class="worldview-card">
+                    <h4>🧜 人鱼族</h4>
+                    <p>
+                        居住在深海宫的神秘种族，地位中立。拥有一泪石等宝物，掌握着独特的海洋幻术。
+                    </p>
+                </div>
+                
+                <div class="worldview-card">
+                    <h4>🏔️ 幻雪神山</h4>
+                    <p>
+                        凌驾于各界势力之上的神秘之地，由渊祭统治。拥有隐莲，可以使人复活。配置四名护法和一位大祭司。
+                    </p>
+                </div>
+                
+                <div class="worldview-card">
+                    <h4>✨ 幻术体系</h4>
+                    <p>
+                        冰系幻术、火系幻术、黑巫术、占星术等多种幻术。幻术高低与头发长度相关，头发越长，灵力越强。
+                    </p>
+                </div>
+                
+                <div class="worldview-card">
+                    <h4>🌿 隐莲</h4>
+                    <p>
+                        神界灵力最强的植物，可以使人复活。复活者将转世为前世最想成为的人，但会暂时失去记忆，并被渊祭诅咒。
+                    </p>
+                </div>
+            </div>
+            
+            <h3 style="color: #a8d8ff; margin: 30px 0 20px; text-align: center;">三大种族</h3>
+            <div class="race-row">
+                <div class="race-card race-ice">
+                    <span class="race-icon">❄️</span>
+                    <div class="race-name">冰族</div>
+                    <div class="race-desc">白色长发 · 蓝瞳 · 冰系幻术</div>
+                </div>
+                <div class="race-card race-fire">
+                    <span class="race-icon">🔥</span>
+                    <div class="race-name">火族</div>
+                    <div class="race-desc">红色头发 · 红瞳 · 火系幻术</div>
+                </div>
+                <div class="race-card race-mermaid">
+                    <span class="race-icon">🧜</span>
+                    <div class="race-name">人鱼族</div>
+                    <div class="race-desc">深海居住 · 中立 · 一泪石</div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 主要人物 -->
+        <section class="section" id="characters">
+            <h2 class="section-title">主要人物</h2>
+            
+            <!-- 人物关系图 -->
+            <div style="background: rgba(74, 158, 255, 0.03); border: 1px solid rgba(74, 158, 255, 0.15); padding: 40px; margin-bottom: 40px;">
+                <h3 style="color: var(--ice-bright); text-align: center; margin-bottom: 35px; font-size: 1.4rem; font-weight: 400; letter-spacing: 0.1em;">🕸️ 人物关系图</h3>
+                
+                <!-- 关系图主体 -->
+                <div style="position: relative; max-width: 800px; margin: 0 auto; min-height: 450px;">
+                    
+                    <!-- 核心：卡索与樱空释的兄弟关系 -->
+                    <div style="display: flex; justify-content: center; gap: 120px; margin-bottom: 60px;">
+                        <!-- 卡索 -->
+                        <div style="text-align: center;">
+                            <div style="width: 100px; height: 100px; border-radius: 50%; background: linear-gradient(135deg, #1a3a5c, #4a9eff); display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; box-shadow: 0 0 20px rgba(74, 158, 255, 0.4); border: 3px solid #a8d8ff;">
+                                <span style="font-size: 2.5rem; color: white;">❄️</span>
+                            </div>
+                            <div style="color: #fff; font-weight: bold; font-size: 1.2rem;">卡索</div>
+                            <div style="color: #7eb8d8; font-size: 0.85rem;">冰族国王</div>
+                        </div>
+                        
+                        <!-- 樱空释 -->
+                        <div style="text-align: center;">
+                            <div style="width: 100px; height: 100px; border-radius: 50%; background: linear-gradient(135deg, #4a1a5c, #ff4a9e); display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; box-shadow: 0 0 20px rgba(255, 74, 158, 0.4); border: 3px solid #ffa8d8;">
+                                <span style="font-size: 2.5rem; color: white;">🔥</span>
+                            </div>
+                            <div style="color: #fff; font-weight: bold; font-size: 1.2rem;">樱空释</div>
+                            <div style="color: #d8a8c8; font-size: 0.85rem;">冰族二皇子</div>
+                        </div>
+                    </div>
+                    
+                    <!-- 兄弟关系连线 -->
+                    <div style="position: absolute; top: 50px; left: 50%; transform: translateX(-50%); text-align: center;">
+                        <div style="background: linear-gradient(90deg, var(--ice-glow), #ff6b9d); height: 2px; width: 120px; margin: 0 auto; box-shadow: 0 0 10px rgba(74, 158, 255, 0.5);"></div>
+                        <div style="background: rgba(74, 158, 255, 0.1); padding: 6px 18px; display: inline-block; margin-top: 8px; border: 1px solid rgba(74, 158, 255, 0.2);">
+                            <span style="color: var(--ice-bright); font-size: 0.85rem; font-weight: 500;">兄弟情深</span>
+                        </div>
+                    </div>
+                    
+                    <!-- 卡索的关系线 -->
+                    <div style="position: absolute; top: 140px; left: 25%; transform: translateX(-50%);">
+                        <div style="width: 1px; height: 60px; background: linear-gradient(to bottom, var(--ice-glow), rgba(255, 107, 157, 0.5)); margin: 0 auto;"></div>
+                    </div>
+                    
+                    <div style="position: absolute; top: 140px; left: 75%; transform: translateX(-50%);">
+                        <div style="width: 1px; height: 60px; background: linear-gradient(to bottom, #ff4a9e, var(--ice-glow)); margin: 0 auto;"></div>
+                    </div>
+                    
+                    <!-- 恋人关系：梨落 -->
+                    <div style="display: flex; justify-content: space-around; margin-bottom: 40px;">
+                        <div style="text-align: center;">
+                            <div style="width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, #1a3a2d, #2d6a3f); display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; border: 2px solid rgba(74, 222, 128, 0.4);">
+                                <span style="font-size: 2rem; color: white;">🌸</span>
+                            </div>
+                            <div style="color: #fff; font-weight: bold; font-size: 1rem;">梨落</div>
+                            <div style="color: rgba(134, 239, 172, 0.8); font-size: 0.8rem;">守界使者</div>
+                            <div style="background: rgba(74, 158, 255, 0.1); padding: 4px 12px; margin-top: 8px; border: 1px solid rgba(74, 158, 255, 0.2);">
+                                <span style="color: var(--ice-glow); font-size: 0.75rem;">💕 恋人</span>
+                            </div>
+                        </div>
+                        
+                        <div style="text-align: center;">
+                            <div style="width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, #1a3a4a, #2d6a7a); display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; border: 2px solid rgba(56, 189, 248, 0.4);">
+                                <span style="font-size: 2rem; color: white;">🧜</span>
+                            </div>
+                            <div style="color: #fff; font-weight: bold; font-size: 1rem;">岚裳</div>
+                            <div style="color: rgba(125, 211, 252, 0.8); font-size: 0.8rem;">人鱼公主</div>
+                            <div style="background: rgba(74, 158, 255, 0.1); padding: 4px 12px; margin-top: 8px; border: 1px solid rgba(74, 158, 255, 0.2);">
+                                <span style="color: var(--ice-glow); font-size: 0.75rem;">💕 未婚妻</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 转世关系线 -->
+                    <div style="text-align: center; margin-bottom: 40px;">
+                        <div style="display: inline-block; background: rgba(74, 158, 255, 0.06); padding: 10px 25px; border: 1px dashed rgba(74, 158, 255, 0.3);">
+                            <span style="color: var(--ice-bright); font-size: 0.9rem;">⬆️ 转世为 ⬇️</span>
+                        </div>
+                    </div>
+                    
+                    <!-- 罹天烬（樱空释转世） -->
+                    <div style="text-align: center; margin-bottom: 40px;">
+                        <div style="width: 90px; height: 90px; border-radius: 50%; background: linear-gradient(135deg, #4a1a0a, #8a3a1a); display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; border: 2px solid rgba(253, 186, 116, 0.4);">
+                            <span style="font-size: 2.2rem; color: white;">⚡</span>
+                        </div>
+                        <div style="color: #fff; font-weight: bold; font-size: 1.1rem;">罹天烬</div>
+                        <div style="color: rgba(253, 186, 116, 0.8); font-size: 0.85rem;">火族王子 · 樱空释转世</div>
+                    </div>
+                    
+                    <!-- 敌对关系线 -->
+                    <div style="text-align: center; margin-bottom: 40px;">
+                        <div style="display: inline-block; background: rgba(255, 69, 0, 0.06); padding: 10px 25px; border: 1px solid rgba(255, 69, 0, 0.2);">
+                            <span style="color: rgba(255, 107, 53, 0.9); font-size: 0.9rem;">⚔️ 敌对 · 毁灭冰族</span>
+                        </div>
+                    </div>
+                    
+                    <!-- 最终BOSS：渊祭 -->
+                    <div style="text-align: center;">
+                        <div style="width: 100px; height: 100px; border-radius: 50%; background: linear-gradient(135deg, #0a0a1e, #2a0a3e); display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; border: 2px solid rgba(168, 85, 247, 0.4);">
+                            <span style="font-size: 2.5rem; color: white;">🌑</span>
+                        </div>
+                        <div style="color: #fff; font-weight: bold; font-size: 1.2rem;">渊祭</div>
+                        <div style="color: rgba(192, 132, 252, 0.8); font-size: 0.85rem;">幻雪神山主人 · 幕后黑手</div>
+                        <div style="background: rgba(168, 85, 247, 0.08); padding: 6px 18px; margin-top: 12px; display: inline-block; border: 1px solid rgba(168, 85, 247, 0.2);">
+                            <span style="color: rgba(192, 132, 252, 0.7); font-size: 0.8rem;">操纵命运 · 樱空释亲父</span>
+                        </div>
+                    </div>
+                    
+                    <!-- 关系连线说明 -->
+                    <div style="position: absolute; right: 0; top: 50%; transform: translateY(-50%);">
+                        <div style="background: rgba(74, 158, 255, 0.04); padding: 18px; border: 1px solid rgba(74, 158, 255, 0.15);">
+                            <div style="color: var(--ice-bright); font-size: 0.85rem; margin-bottom: 12px; font-weight: 500;">关系图例</div>
+                            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                                <div style="width: 25px; height: 2px; background: var(--ice-glow); box-shadow: 0 0 5px var(--ice-glow);"></div>
+                                <span style="color: rgba(168, 216, 255, 0.7); font-size: 0.75rem;">兄弟情深</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                                <div style="width: 25px; height: 2px; background: #ff6b9d;"></div>
+                                <span style="color: rgba(168, 216, 255, 0.7); font-size: 0.75rem;">恋人关系</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                                <div style="width: 25px; height: 2px; background: rgba(255, 69, 0, 0.6);"></div>
+                                <span style="color: rgba(168, 216, 255, 0.7); font-size: 0.75rem;">敌对关系</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                                <div style="width: 25px; height: 2px; background: rgba(168, 85, 247, 0.6); border-top: 1px dashed rgba(168, 85, 247, 0.6);"></div>
+                                <span style="color: rgba(168, 216, 255, 0.7); font-size: 0.75rem;">操纵关系</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <div style="width: 25px; height: 2px; background: linear-gradient(90deg, var(--ice-glow), #ff4a9e);"></div>
+                                <span style="color: rgba(168, 216, 255, 0.7); font-size: 0.75rem;">转世关系</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 关系文字说明 -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 30px; padding-top: 25px; border-top: 1px solid rgba(74, 158, 255, 0.1);">
+                    <div style="text-align: center; padding: 12px; border: 1px solid rgba(74, 158, 255, 0.08);">
+                        <div style="color: var(--ice-glow); font-size: 1.5rem; margin-bottom: 8px;">❄️🔥</div>
+                        <div style="color: var(--ice-bright); font-size: 0.9rem; font-weight: 500;">卡索 ↔ 樱空释</div>
+                        <div style="color: rgba(168, 216, 255, 0.6); font-size: 0.8rem; margin-top: 5px;">兄弟情深，超越生死</div>
+                    </div>
+                    <div style="text-align: center; padding: 12px; border: 1px solid rgba(74, 158, 255, 0.08);">
+                        <div style="color: var(--ice-glow); font-size: 1.5rem; margin-bottom: 8px;">❄️🌸</div>
+                        <div style="color: var(--ice-bright); font-size: 0.9rem; font-weight: 500;">卡索 ↔ 梨落</div>
+                        <div style="color: rgba(168, 216, 255, 0.6); font-size: 0.8rem; margin-top: 5px;">相爱却不能相守</div>
+                    </div>
+                    <div style="text-align: center; padding: 12px; border: 1px solid rgba(74, 158, 255, 0.08);">
+                        <div style="color: var(--ice-glow); font-size: 1.5rem; margin-bottom: 8px;">❄️🧜</div>
+                        <div style="color: var(--ice-bright); font-size: 0.9rem; font-weight: 500;">卡索 ↔ 岚裳</div>
+                        <div style="color: rgba(168, 216, 255, 0.6); font-size: 0.8rem; margin-top: 5px;">未婚妻的悲剧</div>
+                    </div>
+                    <div style="text-align: center; padding: 12px; border: 1px solid rgba(74, 158, 255, 0.08);">
+                        <div style="color: rgba(168, 85, 247, 0.8); font-size: 1.5rem; margin-bottom: 8px;">🌑🔥</div>
+                        <div style="color: var(--ice-bright); font-size: 0.9rem; font-weight: 500;">渊祭 → 樱空释</div>
+                        <div style="color: rgba(168, 216, 255, 0.6); font-size: 0.8rem; margin-top: 5px;">亲生父子，操纵命运</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="characters-grid">
+                <div class="character-card">
+                    <div class="character-avatar">卡</div>
+                    <h4>卡索</h4>
+                    <div class="role">冰族国王 · 主角</div>
+                    <p>
+                        白色长发、蓝色瞳孔，性格安静、爱看书、重情重义、渴望自由。前世是被困在炼泅石的巫师。为了复活弟弟，进入幻雪神山冒险。最终发现真相后自尽身亡。
+                    </p>
+                </div>
+                
+                <div class="character-card">
+                    <div class="character-avatar">释</div>
+                    <h4>樱空释</h4>
+                    <div class="role">冰族二皇子 · 转世：罹天烬</div>
+                    <p>
+                        银发蓝瞳、倾国倾城，性格邪气、残忍、为所爱可以拼尽一切。前世是霰雪鸟。为了让哥哥自由，不惜一切代价，最终被哥哥杀死。转世为火族王子，毁灭冰族后恢复记忆，随之而去。
+                    </p>
+                </div>
+                
+                <div class="character-card">
+                    <div class="character-avatar">落</div>
+                    <h4>梨落</h4>
+                    <div class="role">守界使者 · 卡索恋人</div>
+                    <p>
+                        美丽动人、温柔善良、坚强。因血统不纯被冰族反对，在卡索成婚当天被岚裳错杀。转世为剪瞳。
+                    </p>
+                </div>
+                
+                <div class="character-card">
+                    <div class="character-avatar">裳</div>
+                    <h4>岚裳</h4>
+                    <div class="role">人鱼公主 · 卡索未婚妻</div>
+                    <p>
+                        深海宫人鱼公主，美丽深情、纯洁。在即将与卡索结婚时被人玷污，无奈自杀。转世为离镜。
+                    </p>
+                </div>
+                
+                <div class="character-card">
+                    <div class="character-avatar">祭</div>
+                    <h4>渊祭</h4>
+                    <div class="role">幻雪神山主人 · 幕后黑手</div>
+                    <p>
+                        世界的统治者，命运的化身，可以随意操纵他人人生。拥有诞星杖，无比强大。樱空释的亲生父亲，死前给卡索下了诅咒。
+                    </p>
+                </div>
+                
+                <div class="character-card">
+                    <div class="character-avatar">烬</div>
+                    <h4>罹天烬</h4>
+                    <div class="role">火族王子 · 樱空释转世</div>
+                    <p>
+                        灵力媲美渊祭，带着毁灭冰族的执念。率领火族大军攻入刃雪城，在卡索面前恢复记忆，最终自杀身亡。
+                    </p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 主题思想 -->
+        <section class="section" id="themes">
+            <h2 class="section-title">主题思想</h2>
+            <div class="themes-grid">
+                <div class="theme-card">
+                    <span class="theme-icon">🕊️</span>
+                    <h4>自由与束缚</h4>
+                    <p>卡索渴望自由，不想当王；樱空释为了让哥哥自由而争夺王位。这是一个以束缚换取自由的悖论。</p>
+                </div>
+                
+                <div class="theme-card">
+                    <span class="theme-icon">💔</span>
+                    <h4>牺牲与守护</h4>
+                    <p>樱空释为卡索牺牲一切，包括生命；卡索为复活弟弟踏上危险之旅。极端的牺牲引发对爱的边界的思考。</p>
+                </div>
+                
+                <div class="theme-card">
+                    <span class="theme-icon">🎭</span>
+                    <h4>命运与抗争</h4>
+                    <p>渊祭操纵众人的命运，但主角们不断抗争。悲剧被无限放大，抵抗被无限缩小，人最终成为命运的玩物。</p>
+                </div>
+                
+                <div class="theme-card">
+                    <span class="theme-icon">❤️</span>
+                    <h4>爱与恨的交织</h4>
+                    <p>兄弟之间的爱，导致了一系列悲剧的发生。浓重炽烈且绝对纯粹的感情，不顾一切地牺牲。</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 卷章结构 -->
+        <section class="section" id="structure">
+            <h2 class="section-title">卷章结构</h2>
+            
+            <!-- 序章 -->
+            <div class="volume-list">
+                <div class="volume-item" style="border-left: 2px solid var(--ice-glow);">
+                    <h4>序章：冰雪王爵与末世苍雪（第1-2章）</h4>
+                    <p style="color: var(--ice-bright); margin-bottom: 15px; font-size: 0.95rem;">故事的引子，作者以第一人称回忆创作心路，奠定全书悲凉唯美的基调。</p>
+                    <p>郭敬明以2008年重读旧作的视角，回忆17岁时创作《幻城》的心境。那些银色的骑士和裹着黑色斗篷的妖术师，从梦境中走来，成为永恒的传奇。序章充满了对青春的缅怀和对逝去时光的感慨。</p>
+                    <div class="chapters">
+                        <span class="chapter-tag">序一 喜悦与安慰</span>
+                        <span class="chapter-tag">序二 和春天终年不遇</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 第一部分 -->
+            <div class="volume-list">
+                <div class="volume-item">
+                    <h4>第一部分：幻城（第3-6章）</h4>
+                    <p style="color: var(--ice-bright); margin-bottom: 15px; font-size: 0.95rem;">冰族皇子的童年与流亡，兄弟情深的起源，命运悲剧的开端。</p>
+                    
+                    <div class="chapter-detail">
+                        <div class="chapter-item">
+                            <span class="chapter-num">第3章</span>
+                            <div class="chapter-info">
+                                <h5>我的名字叫卡索</h5>
+                                <p>卡索自我介绍，讲述在雪雾森林长大的经历。陪伴他的是一个老得无法记得年龄的巫师婆婆。弟弟樱空释是冰族仅存的两个幻术师之一。霰雪鸟的意象首次出现，象征着自由与囚禁的永恒主题。</p>
+                            </div>
+                        </div>
+                        
+                        <div class="chapter-item">
+                            <span class="chapter-num">第4章</span>
+                            <div class="chapter-info">
+                                <h5>生平第一次杀人</h5>
+                                <p>卡索为了保护弟弟樱空释，生平第一次杀人。这个情节奠定了卡索"为弟弟不惜一切"的性格基调，也暗示了后续悲剧的伏笔。兄弟二人在凡世相依为命的艰难岁月。</p>
+                            </div>
+                        </div>
+                        
+                        <div class="chapter-item">
+                            <span class="chapter-num">第5章</span>
+                            <div class="chapter-info">
+                                <h5>婆婆，我不想长大</h5>
+                                <p>卡索对婆婆说出"我不想长大"的心声，表达了对自由和纯真的渴望。婆婆的神秘身份和对卡索的保护，暗示了冰族皇室的秘密。雪雾森林的美好时光与即将到来的风暴形成对比。</p>
+                            </div>
+                        </div>
+                        
+                        <div class="chapter-item">
+                            <span class="chapter-num">第6章</span>
+                            <div class="chapter-info">
+                                <h5>前世的巫师</h5>
+                                <p>揭示卡索前世是被困在炼泅石的巫师，樱空释前世是霰雪鸟的传说。前世的因果关系为后文的悲剧埋下伏笔。命运的轮回开始显现，预示着今生的纠葛。</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="volume-summary">
+                        <strong>核心情节：</strong>冰火大战的背景铺垫，卡索与樱空释的兄弟情深，流亡凡世三十年的艰辛，命运悲剧的种子播下。
+                    </div>
+                </div>
+                
+                <!-- 第二部分 -->
+                <div class="volume-item">
+                    <h4>第二部分：雪国（第7-24章）</h4>
+                    <p style="color: var(--ice-bright); margin-bottom: 15px; font-size: 0.95rem;">小说的核心篇章，幻雪神山的冒险，四大护法的考验，命运的残酷揭露。</p>
+                    
+                    <div class="chapter-detail">
+                        <div class="chapter-item">
+                            <span class="chapter-num">第7章</span>
+                            <div class="chapter-info">
+                                <h5>350岁的幻雪帝国之王</h5>
+                                <p>卡索继承王位，成为幻雪帝国之王。350岁的他肩负起重建冰族的重任，却始终无法放下对弟弟的思念。王位的枷锁与自由的渴望形成强烈冲突。</p>
+                            </div>
+                        </div>
+                        
+                        <div class="chapter-item">
+                            <span class="chapter-num">第8章</span>
+                            <div class="chapter-info">
+                                <h5>刃雪城中的幻术师</h5>
+                                <p>介绍刃雪城中的幻术师群体，冰族幻术的传承与衰落。卡索作为国王的孤独，以及对弟弟樱空释的无尽思念。刃雪城的繁华与寂寞并存。</p>
+                            </div>
+                        </div>
+                        
+                        <div class="chapter-item">
+                            <span class="chapter-num">第9章</span>
+                            <div class="chapter-info">
+                                <h5>幻雪神山的秘密</h5>
+                                <p>占星师星旧告知卡索幻雪神山的秘密——那里有可以复活亲人的隐莲。卡索决定率领伙伴进入幻雪神山，开始了一场危险的冒险之旅。</p>
+                            </div>
+                        </div>
+                        
+                        <div class="chapter-item">
+                            <span class="chapter-num">第10-11章</span>
+                            <div class="chapter-info">
+                                <h5>必输的战斗 / 跟辽溅过招</h5>
+                                <p>冒险队伍进入幻雪神山，遭遇第一场考验。辽溅的武艺展示，团队成员的能力初现。战斗的残酷与团队的磨合，为后续的挑战做准备。</p>
+                            </div>
+                        </div>
+                        
+                        <div class="chapter-item">
+                            <span class="chapter-num">第12-13章</span>
+                            <div class="chapter-info">
+                                <h5>蝶澈的暗杀术 / 魇·蝶澈·焰破</h5>
+                                <p>蝶澈的暗杀术首次登场，黑巫术的恐怖展现。魇、蝶澈、焰破三位敌人的出现，考验着冒险队伍的智慧与勇气。暗杀与反暗杀的惊心较量。</p>
+                            </div>
+                        </div>
+                        
+                        <div class="chapter-item">
+                            <span class="chapter-num">第14-15章</span>
+                            <div class="chapter-info">
+                                <h5>星昼的法术 / 星轨葬在开满樱花的山坡</h5>
+                                <p>星昼的占星术展示，星轨的悲剧命运。樱花山坡的葬礼，美丽而凄凉。占星师的命运与樱花的意象交织，暗示着后续的悲剧。</p>
+                            </div>
+                        </div>
+                        
+                        <div class="chapter-item">
+                            <span class="chapter-num">第16-18章</span>
+                            <div class="chapter-info">
+                                <h5>西方护法的领域 / 谁是熵裂 / 遇刺</h5>
+                                <p>进入西方护法的领域，熵裂身份的谜团，卡索遭遇暗杀。真相与谎言交织，信任与背叛的考验。西方护法的阴谋逐渐浮出水面。</p>
+                            </div>
+                        </div>
+                        
+                        <div class="chapter-item">
+                            <span class="chapter-num">第19-20章</span>
+                            <div class="chapter-info">
+                                <h5>辽溅死于毒针 / 找寻中毒人</h5>
+                                <p>辽溅的死亡，毒针的阴谋。冒险队伍陷入危机，寻找中毒者的紧迫任务。死亡的阴影笼罩，团队面临分裂的危险。</p>
+                            </div>
+                        </div>
+                        
+                        <div class="chapter-item">
+                            <span class="chapter-num">第21-23章</span>
+                            <div class="chapter-info">
+                                <h5>凤凰真凶 / 凡世的欢乐 / 寂寞的王</h5>
+                                <p>凤凰真凶的揭露，凡世欢乐的短暂回忆，卡索作为王的寂寞。真相大白后的释然与悲伤，欢乐与寂寞的强烈对比。</p>
+                            </div>
+                        </div>
+                        
+                        <div class="chapter-item">
+                            <span class="chapter-num">第24章</span>
+                            <div class="chapter-info">
+                                <h5>西方护法之魇 / 梦魇·星轨·雪照 / 不可战胜的渊祭</h5>
+                                <p>西方护法的最终对决，梦魇的恐怖，渊祭的登场。渊祭的无比强大，让所有人绝望。卡索面临最艰难的抉择，命运的齿轮开始转动。</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="volume-summary">
+                        <strong>核心情节：</strong>卡索率领伙伴进入幻雪神山寻找隐莲，依次击败四大护法，经历生死考验。辽溅、星轨等伙伴的牺牲，西方护法的阴谋，最终与渊祭的决战。
+                    </div>
+                </div>
+                
+                <!-- 第三部分 -->
+                <div class="volume-item">
+                    <h4>第三部分：樱花祭（第25-29章）</h4>
+                    <p style="color: var(--ice-bright); margin-bottom: 15px; font-size: 0.95rem;">悲剧的高潮与结局，复活的代价，命运的最终审判，兄弟的宿命终结。</p>
+                    
+                    <div class="chapter-detail">
+                        <div class="chapter-item">
+                            <span class="chapter-num">第25章</span>
+                            <div class="chapter-info">
+                                <h5>离开幻雪神山的一百年</h5>
+                                <p>获得隐莲后离开幻雪神山，一百年的时光流逝。卡索带着隐莲和希望返回，却不知渊祭的诅咒已经悄然降临。时间的重量与希望的脆弱。</p>
+                            </div>
+                        </div>
+                        
+                        <div class="chapter-item">
+                            <span class="chapter-num">第26章</span>
+                            <div class="chapter-info">
+                                <h5>正室离镜</h5>
+                                <p>离镜（岚裳转世）的出现，复活仪式的准备。卡索以为可以重获幸福，却不知诅咒即将生效。希望与绝望的交织，命运的嘲弄开始。</p>
+                            </div>
+                        </div>
+                        
+                        <div class="chapter-item">
+                            <span class="chapter-num">第27章</span>
+                            <div class="chapter-info">
+                                <h5>皇柝阵亡</h5>
+                                <p>皇柝的牺牲，冒险队伍的最后一位伙伴离去。卡索陷入更深的孤独，复活的希望变得渺茫。死亡的阴影越来越浓重。</p>
+                            </div>
+                        </div>
+                        
+                        <div class="chapter-item">
+                            <span class="chapter-num">第28章</span>
+                            <div class="chapter-info">
+                                <h5>梦魇·离镜·鱼渊</h5>
+                                <p>渊祭诅咒的真相揭晓——岚裳和梨落的意识互换。卡索发现他娶的"梨落"其实是岚裳，而真正的梨落已经死去。命运的残酷玩笑，复活的代价超乎想象。</p>
+                            </div>
+                        </div>
+                        
+                        <div class="chapter-item">
+                            <span class="chapter-num">第29章</span>
+                            <div class="chapter-info">
+                                <h5>尾声</h5>
+                                <p>火族大军在罹天烬率领下攻入刃雪城，卡索发现罹天烬就是樱空释的转世。兄弟重逢的悲剧时刻，卡索选择自尽，樱空释随之而去。化身霰雪鸟撞击练泅石，鲜血化作赤凝莲逆转时空。</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="volume-summary">
+                        <strong>核心情节：</strong>使用隐莲复活亲人，但渊祭诅咒导致岚裳和梨落意识互换。火族入侵，卡索发现罹天烬就是樱空释，最终兄弟双双殒命。悲剧的终极升华。
+                    </div>
+                </div>
+                
+                <!-- 后记 -->
+                <div class="volume-item" style="border-left: 2px solid var(--ice-glow);">
+                    <h4>后记：回忆中的城市（第30章）</h4>
+                    <p style="color: var(--ice-bright); margin-bottom: 15px; font-size: 0.95rem;">作者的创作心路，对青春的告别，对读者的感谢。</p>
+                    <p>郭敬明以散文的笔调，回忆创作《幻城》的那段青春岁月。那些名字——梨落、星旧、泫榻、岚裳、蝶澈、潮涯、迟墨、片风、皇柝、渊祭、剪瞳、离镜——成为了永恒的传奇。后记是作者对青春的告别，也是对读者的感谢。</p>
+                    <div class="chapters">
+                        <span class="chapter-tag">回忆中的城市——不是后记的后记</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="background: rgba(74, 158, 255, 0.04); border: 1px solid rgba(74, 158, 255, 0.15); padding: 30px; margin-top: 35px;">
+                <h4 style="color: var(--ice-bright); margin-bottom: 20px; font-weight: 400; letter-spacing: 0.1em;">📖 全书结构总览</h4>
+                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; text-align: center;">
+                    <div style="padding: 15px; border: 1px solid rgba(74, 158, 255, 0.1);">
+                        <div style="font-size: 1.8rem; color: var(--ice-glow); margin-bottom: 8px;">序章</div>
+                        <div style="color: rgba(168, 216, 255, 0.6); font-size: 0.85rem;">第1-2章</div>
+                        <div style="color: rgba(232, 244, 255, 0.7); font-size: 0.8rem; margin-top: 5px;">创作心路</div>
+                    </div>
+                    <div style="padding: 15px; border: 1px solid rgba(74, 158, 255, 0.1);">
+                        <div style="font-size: 1.8rem; color: var(--ice-glow); margin-bottom: 8px;">幻城</div>
+                        <div style="color: rgba(168, 216, 255, 0.6); font-size: 0.85rem;">第3-6章</div>
+                        <div style="color: rgba(232, 244, 255, 0.7); font-size: 0.8rem; margin-top: 5px;">兄弟情深</div>
+                    </div>
+                    <div style="padding: 15px; border: 1px solid rgba(74, 158, 255, 0.1);">
+                        <div style="font-size: 1.8rem; color: var(--ice-glow); margin-bottom: 8px;">雪国</div>
+                        <div style="color: rgba(168, 216, 255, 0.6); font-size: 0.85rem;">第7-24章</div>
+                        <div style="color: rgba(232, 244, 255, 0.7); font-size: 0.8rem; margin-top: 5px;">神山冒险</div>
+                    </div>
+                    <div style="padding: 15px; border: 1px solid rgba(74, 158, 255, 0.1);">
+                        <div style="font-size: 1.8rem; color: var(--ice-glow); margin-bottom: 8px;">樱花祭</div>
+                        <div style="color: rgba(168, 216, 255, 0.6); font-size: 0.85rem;">第25-30章</div>
+                        <div style="color: rgba(232, 244, 255, 0.7); font-size: 0.8rem; margin-top: 5px;">悲剧终章</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 经典语录 -->
+        <section class="section" id="quotes">
+            <h2 class="section-title">经典语录</h2>
+            <div class="quotes-grid">
+                <div class="quote-card">
+                    <div class="quote-text">
+                        "哥，请你自由地……"
+                    </div>
+                    <div class="quote-source">——樱空释</div>
+                </div>
+                
+                <div class="quote-card">
+                    <div class="quote-text">
+                        "我曾经发过誓，我一定要给哥哥自由，哪怕牺牲我的一切。"
+                    </div>
+                    <div class="quote-source">——樱空释</div>
+                </div>
+                
+                <div class="quote-card">
+                    <div class="quote-text">
+                        "你是冰雪的王爵，你是末世的苍雪。"
+                    </div>
+                    <div class="quote-source">——形容卡索</div>
+                </div>
+                
+                <div class="quote-card">
+                    <div class="quote-text">
+                        "很多年以后，我站在竖立着一块炼泅石的海岸，面朝大海，面朝我的王国，面朝臣服于我的子民，面朝凡世起伏的喧嚣，面朝天空的霰雪鸟，泪流满面。"
+                    </div>
+                    <div class="quote-source">——卡索</div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 作品评价与深度解析 -->
+        <section class="section" id="analysis">
+            <h2 class="section-title">作品评价与深度解析</h2>
+            
+            <!-- 评价概览 -->
+            <div class="analysis-grid" style="margin-bottom: 40px;">
+                <div class="analysis-item">
+                    <h4>文学价值</h4>
+                    <p>开创了"大幻想"的写作风格，华丽的语言与奇幻的想象，动漫叙事手法的运用。年轻的好像文学莫扎特，精灵般剔透澄净的灵魂，谱写出不可思议的早熟旋律。</p>
+                </div>
+                
+                <div class="analysis-item">
+                    <h4>社会影响</h4>
+                    <p>"80后"作家的代表作品，引发了对青春文学的讨论，成为一种文化现象。被改编为电视剧、游戏等多种形式，影响了一代年轻人的审美。</p>
+                </div>
+                
+                <div class="analysis-item">
+                    <h4>争议与批评</h4>
+                    <p>存在模仿CLAMP作品的指控，价值观的争议，宿命论的消极影响。但作品对青春情感的描写深刻，引发了广泛共鸣。</p>
+                </div>
+                
+                <div class="analysis-item">
+                    <h4>核心主题</h4>
+                    <p>自由与束缚的悖论，牺牲与守护的极端，命运与抗争的悲剧，爱与恨的交织。浓重炽烈且绝对纯粹的感情，不顾一切地牺牲。</p>
+                </div>
+            </div>
+            
+            <!-- 深度解析 -->
+            <h3 style="color: var(--ice-bright); font-size: 1.3rem; margin: 40px 0 25px; font-weight: 400; letter-spacing: 0.05em; display: flex; align-items: center;">
+                <span style="display: inline-block; width: 4px; height: 24px; background: var(--ice-glow); margin-right: 15px; box-shadow: 0 0 8px var(--ice-glow);"></span>
+                深度解析
+            </h3>
+            
+            <!-- 叙事结构 -->
+            <div style="background: rgba(74, 158, 255, 0.03); border: 1px solid rgba(74, 158, 255, 0.1); padding: 30px; margin-bottom: 25px;">
+                <h4 style="color: var(--ice-bright); font-size: 1.1rem; margin-bottom: 20px; font-weight: 400;">📐 叙事结构分析</h4>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+                    <div>
+                        <h5 style="color: var(--ice-glow); font-size: 0.95rem; margin-bottom: 10px; font-weight: 500;">三幕式结构</h5>
+                        <p style="color: rgba(232, 244, 255, 0.75); font-size: 0.9rem; line-height: 1.8; font-weight: 300;">
+                            小说采用经典的三幕式结构：幻城（铺垫）→ 雪国（冲突）→ 樱花祭（高潮与结局）。每一部分都承载着不同的叙事功能，层层递进，最终汇聚成悲剧的洪流。
+                        </p>
+                    </div>
+                    <div>
+                        <h5 style="color: var(--ice-glow); font-size: 0.95rem; margin-bottom: 10px; font-weight: 500;">多线叙事</h5>
+                        <p style="color: rgba(232, 244, 255, 0.75); font-size: 0.9rem; line-height: 1.8; font-weight: 300;">
+                            卡索的救赎线、樱空释的牺牲线、梨落与岚裳的爱情线，三条线索交织缠绕，共同编织出命运的悲剧之网。每个角色都有自己的执念与宿命。
+                        </p>
+                    </div>
+                    <div>
+                        <h5 style="color: var(--ice-glow); font-size: 0.95rem; margin-bottom: 10px; font-weight: 500;">轮回叙事</h5>
+                        <p style="color: rgba(232, 244, 255, 0.75); font-size: 0.9rem; line-height: 1.8; font-weight: 300;">
+                            前世（霰雪鸟与巫师）→ 今生（卡索与樱空释）→ 转世（罹天烬），轮回的叙事结构赋予故事宿命感，暗示悲剧的不可避免。
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 四大护法解析 -->
+            <div style="background: rgba(74, 158, 255, 0.03); border: 1px solid rgba(74, 158, 255, 0.1); padding: 35px; margin-bottom: 25px;">
+                <h4 style="color: var(--ice-bright); font-size: 1.1rem; margin-bottom: 25px; font-weight: 400;">🏔️ 四大护法深度解析</h4>
+                <p style="color: rgba(232, 244, 255, 0.75); font-size: 0.9rem; line-height: 1.8; font-weight: 300; margin-bottom: 25px;">
+                    幻雪神山的四大护法是全书最精彩的部分之一。他们不仅是战斗的对手，更是卡索一行人内心恐惧与执念的投射。每一次战斗都是一场心灵的考验，每一次胜利都伴随着牺牲。
+                </p>
+                
+                <!-- 东方护法 -->
+                <div style="background: rgba(74, 158, 255, 0.04); border: 1px solid rgba(74, 158, 255, 0.1); padding: 25px; margin-bottom: 20px;">
+                    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
+                        <div style="width: 50px; height: 50px; background: linear-gradient(135deg, var(--ice-dark), var(--ice-light)); display: flex; align-items: center; justify-content: center; border: 1px solid rgba(74, 158, 255, 0.3);">
+                            <span style="font-size: 1.5rem;">🌊</span>
+                        </div>
+                        <div>
+                            <h5 style="color: var(--ice-bright); font-size: 1rem; font-weight: 500;">东方护法</h5>
+                            <span style="color: var(--ice-glow); font-size: 0.85rem;">蝶澈 · 暗杀之术</span>
+                        </div>
+                    </div>
+                    <p style="color: rgba(232, 244, 255, 0.75); font-size: 0.9rem; line-height: 1.9; font-weight: 300; margin-bottom: 15px;">
+                        东方护法的考验是<strong style="color: var(--ice-bright);">暗杀与信任</strong>。蝶澈擅长暗杀术，可以在无形中取人性命。这场考验的核心不是武力，而是<strong style="color: var(--ice-bright);">团队成员之间的信任</strong>。在暗杀的阴影下，每个人都可能是敌人，每个人都可能是受害者。
+                    </p>
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
+                        <div>
+                            <h6 style="color: var(--ice-glow); font-size: 0.85rem; margin-bottom: 8px; font-weight: 500;">考验的本质</h6>
+                            <p style="color: rgba(168, 216, 255, 0.6); font-size: 0.85rem; line-height: 1.7; font-weight: 300;">
+                                在看不见敌人的环境中，如何相信同伴？当任何人都可能是杀手时，信任成为最奢侈的东西。
+                            </p>
+                        </div>
+                        <div>
+                            <h6 style="color: var(--ice-glow); font-size: 0.85rem; margin-bottom: 8px; font-weight: 500;">象征意义</h6>
+                            <p style="color: rgba(168, 216, 255, 0.6); font-size: 0.85rem; line-height: 1.7; font-weight: 300;">
+                                暗杀象征着生活中看不见的危险，那些潜伏在暗处的威胁。蝶澈的考验提醒我们：真正的敌人往往在暗处。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 西方护法 -->
+                <div style="background: rgba(74, 158, 255, 0.04); border: 1px solid rgba(74, 158, 255, 0.1); padding: 25px; margin-bottom: 20px;">
+                    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
+                        <div style="width: 50px; height: 50px; background: linear-gradient(135deg, var(--ice-dark), var(--ice-light)); display: flex; align-items: center; justify-content: center; border: 1px solid rgba(74, 158, 255, 0.3);">
+                            <span style="font-size: 1.5rem;">🔮</span>
+                        </div>
+                        <div>
+                            <h5 style="color: var(--ice-bright); font-size: 1rem; font-weight: 500;">西方护法</h5>
+                            <span style="color: var(--ice-glow); font-size: 0.85rem;">熵裂 · 身份之谜</span>
+                        </div>
+                    </div>
+                    <p style="color: rgba(232, 244, 255, 0.75); font-size: 0.9rem; line-height: 1.9; font-weight: 300; margin-bottom: 15px;">
+                        西方护法的考验是<strong style="color: var(--ice-bright);">身份与真相</strong>。熵裂的身份一直是个谜，他可能是任何人，可能是队伍中的伙伴，也可能是隐藏的敌人。这场考验的核心是<strong style="color: var(--ice-bright);">自我认知与他人认知的冲突</strong>。
+                    </p>
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
+                        <div>
+                            <h6 style="color: var(--ice-glow); font-size: 0.85rem; margin-bottom: 8px; font-weight: 500;">考验的本质</h6>
+                            <p style="color: rgba(168, 216, 255, 0.6); font-size: 0.85rem; line-height: 1.7; font-weight: 300;">
+                                你真的了解身边的人吗？当你最信任的人可能是敌人时，你还敢相信谁？熵裂的考验是对人际关系的终极拷问。
+                            </p>
+                        </div>
+                        <div>
+                            <h6 style="color: var(--ice-glow); font-size: 0.85rem; margin-bottom: 8px; font-weight: 500;">象征意义</h6>
+                            <p style="color: rgba(168, 216, 255, 0.6); font-size: 0.85rem; line-height: 1.7; font-weight: 300;">
+                                身份之谜象征着人性的复杂性。每个人都有多面性，你看到的可能只是别人想让你看到的。熵裂提醒我们：真相往往隐藏在表象之下。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 南方护法 -->
+                <div style="background: rgba(74, 158, 255, 0.04); border: 1px solid rgba(74, 158, 255, 0.1); padding: 25px; margin-bottom: 20px;">
+                    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
+                        <div style="width: 50px; height: 50px; background: linear-gradient(135deg, var(--ice-dark), var(--ice-light)); display: flex; align-items: center; justify-content: center; border: 1px solid rgba(74, 158, 255, 0.3);">
+                            <span style="font-size: 1.5rem;">☠️</span>
+                        </div>
+                        <div>
+                            <h5 style="color: var(--ice-bright); font-size: 1rem; font-weight: 500;">南方护法</h5>
+                            <span style="color: var(--ice-glow); font-size: 0.85rem;">凤凰 · 毒与牺牲</span>
+                        </div>
+                    </div>
+                    <p style="color: rgba(232, 244, 255, 0.75); font-size: 0.9rem; line-height: 1.9; font-weight: 300; margin-bottom: 15px;">
+                        南方护法的考验是<strong style="color: var(--ice-bright);">毒与牺牲</strong>。凤凰使用毒针，辽溅死于毒针之下。这场考验的核心是<strong style="color: var(--ice-bright);">为了目标愿意付出多大的代价</strong>。辽溅的死，是冒险队伍中第一次真正的牺牲。
+                    </p>
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
+                        <div>
+                            <h6 style="color: var(--ice-glow); font-size: 0.85rem; margin-bottom: 8px; font-weight: 500;">考验的本质</h6>
+                            <p style="color: rgba(168, 216, 255, 0.6); font-size: 0.85rem; line-height: 1.7; font-weight: 300;">
+                                复活亲人的道路上，必然伴随着牺牲。辽溅的死提醒卡索：每一次前进都有代价，每一次胜利都沾满鲜血。
+                            </p>
+                        </div>
+                        <div>
+                            <h6 style="color: var(--ice-glow); font-size: 0.85rem; margin-bottom: 8px; font-weight: 500;">象征意义</h6>
+                            <p style="color: rgba(168, 216, 255, 0.6); font-size: 0.85rem; line-height: 1.7; font-weight: 300;">
+                                毒象征着看不见的伤害，那些慢慢侵蚀你的东西。凤凰的考验告诉我们：有些伤害是致命的，即使你没有察觉。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 北方护法 -->
+                <div style="background: rgba(74, 158, 255, 0.04); border: 1px solid rgba(74, 158, 255, 0.1); padding: 25px; margin-bottom: 20px;">
+                    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
+                        <div style="width: 50px; height: 50px; background: linear-gradient(135deg, var(--ice-dark), var(--ice-light)); display: flex; align-items: center; justify-content: center; border: 1px solid rgba(74, 158, 255, 0.3);">
+                            <span style="font-size: 1.5rem;">🌀</span>
+                        </div>
+                        <div>
+                            <h5 style="color: var(--ice-bright); font-size: 1rem; font-weight: 500;">北方护法</h5>
+                            <span style="color: var(--ice-glow); font-size: 0.85rem;">星轨 · 命运与选择</span>
+                        </div>
+                    </div>
+                    <p style="color: rgba(232, 244, 255, 0.75); font-size: 0.9rem; line-height: 1.9; font-weight: 300; margin-bottom: 15px;">
+                        北方护法的考验是<strong style="color: var(--ice-bright);">命运与选择</strong>。星轨是占星师，可以预知未来。这场考验的核心是<strong style="color: var(--ice-bright);">当你知道结局时，你还会选择开始吗</strong>？星轨的悲剧在于她预知了自己的死亡，却依然选择前行。
+                    </p>
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
+                        <div>
+                            <h6 style="color: var(--ice-glow); font-size: 0.85rem; margin-bottom: 8px; font-weight: 500;">考验的本质</h6>
+                            <p style="color: rgba(168, 216, 255, 0.6); font-size: 0.85rem; line-height: 1.7; font-weight: 300;">
+                                预知命运是一种诅咒还是祝福？当你知道一切努力终将白费时，你还会继续吗？星轨的选择是对人类意志的终极考验。
+                            </p>
+                        </div>
+                        <div>
+                            <h6 style="color: var(--ice-glow); font-size: 0.85rem; margin-bottom: 8px; font-weight: 500;">象征意义</h6>
+                            <p style="color: rgba(168, 216, 255, 0.6); font-size: 0.85rem; line-height: 1.7; font-weight: 300;">
+                                星轨象征着宿命论与自由意志的冲突。她的存在提醒我们：即使命运已定，选择本身依然有意义。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 四大护法总结 -->
+                <div style="background: rgba(168, 216, 255, 0.05); border: 1px solid rgba(74, 158, 255, 0.15); padding: 25px; margin-top: 25px;">
+                    <h5 style="color: var(--ice-bright); font-size: 1rem; margin-bottom: 15px; font-weight: 500;">四大护法的递进关系</h5>
+                    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; text-align: center; margin-bottom: 20px;">
+                        <div style="padding: 12px; border: 1px solid rgba(74, 158, 255, 0.1);">
+                            <div style="color: var(--ice-glow); font-size: 0.9rem; font-weight: 500;">东方</div>
+                            <div style="color: rgba(168, 216, 255, 0.6); font-size: 0.8rem; margin-top: 5px;">信任考验</div>
+                        </div>
+                        <div style="padding: 12px; border: 1px solid rgba(74, 158, 255, 0.1);">
+                            <div style="color: var(--ice-glow); font-size: 0.9rem; font-weight: 500;">西方</div>
+                            <div style="color: rgba(168, 216, 255, 0.6); font-size: 0.8rem; margin-top: 5px;">认知考验</div>
+                        </div>
+                        <div style="padding: 12px; border: 1px solid rgba(74, 158, 255, 0.1);">
+                            <div style="color: var(--ice-glow); font-size: 0.9rem; font-weight: 500;">南方</div>
+                            <div style="color: rgba(168, 216, 255, 0.6); font-size: 0.8rem; margin-top: 5px;">牺牲考验</div>
+                        </div>
+                        <div style="padding: 12px; border: 1px solid rgba(74, 158, 255, 0.1);">
+                            <div style="color: var(--ice-glow); font-size: 0.9rem; font-weight: 500;">北方</div>
+                            <div style="color: rgba(168, 216, 255, 0.6); font-size: 0.8rem; margin-top: 5px;">命运考验</div>
+                        </div>
+                    </div>
+                    <p style="color: rgba(232, 244, 255, 0.75); font-size: 0.9rem; line-height: 1.9; font-weight: 300;">
+                        四大护法的考验呈现出<strong style="color: var(--ice-bright);">递进关系</strong>：从外在的威胁（暗杀）到内在的怀疑（身份），再到生命的代价（牺牲），最后到终极的拷问（命运）。每一场考验都在剥离卡索的保护层，让他直面最残酷的真相。<strong style="color: var(--ice-bright);">四大护法不仅是敌人，更是镜子，映照出卡索内心的恐惧与执念。</strong>
+                    </p>
+                </div>
+            </div>
+            
+            <!-- 人物塑造 -->
+            <div style="background: rgba(74, 158, 255, 0.03); border: 1px solid rgba(74, 158, 255, 0.1); padding: 30px; margin-bottom: 25px;">
+                <h4 style="color: var(--ice-bright); font-size: 1.1rem; margin-bottom: 20px; font-weight: 400;">👥 人物塑造深度解析</h4>
+                
+                <div style="margin-bottom: 25px;">
+                    <h5 style="color: var(--ice-glow); font-size: 0.95rem; margin-bottom: 12px; font-weight: 500;">卡索：被囚禁的自由者</h5>
+                    <p style="color: rgba(232, 244, 255, 0.75); font-size: 0.9rem; line-height: 1.9; font-weight: 300;">
+                        卡索是全书最复杂的悲剧人物。他渴望自由，却被王位束缚；他想保护弟弟，却亲手杀死了他；他想复活亲人，却带来更大的悲剧。他的每一次选择都出于爱，却都导向毁灭。<strong style="color: var(--ice-bright);">卡索的悲剧在于：他是被命运嘲弄的理想主义者。</strong>他相信可以通过努力改变一切，却发现自己只是命运棋盘上的一颗棋子。
+                    </p>
+                </div>
+                
+                <div style="margin-bottom: 25px;">
+                    <h5 style="color: var(--ice-glow); font-size: 0.95rem; margin-bottom: 12px; font-weight: 500;">樱空释：为爱而生的恶魔</h5>
+                    <p style="color: rgba(232, 244, 255, 0.75); font-size: 0.9rem; line-height: 1.9; font-weight: 300;">
+                        樱空释是全书最具争议的人物。他杀人如麻，却只为哥哥能获得自由；他学习火族幻术，被视为背叛，实则是为了保护哥哥。<strong style="color: var(--ice-bright);">樱空释的悲剧在于：他的爱太极端，极端到可以毁灭一切。</strong>他是那种"为爱可以毁掉一切"的人，这种爱既纯粹又可怕。当他转世为罹天烬后，即使失去记忆，毁灭冰族的执念依然存在——这暗示着他的爱已经超越了记忆，成为灵魂的一部分。
+                    </p>
+                </div>
+                
+                <div style="margin-bottom: 25px;">
+                    <h5 style="color: var(--ice-glow); font-size: 0.95rem; margin-bottom: 12px; font-weight: 500;">梨落与岚裳：被牺牲的女性</h5>
+                    <p style="color: rgba(232, 244, 255, 0.75); font-size: 0.9rem; line-height: 1.9; font-weight: 300;">
+                        梨落因血统不纯被反对，岚裳被人玷污后自杀。她们的命运都被男性角色的决定所左右。<strong style="color: var(--ice-bright);">她们的悲剧折射出小说中的等级观念与父权结构。</strong>冰族崇尚血统纯正，梨落的"不纯"成为她无法跨越的障碍；岚裳的"清白"被毁，直接导致她的死亡。这种设定虽然服务于情节，但也暴露了某种价值观的局限。
+                    </p>
+                </div>
+                
+                <div>
+                    <h5 style="color: var(--ice-glow); font-size: 0.95rem; margin-bottom: 12px; font-weight: 500;">渊祭：命运的化身</h5>
+                    <p style="color: rgba(232, 244, 255, 0.75); font-size: 0.9rem; line-height: 1.9; font-weight: 300;">
+                        渊祭是全书的终极反派，但他的存在更像是"命运"的象征。他可以随意操纵他人的人生，给卡索下诅咒，让岚裳和梨落意识互换。<strong style="color: var(--ice-bright);">渊祭代表了一种不可抗拒的宿命力量。</strong>他不是因为仇恨而作恶，而是因为"可以"——这种无动机的恶，比有动机的恶更令人恐惧。
+                    </p>
+                </div>
+            </div>
+            
+            <!-- 意象与象征 -->
+            <div style="background: rgba(74, 158, 255, 0.03); border: 1px solid rgba(74, 158, 255, 0.1); padding: 30px; margin-bottom: 25px;">
+                <h4 style="color: var(--ice-bright); font-size: 1.1rem; margin-bottom: 20px; font-weight: 400;">🔮 意象与象征分析</h4>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                    <div style="padding: 20px; border: 1px solid rgba(74, 158, 255, 0.08);">
+                        <h5 style="color: var(--ice-glow); font-size: 0.95rem; margin-bottom: 10px; font-weight: 500;">❄️ 冰雪</h5>
+                        <p style="color: rgba(232, 244, 255, 0.7); font-size: 0.85rem; line-height: 1.8; font-weight: 300;">
+                            贯穿全书的核心意象。冰雪象征着寒冷、孤独、纯洁，也象征着冰族的高贵与脆弱。卡索被称为"冰雪的王爵"，暗示他的命运如同冰雪般美丽而短暂。
+                        </p>
+                    </div>
+                    <div style="padding: 20px; border: 1px solid rgba(74, 158, 255, 0.08);">
+                        <h5 style="color: var(--ice-glow); font-size: 0.95rem; margin-bottom: 10px; font-weight: 500;">🔥 红莲</h5>
+                        <p style="color: rgba(232, 244, 255, 0.7); font-size: 0.85rem; line-height: 1.8; font-weight: 300;">
+                            樱空释的象征。红莲火焰代表着他的热情、执念与毁灭性。当他死在卡索剑下时，鲜血化作红莲为哥哥御寒——毁灭与守护在同一刻完成。
+                        </p>
+                    </div>
+                    <div style="padding: 20px; border: 1px solid rgba(74, 158, 255, 0.08);">
+                        <h5 style="color: var(--ice-glow); font-size: 0.95rem; margin-bottom: 10px; font-weight: 500;">🐦 霰雪鸟</h5>
+                        <p style="color: rgba(232, 244, 255, 0.7); font-size: 0.85rem; line-height: 1.8; font-weight: 300;">
+                            自由的象征。卡索渴望成为霰雪鸟自由飞翔，却永远被束缚。樱空释的前世是霰雪鸟，暗示他为了自由（哥哥的自由）而牺牲的本质。
+                        </p>
+                    </div>
+                    <div style="padding: 20px; border: 1px solid rgba(74, 158, 255, 0.08);">
+                        <h5 style="color: var(--ice-glow); font-size: 0.95rem; margin-bottom: 10px; font-weight: 500;">🌸 樱花</h5>
+                        <p style="color: rgba(232, 244, 255, 0.7); font-size: 0.85rem; line-height: 1.8; font-weight: 300;">
+                            美丽与死亡的象征。樱花盛开时绚烂，凋零时凄美。小说中多次出现樱花的意象，暗示着美好事物的短暂与悲剧的必然。
+                        </p>
+                    </div>
+                    <div style="padding: 20px; border: 1px solid rgba(74, 158, 255, 0.08);">
+                        <h5 style="color: var(--ice-glow); font-size: 0.95rem; margin-bottom: 10px; font-weight: 500;">💎 隐莲</h5>
+                        <p style="color: rgba(232, 244, 255, 0.7); font-size: 0.85rem; line-height: 1.8; font-weight: 300;">
+                            复活与诅咒的双重象征。隐莲可以复活亲人，却带着渊祭的诅咒。它象征着"复活的代价"——想挽回失去的东西，必须付出更大的代价。
+                        </p>
+                    </div>
+                    <div style="padding: 20px; border: 1px solid rgba(74, 158, 255, 0.08);">
+                        <h5 style="color: var(--ice-glow); font-size: 0.95rem; margin-bottom: 10px; font-weight: 500;">⛓️ 炼泅石</h5>
+                        <p style="color: rgba(232, 244, 255, 0.7); font-size: 0.85rem; line-height: 1.8; font-weight: 300;">
+                            囚禁与牺牲的象征。卡索前世被困在炼泅石，樱空释前世撞断铁链牺牲自己。今生的悲剧，是前世因果的延续。
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 语言风格 -->
+            <div style="background: rgba(74, 158, 255, 0.03); border: 1px solid rgba(74, 158, 255, 0.1); padding: 30px; margin-bottom: 25px;">
+                <h4 style="color: var(--ice-bright); font-size: 1.1rem; margin-bottom: 20px; font-weight: 400;">✍️ 语言风格分析</h4>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 25px;">
+                    <div>
+                        <h5 style="color: var(--ice-glow); font-size: 0.95rem; margin-bottom: 12px; font-weight: 500;">华丽唯美的诗意语言</h5>
+                        <p style="color: rgba(232, 244, 255, 0.75); font-size: 0.9rem; line-height: 1.9; font-weight: 300;">
+                            郭敬明的语言以华丽著称。他善于使用排比、比喻、通感等修辞手法，营造出如梦如幻的意境。"那些冰雪的王爵，站立在旷世的原野上，冰雪在他们肩膀上累积出漫长的悲凉"——这样的句子充满了画面感和诗意。
+                        </p>
+                    </div>
+                    <div>
+                        <h5 style="color: var(--ice-glow); font-size: 0.95rem; margin-bottom: 12px; font-weight: 500;">动漫式的场景描写</h5>
+                        <p style="color: rgba(232, 244, 255, 0.75); font-size: 0.9rem; line-height: 1.9; font-weight: 300;">
+                            小说采用动漫叙事手法，场景描写具有强烈的画面感。白色长发、蓝色瞳孔、冰系幻术等设定，都带有明显的动漫风格。这种写法虽然被批评为"轻浮"，但也让作品具有独特的视觉美感。
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 文学地位 -->
+            <div style="background: rgba(74, 158, 255, 0.03); border: 1px solid rgba(74, 158, 255, 0.1); padding: 30px; margin-bottom: 25px;">
+                <h4 style="color: var(--ice-bright); font-size: 1.1rem; margin-bottom: 20px; font-weight: 400;">📚 文学地位与影响</h4>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                    <div>
+                        <h5 style="color: var(--ice-glow); font-size: 0.95rem; margin-bottom: 10px; font-weight: 500;">"80后"文学的里程碑</h5>
+                        <p style="color: rgba(232, 244, 255, 0.75); font-size: 0.9rem; line-height: 1.8; font-weight: 300;">
+                            《幻城》是"80后"作家群体的代表作之一，标志着这一代作家登上文学舞台。它开创了"大幻想"的写作风格，影响了无数后来的青春文学创作者。
+                        </p>
+                    </div>
+                    <div>
+                        <h5 style="color: var(--ice-glow); font-size: 0.95rem; margin-bottom: 10px; font-weight: 500;">争议中的经典</h5>
+                        <p style="color: rgba(232, 244, 255, 0.75); font-size: 0.9rem; line-height: 1.8; font-weight: 300;">
+                            《幻城》自出版以来就饱受争议：模仿CLAMP的指控、价值观的批评、文笔的质疑。但无可否认的是，它触动了一代人的青春记忆，成为某种文化符号。
+                        </p>
+                    </div>
+                    <div>
+                        <h5 style="color: var(--ice-glow); font-size: 0.95rem; margin-bottom: 10px; font-weight: 500;">跨媒介的影响力</h5>
+                        <p style="color: rgba(232, 244, 255, 0.75); font-size: 0.9rem; line-height: 1.8; font-weight: 300;">
+                            从小说到电视剧、游戏、漫画，《幻城》的影响力跨越了多种媒介。2016年的电视剧版虽然改编争议颇多，但也让这个故事触及了更广泛的受众。
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 结语 -->
+            <div style="text-align: center; padding: 30px; border-top: 1px solid rgba(74, 158, 255, 0.1); margin-top: 30px;">
+                <p style="color: var(--ice-bright); font-size: 1rem; font-style: italic; line-height: 2; font-weight: 300;">
+                    "很多年以后，我站在竖立着一块炼泅石的海岸，面朝大海，面朝我的王国，<br>
+                    面朝臣服于我的子民，面朝凡世起伏的喧嚣，面朝天空的霰雪鸟，泪流满面。"
+                </p>
+                <p style="color: rgba(168, 216, 255, 0.5); font-size: 0.85rem; margin-top: 15px;">
+                    ——这或许是《幻城》最真实的写照：一个关于爱、牺牲与永恒孤独的故事
+                </p>
+            </div>
+        </section>
+        
+
+    </main>
+    
+    <footer>
+        <div class="container">
+            <div style="margin-bottom: 25px; opacity: 0.4;">
+                <span style="font-size: 2rem; letter-spacing: 0.5em;">❄ ❅ ❆ ❅ ❄</span>
+            </div>
+            <p style="font-size: 1.1rem; color: var(--ice-bright); margin-bottom: 15px;">幻城 · 介绍页</p>
+            <p style="font-size: 0.9rem; opacity: 0.7; margin-bottom: 20px;">基于郭敬明原著小说及网络资料整理</p>
+            <div style="width: 100px; height: 1px; background: linear-gradient(90deg, transparent, var(--ice-glow), transparent); margin: 20px auto;"></div>
+            <p style="font-size: 0.85rem; opacity: 0.5; font-style: italic;">
+                "哥，请你自由地……"
+            </p>
+            <p class="copyright" style="margin-top: 25px;">数据来源：原著小说、维基百科、百度百科、豆瓣等</p>
+        </div>
+    </footer>
+    
+    <div class="back-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">↑</div>
+    
+    <script>
+        window.addEventListener('scroll', function() {
+            const backToTop = document.querySelector('.back-to-top');
+            if (window.scrollY > 300) {
+                backToTop.classList.add('visible');
+            } else {
+                backToTop.classList.remove('visible');
+            }
+        });
+        
+        const sections = document.querySelectorAll('.section');
+        const navLinks = document.querySelectorAll('nav ul li a');
+        
+        window.addEventListener('scroll', function() {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (pageYOffset >= sectionTop - 200) {
+                    current = section.getAttribute('id');
+                }
+            });
+            
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + current) {
+                    link.classList.add('active');
+                }
+            });
+        });
+        
+        document.querySelectorAll('nav a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+        
+        function createIceCrystals() {
+            const header = document.querySelector('header');
+            for (let i = 0; i < 20; i++) {
+                const crystal = document.createElement('div');
+                crystal.className = 'ice-crystal';
+                crystal.style.left = Math.random() * 100 + '%';
+                crystal.style.top = Math.random() * 100 + '%';
+                crystal.style.animationDuration = (3 + Math.random() * 4) + 's';
+                crystal.style.animationDelay = Math.random() * 2 + 's';
+                header.appendChild(crystal);
+            }
+        }
+        createIceCrystals();
+    </script>
+</body>
+</html>
