@@ -1,0 +1,2086 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>《明朝那些事儿》— 当年明月的历史江湖</title>
+    <link rel="preconnect" href="https://fonts.loli.net">
+    <link href="https://fonts.loli.net/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* ===== DESIGN TOKENS ===== */
+        :root {
+            /* Colors - Ming Dynasty palette */
+            --bg-primary: #0f1419;
+            --bg-secondary: #1a2028;
+            --bg-card: rgba(26, 32, 40, 0.85);
+            --bg-card-hover: rgba(40, 52, 68, 0.95);
+            --bg-glass: rgba(255, 255, 255, 0.03);
+
+            --gold-primary: #d4a853;
+            --gold-light: #f0d78c;
+            --gold-glow: rgba(212, 168, 83, 0.4);
+            --gold-subtle: rgba(212, 168, 83, 0.1);
+
+            --crimson: #c0392b;
+            --crimson-light: #e74c3c;
+            --crimson-glow: rgba(192, 57, 43, 0.3);
+
+            --jade: #27ae60;
+            --jade-glow: rgba(39, 174, 96, 0.3);
+
+            --violet: #8e44ad;
+            --violet-glow: rgba(142, 68, 173, 0.3);
+
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+
+            --border-subtle: rgba(212, 168, 83, 0.15);
+            --border-active: rgba(212, 168, 83, 0.5);
+
+            /* Spacing */
+            --space-1: 4px;
+            --space-2: 8px;
+            --space-3: 12px;
+            --space-4: 16px;
+            --space-5: 20px;
+            --space-6: 24px;
+            --space-8: 32px;
+            --space-10: 40px;
+            --space-12: 48px;
+            --space-16: 64px;
+
+            /* Typography */
+            --font-display: 'Noto Serif SC', 'STSong', 'SimSun', serif;
+            --font-body: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+
+            /* Radii */
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 20px;
+            --radius-xl: 28px;
+
+            /* Shadows */
+            --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.4), 0 1px 2px rgba(0, 0, 0, 0.3);
+            --shadow-glow: 0 0 40px rgba(212, 168, 83, 0.15);
+            --shadow-hover: 0 12px 48px rgba(212, 168, 83, 0.25), 0 4px 16px rgba(0, 0, 0, 0.5);
+
+            /* Transitions */
+            --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+            --duration-normal: 0.3s;
+            --duration-slow: 0.6s;
+        }
+
+        /* ===== RESET & BASE ===== */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 80px;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.7;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* ===== BACKGROUND ATMOSPHERE ===== */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 800px 600px at 20% 20%, rgba(192, 57, 43, 0.06), transparent),
+                radial-gradient(ellipse 600px 800px at 80% 80%, rgba(212, 168, 83, 0.05), transparent),
+                radial-gradient(ellipse 1000px 400px at 50% 50%, rgba(39, 174, 96, 0.04), transparent);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Floating particles */
+        .particles {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: var(--gold-primary);
+            border-radius: 50%;
+            opacity: 0;
+            animation: float-up linear infinite;
+        }
+
+        @keyframes float-up {
+            0% { opacity: 0; transform: translateY(100vh) scale(0); }
+            10% { opacity: 0.8; }
+            90% { opacity: 0.3; }
+            100% { opacity: 0; transform: translateY(-10vh) scale(1); }
+        }
+
+        /* ===== PROGRESS BAR ===== */
+        .progress-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--crimson), var(--gold-primary), var(--jade));
+            transition: width 0.15s linear;
+            box-shadow: 0 0 12px var(--gold-glow);
+        }
+
+        /* ===== NAVIGATION ===== */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: var(--space-4) var(--space-8);
+            background: rgba(15, 20, 25, 0.85);
+            backdrop-filter: blur(20px) saturate(1.5);
+            -webkit-backdrop-filter: blur(20px) saturate(1.5);
+            border-bottom: 1px solid var(--border-subtle);
+            transition: transform var(--duration-normal) var(--ease-out);
+        }
+
+        .nav.hidden { transform: translateY(0); }
+
+        .nav-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-4);
+            position: relative;
+        }
+
+        .nav-brand {
+            font-family: var(--font-display);
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--gold-primary);
+            white-space: nowrap;
+            letter-spacing: 0.05em;
+            position: absolute;
+            left: 0;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: var(--space-2);
+            list-style: none;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: var(--space-4);
+            position: absolute;
+            right: 0;
+        }
+
+        .nav-progress {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            white-space: nowrap;
+        }
+
+        .nav-links::-webkit-scrollbar { display: none; }
+
+        .nav-link {
+            padding: var(--space-2) var(--space-3);
+            border-radius: var(--radius-sm);
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.85rem;
+            white-space: nowrap;
+            transition: all var(--duration-normal) var(--ease-out);
+            position: relative;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: var(--gold-primary);
+            background: var(--gold-subtle);
+        }
+
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 16px;
+            height: 2px;
+            background: var(--gold-primary);
+            border-radius: 1px;
+        }
+
+        .nav-progress-ring {
+            width: 28px;
+            height: 28px;
+        }
+
+        .nav-progress-ring circle {
+            fill: none;
+            stroke-width: 3;
+        }
+
+        .nav-progress-ring .bg { stroke: rgba(255,255,255,0.1); }
+        .nav-progress-ring .fill {
+            stroke: var(--gold-primary);
+            stroke-linecap: round;
+            transform: rotate(-90deg);
+            transform-origin: center;
+            transition: stroke-dashoffset 0.5s var(--ease-out);
+        }
+
+        /* ===== HERO SECTION ===== */
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: var(--space-16) var(--space-6);
+            text-align: center;
+            z-index: 1;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-2);
+            padding: var(--space-2) var(--space-4);
+            background: var(--gold-subtle);
+            border: 1px solid var(--border-subtle);
+            border-radius: 999px;
+            font-size: 0.85rem;
+            color: var(--gold-light);
+            margin-bottom: var(--space-8);
+            animation: fadeInDown 0.8s var(--ease-out) both;
+        }
+
+        .hero-badge-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--crimson);
+            border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        .hero-title {
+            font-family: var(--font-display);
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: var(--space-6);
+            animation: fadeInUp 1s var(--ease-out) 0.2s both;
+        }
+
+        .hero-title .char-gold {
+            background: linear-gradient(135deg, var(--gold-light), var(--gold-primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-title .char-crimson {
+            color: var(--crimson);
+            -webkit-text-fill-color: var(--crimson);
+        }
+
+        .hero-subtitle {
+            font-family: var(--font-display);
+            font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+            color: var(--text-secondary);
+            margin-bottom: var(--space-10);
+            letter-spacing: 0.15em;
+            animation: fadeInUp 1s var(--ease-out) 0.4s both;
+        }
+
+        .hero-quote {
+            max-width: 600px;
+            font-family: var(--font-display);
+            font-size: 1.15rem;
+            color: var(--text-muted);
+            font-style: italic;
+            margin-bottom: var(--space-10);
+            padding: var(--space-6);
+            border-left: 2px solid var(--gold-primary);
+            text-align: left;
+            animation: fadeInUp 1s var(--ease-out) 0.5s both;
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: var(--space-10);
+            margin-bottom: var(--space-10);
+            animation: fadeInUp 1s var(--ease-out) 0.6s both;
+        }
+
+        .hero-stat {
+            text-align: center;
+        }
+
+        .hero-stat-value {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--gold-primary);
+        }
+
+        .hero-stat-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: var(--space-1);
+        }
+
+        .hero-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-3);
+            padding: var(--space-4) var(--space-8);
+            background: linear-gradient(135deg, var(--gold-primary), #b8942e);
+            color: var(--bg-primary);
+            font-family: var(--font-body);
+            font-weight: 700;
+            font-size: 1rem;
+            border: none;
+            border-radius: var(--radius-lg);
+            cursor: pointer;
+            transition: all var(--duration-normal) var(--ease-out);
+            animation: fadeInUp 1s var(--ease-out) 0.7s both;
+            text-decoration: none;
+            margin-bottom: var(--space-10);
+        }
+
+        .hero-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .hero-cta-arrow {
+            transition: transform var(--duration-normal) var(--ease-out);
+        }
+
+        .hero-cta:hover .hero-cta-arrow {
+            transform: translateX(4px);
+        }
+
+        .hero-scroll-hint {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--space-2);
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            animation: scrollHintFadeIn 1s var(--ease-out) 1s both;
+            margin-top: var(--space-10);
+        }
+
+        @keyframes scrollHintFadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .scroll-line {
+            width: 1px;
+            height: 40px;
+            background: linear-gradient(to bottom, var(--gold-primary), transparent);
+            animation: scroll-bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes scroll-bounce {
+            0%, 100% { opacity: 0.3; transform: scaleY(0.5); }
+            50% { opacity: 1; transform: scaleY(1); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        .main {
+            position: relative;
+            z-index: 1;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 var(--space-6) var(--space-16);
+        }
+
+        /* ===== CHAPTER SECTION ===== */
+        .chapter {
+            margin-bottom: var(--space-16);
+        }
+
+        .chapter-header {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--space-6);
+            margin-bottom: var(--space-8);
+        }
+
+        .chapter-number {
+            flex-shrink: 0;
+            width: 56px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: var(--gold-primary);
+            background: var(--gold-subtle);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+        }
+
+        .chapter-meta {
+            flex: 1;
+        }
+
+        .chapter-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: var(--space-1);
+        }
+
+        .chapter-title {
+            font-family: var(--font-display);
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
+            font-weight: 900;
+            line-height: 1.2;
+            margin-bottom: var(--space-3);
+        }
+
+        .chapter-title .highlight {
+            background: linear-gradient(135deg, var(--gold-light), var(--gold-primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .chapter-desc {
+            font-size: 1.05rem;
+            color: var(--text-secondary);
+            line-height: 1.8;
+            max-width: 700px;
+        }
+
+        /* ===== CARDS ===== */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--space-5);
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: var(--space-6);
+            cursor: pointer;
+            transition: all var(--duration-normal) var(--ease-out);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, transparent, rgba(212, 168, 83, 0.05));
+            opacity: 0;
+            transition: opacity var(--duration-normal) var(--ease-out);
+        }
+
+        .card:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--border-active);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .card:hover::before { opacity: 1; }
+
+        .card-icon {
+            font-size: 2rem;
+            margin-bottom: var(--space-4);
+        }
+
+        .card-title {
+            font-family: var(--font-display);
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: var(--space-3);
+        }
+
+        .card-text {
+            font-size: 0.92rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        .card-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--space-2);
+            margin-top: var(--space-4);
+        }
+
+        .tag {
+            padding: var(--space-1) var(--space-3);
+            background: var(--gold-subtle);
+            border: 1px solid var(--border-subtle);
+            border-radius: 999px;
+            font-size: 0.78rem;
+            color: var(--gold-light);
+        }
+
+        .tag.crimson {
+            background: rgba(192, 57, 43, 0.08);
+            border-color: rgba(192, 57, 43, 0.2);
+            color: var(--crimson-light);
+        }
+
+        .tag.jade {
+            background: rgba(39, 174, 96, 0.08);
+            border-color: rgba(39, 174, 96, 0.2);
+            color: var(--jade);
+        }
+
+        .tag.violet {
+            background: rgba(142, 68, 173, 0.08);
+            border-color: rgba(142, 68, 173, 0.2);
+            color: var(--violet);
+        }
+
+
+
+        /* ===== TIMELINE ===== */
+        .timeline {
+            position: relative;
+            padding: var(--space-4) 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 24px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, var(--crimson), var(--gold-primary), var(--jade), var(--crimson));
+            opacity: 0.3;
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-left: 64px;
+            padding-bottom: var(--space-8);
+            cursor: pointer;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: 16px;
+            top: 4px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--bg-primary);
+            border: 2px solid var(--gold-primary);
+            transition: all var(--duration-normal) var(--ease-out);
+            z-index: 1;
+        }
+
+        .timeline-item:hover .timeline-dot {
+            background: var(--gold-primary);
+            box-shadow: 0 0 12px var(--gold-glow);
+        }
+
+        .timeline-year {
+            font-family: var(--font-display);
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--gold-primary);
+            margin-bottom: var(--space-1);
+            letter-spacing: 0.05em;
+        }
+
+        .timeline-title {
+            font-family: var(--font-display);
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: var(--space-2);
+        }
+
+        .timeline-desc {
+            font-size: 0.92rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        /* ===== QUOTES ===== */
+        .quotes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: var(--space-5);
+        }
+
+        .quote-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: var(--space-6);
+            position: relative;
+            transition: all var(--duration-normal) var(--ease-out);
+        }
+
+        .quote-card:hover {
+            border-color: var(--border-active);
+            transform: translateY(-2px);
+        }
+
+        .quote-card::before {
+            content: '"';
+            position: absolute;
+            top: var(--space-4);
+            left: var(--space-4);
+            font-family: var(--font-display);
+            font-size: 4rem;
+            color: var(--gold-primary);
+            opacity: 0.15;
+            line-height: 1;
+        }
+
+        .quote-text {
+            font-family: var(--font-display);
+            font-size: 1.05rem;
+            color: var(--text-primary);
+            line-height: 1.8;
+            margin-bottom: var(--space-4);
+            font-style: italic;
+        }
+
+        .quote-source {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-align: right;
+        }
+
+        .quote-source strong {
+            color: var(--gold-primary);
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            position: relative;
+            z-index: 1;
+            border-top: 1px solid var(--border-subtle);
+            padding: var(--space-10) var(--space-6);
+            text-align: center;
+        }
+
+        .footer-text {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: var(--space-2);
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: var(--space-4);
+            margin-top: var(--space-4);
+        }
+
+        .footer-link {
+            color: var(--gold-primary);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: color var(--duration-normal) var(--ease-out);
+        }
+
+        .footer-link:hover {
+            color: var(--gold-light);
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .nav-inner {
+                padding: 0 var(--space-2);
+            }
+
+            .nav-brand {
+                display: none;
+            }
+
+            .hero {
+                padding: var(--space-16) var(--space-4);
+            }
+
+            .hero-stats {
+                flex-wrap: wrap;
+                gap: var(--space-6);
+            }
+
+            .chapter-header {
+                flex-direction: column;
+                gap: var(--space-3);
+            }
+
+            .card-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .quotes-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .timeline::before {
+                left: 16px;
+            }
+
+            .timeline-item {
+                padding-left: 48px;
+            }
+
+            .timeline-dot {
+                left: 8px;
+                width: 16px;
+                height: 16px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .nav {
+                padding: var(--space-3) var(--space-4);
+            }
+
+            .nav-links {
+                gap: var(--space-1);
+            }
+
+            .nav-link {
+                padding: var(--space-1) var(--space-2);
+                font-size: 0.75rem;
+            }
+
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1rem;
+            }
+
+            .hero-quote {
+                font-size: 1rem;
+                padding: var(--space-4);
+            }
+
+            .chapter-number {
+                width: 48px;
+                height: 48px;
+                font-size: 1.2rem;
+            }
+
+            .chapter-title {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* ===== ANIMATIONS ===== */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s var(--ease-out), transform 0.6s var(--ease-out);
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ===== MODAL ===== */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s var(--ease-out), visibility 0.3s;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-xl);
+            width: 90%;
+            max-width: 800px;
+            max-height: 85vh;
+            overflow: hidden;
+            transform: scale(0.9) translateY(20px);
+            transition: transform 0.3s var(--ease-out);
+            box-shadow: 0 24px 80px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-overlay.active .modal {
+            transform: scale(1) translateY(0);
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: var(--space-6) var(--space-8);
+            border-bottom: 1px solid var(--border-subtle);
+            background: var(--bg-card);
+        }
+
+        .modal-header-left {
+            display: flex;
+            align-items: center;
+            gap: var(--space-4);
+        }
+
+        .modal-icon {
+            font-size: 2rem;
+        }
+
+        .modal-title {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--gold-primary);
+        }
+
+        .modal-subtitle {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: var(--space-1);
+        }
+
+        .modal-close {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-glass);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-sm);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all var(--duration-normal) var(--ease-out);
+            font-size: 1.2rem;
+        }
+
+        .modal-close:hover {
+            background: var(--bg-card-hover);
+            color: var(--text-primary);
+            border-color: var(--border-active);
+        }
+
+        .modal-body {
+            padding: var(--space-8);
+            overflow-y: auto;
+            max-height: calc(85vh - 120px);
+        }
+
+        .modal-section {
+            margin-bottom: var(--space-8);
+        }
+
+        .modal-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .modal-section-title {
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--gold-light);
+            margin-bottom: var(--space-4);
+            padding-bottom: var(--space-2);
+            border-bottom: 1px solid var(--gold-subtle);
+        }
+
+        .modal-text {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            line-height: 1.8;
+            margin-bottom: var(--space-4);
+        }
+
+        .modal-text:last-child {
+            margin-bottom: 0;
+        }
+
+        .modal-chapters {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-4);
+        }
+
+        .modal-chapter {
+            background: var(--bg-glass);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: var(--space-4) var(--space-5);
+        }
+
+        .modal-chapter-title {
+            font-family: var(--font-display);
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--space-2);
+        }
+
+        .modal-chapter-desc {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        .modal-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--space-2);
+            margin-top: var(--space-4);
+        }
+
+        .modal-highlights {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--space-4);
+            margin-top: var(--space-4);
+        }
+
+        .modal-highlight {
+            background: var(--gold-subtle);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: var(--space-4);
+            text-align: center;
+        }
+
+        .modal-highlight-value {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--gold-primary);
+        }
+
+        .modal-highlight-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: var(--space-1);
+        }
+
+        /* Card clickable style */
+        .card[data-modal] {
+            cursor: pointer;
+        }
+
+        .card[data-modal]::after {
+            content: '点击查看详情';
+            position: absolute;
+            bottom: var(--space-4);
+            right: var(--space-4);
+            font-size: 0.75rem;
+            color: var(--gold-primary);
+            opacity: 0;
+            transition: opacity var(--duration-normal) var(--ease-out);
+        }
+
+        .card[data-modal]:hover::after {
+            opacity: 1;
+        }
+
+        @media (max-width: 768px) {
+            .modal {
+                width: 95%;
+                max-height: 90vh;
+            }
+
+            .modal-header {
+                padding: var(--space-4) var(--space-5);
+            }
+
+            .modal-body {
+                padding: var(--space-5);
+            }
+
+            .modal-title {
+                font-size: 1.2rem;
+            }
+
+            .modal-highlights {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .modal-highlights {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Progress Bar -->
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <!-- Floating Particles -->
+    <div class="particles" id="particles"></div>
+
+    <!-- Navigation -->
+    <nav class="nav" id="nav">
+        <div class="nav-inner">
+            <div class="nav-brand">明朝那些事儿</div>
+            <ul class="nav-links">
+                <li><a href="#overview" class="nav-link active">概览</a></li>
+                <li><a href="#author" class="nav-link">作者</a></li>
+                <li><a href="#volumes" class="nav-link">七册</a></li>
+                <li><a href="#figures" class="nav-link">人物</a></li>
+                <li><a href="#quotes" class="nav-link">语录</a></li>
+                <li><a href="#timeline" class="nav-link">时间线</a></li>
+                <li><a href="#value" class="nav-link">价值</a></li>
+            </ul>
+            <div class="nav-right">
+                <div class="nav-progress">
+                    <svg class="nav-progress-ring" viewBox="0 0 36 36">
+                        <circle class="bg" cx="18" cy="18" r="15.5" />
+                        <circle class="fill" cx="18" cy="18" r="15.5" stroke-dasharray="97.39" stroke-dashoffset="97.39" id="progressRing" />
+                    </svg>
+                    <span id="progressText">0%</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-badge">
+            <span class="hero-badge-dot"></span>
+            历史通俗读物 · 畅销经典
+        </div>
+        <h1 class="hero-title">
+            <span class="char-gold">明朝那些事儿</span>
+        </h1>
+        <p class="hero-subtitle">当年明月的历史江湖</p>
+        <blockquote class="hero-quote">
+            "我写《明朝那些事儿》就是想让更多的人了解历史，了解那些曾经活过的人，他们的喜怒哀乐，他们的理想与挣扎。"
+        </blockquote>
+        <div class="hero-stats">
+            <div class="hero-stat">
+                <div class="hero-stat-value">7</div>
+                <div class="hero-stat-label">册</div>
+            </div>
+            <div class="hero-stat">
+                <div class="hero-stat-value">276</div>
+                <div class="hero-stat-label">年明朝历史</div>
+            </div>
+            <div class="hero-stat">
+                <div class="hero-stat-value">16</div>
+                <div class="hero-stat-label">位皇帝</div>
+            </div>
+            <div class="hero-stat">
+                <div class="hero-stat-value">500万+</div>
+                <div class="hero-stat-label">销量</div>
+            </div>
+        </div>
+        <a href="#overview" class="hero-cta">
+            探索历史
+            <span class="hero-cta-arrow">→</span>
+        </a>
+        <div class="hero-scroll-hint">
+            <span>向下滚动</span>
+            <div class="scroll-line"></div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="main">
+        <!-- Chapter 1: Overview -->
+        <section class="chapter fade-in" id="overview">
+            <div class="chapter-header">
+                <div class="chapter-number">壹</div>
+                <div class="chapter-meta">
+                    <div class="chapter-label">Chapter 01</div>
+                    <h2 class="chapter-title">作品<span class="highlight">概览</span></h2>
+                    <p class="chapter-desc">
+                        《明朝那些事儿》是当年明月（本名石悦）创作的明朝历史通俗读物，以幽默风趣的笔法讲述了明朝三百年的历史风云。
+                    </p>
+                </div>
+            </div>
+            <div class="card-grid">
+                <div class="card">
+                    <div class="card-icon">📚</div>
+                    <h3 class="card-title">作品内容</h3>
+                    <p class="card-text">
+                        全书共七册，从明朝开国皇帝朱元璋写起，到明朝灭亡结束。以史料为基础，以年代和具体人物为主线，对明朝十七帝及其他权势人物进行全景展示。
+                    </p>
+                    <div class="card-tags">
+                        <span class="tag">历史</span>
+                        <span class="tag crimson">明朝</span>
+                        <span class="tag jade">通俗读物</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-icon">✨</div>
+                    <h3 class="card-title">写作风格</h3>
+                    <p class="card-text">
+                        语言幽默风趣，打破传统历史著作的枯燥叙述。用现代视角解读历史人物，让读者在轻松阅读中了解历史真相。
+                    </p>
+                    <div class="card-tags">
+                        <span class="tag">幽默</span>
+                        <span class="tag violet">现代视角</span>
+                        <span class="tag">通俗易懂</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🏆</div>
+                    <h3 class="card-title">社会影响</h3>
+                    <p class="card-text">
+                        自2006年连载以来，迅速成为现象级作品。被誉为"最生动的明朝历史教科书"，让无数读者爱上历史。
+                    </p>
+                    <div class="card-tags">
+                        <span class="tag">畅销书</span>
+                        <span class="tag crimson">现象级</span>
+                        <span class="tag jade">历史普及</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Chapter 2: Author -->
+        <section class="chapter fade-in" id="author">
+            <div class="chapter-header">
+                <div class="chapter-number">贰</div>
+                <div class="chapter-meta">
+                    <div class="chapter-label">Chapter 02</div>
+                    <h2 class="chapter-title">作者<span class="highlight">介绍</span></h2>
+                    <p class="chapter-desc">
+                        当年明月，本名石悦，1979年出生于湖北宜昌。他以独特的视角和幽默的笔法，让历史变得生动有趣。
+                    </p>
+                </div>
+            </div>
+            <div class="card-grid">
+                <div class="card">
+                    <div class="card-icon">👤</div>
+                    <h3 class="card-title">石悦其人</h3>
+                    <p class="card-text">
+                        大学毕业后进入海关工作，业余时间坚持写作。2006年开始在天涯论坛连载《明朝那些事儿》，迅速走红网络。
+                    </p>
+                    <div class="card-tags">
+                        <span class="tag">1979年生</span>
+                        <span class="tag violet">湖北宜昌</span>
+                        <span class="tag">海关公务员</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-icon">✍️</div>
+                    <h3 class="card-title">创作历程</h3>
+                    <p class="card-text">
+                        从2006年到2009年，历时三年完成七册书的创作。每天下班后坚持写作，最终完成这部百万字巨著。
+                    </p>
+                    <div class="card-tags">
+                        <span class="tag">2006-2009</span>
+                        <span class="tag crimson">三年创作</span>
+                        <span class="tag">百万字</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-icon">💡</div>
+                    <h3 class="card-title">写作理念</h3>
+                    <p class="card-text">
+                        "我觉得历史本身很精彩，所有的历史都可以写得很好看。"他致力于让历史走出学术象牙塔，走向大众。
+                    </p>
+                    <div class="card-tags">
+                        <span class="tag">历史普及</span>
+                        <span class="tag jade">通俗化</span>
+                        <span class="tag">好看的历史</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Chapter 3: Volumes -->
+        <section class="chapter fade-in" id="volumes">
+            <div class="chapter-header">
+                <div class="chapter-number">叁</div>
+                <div class="chapter-meta">
+                    <div class="chapter-label">Chapter 03</div>
+                    <h2 class="chapter-title">七册<span class="highlight">内容</span></h2>
+                    <p class="chapter-desc">
+                        全书分为七册，每一册都有明确的主题和历史时期，共同构成完整的明朝历史画卷。
+                    </p>
+                </div>
+            </div>
+            <div class="card-grid">
+                <div class="card" data-modal="volume1">
+                    <div class="card-icon">👑</div>
+                    <h3 class="card-title">第一部：洪武大帝</h3>
+                    <p class="card-text">
+                        从朱元璋的出身写起，讲述他如何从一个贫苦农民成为开国皇帝。重点描写朱元璋的雄才大略和残酷政治斗争。
+                    </p>
+                    <div class="card-tags">
+                        <span class="tag crimson">朱元璋</span>
+                        <span class="tag">开国</span>
+                        <span class="tag violet">洪武年间</span>
+                    </div>
+                </div>
+                <div class="card" data-modal="volume2">
+                    <div class="card-icon">⚔️</div>
+                    <h3 class="card-title">第二部：万国来朝</h3>
+                    <p class="card-text">
+                        讲述永乐大帝朱棣的雄才伟略，郑和下西洋的壮举，以及明朝前期的辉煌与隐忧。
+                    </p>
+                    <div class="card-tags">
+                        <span class="tag">朱棣</span>
+                        <span class="tag jade">郑和</span>
+                        <span class="tag">永乐盛世</span>
+                    </div>
+                </div>
+                <div class="card" data-modal="volume3">
+                    <div class="card-icon">🏰</div>
+                    <h3 class="card-title">第三部：妖孽宫廷</h3>
+                    <p class="card-text">
+                        聚焦明朝中期的政治斗争，宦官专权、党争不断，展现宫廷内部的尔虞我诈。
+                    </p>
+                    <div class="card-tags">
+                        <span class="tag crimson">宦官专权</span>
+                        <span class="tag">党争</span>
+                        <span class="tag violet">宫廷斗争</span>
+                    </div>
+                </div>
+                <div class="card" data-modal="volume4">
+                    <div class="card-icon">🗡️</div>
+                    <h3 class="card-title">第四部：粉饰太平</h3>
+                    <p class="card-text">
+                        讲述嘉靖年间的权谋斗争，海瑞等清官的抗争，以及倭寇入侵的历史。
+                    </p>
+                    <div class="card-tags">
+                        <span class="tag">嘉靖</span>
+                        <span class="tag jade">海瑞</span>
+                        <span class="tag">倭寇</span>
+                    </div>
+                </div>
+                <div class="card" data-modal="volume5">
+                    <div class="card-icon">🔥</div>
+                    <h3 class="card-title">第五部：帝国飘摇</h3>
+                    <p class="card-text">
+                        万历年间的政治风云，张居正改革的兴衰，以及明朝由盛转衰的关键时期。
+                    </p>
+                    <div class="card-tags">
+                        <span class="tag crimson">万历</span>
+                        <span class="tag">张居正</span>
+                        <span class="tag violet">改革</span>
+                    </div>
+                </div>
+                <div class="card" data-modal="volume6">
+                    <div class="card-icon">🌅</div>
+                    <h3 class="card-title">第六部：日暮西山</h3>
+                    <p class="card-text">
+                        明朝末年的内忧外患，农民起义、后金崛起，帝国走向末路。
+                    </p>
+                    <div class="card-tags">
+                        <span class="tag">明末</span>
+                        <span class="tag jade">农民起义</span>
+                        <span class="tag">后金</span>
+                    </div>
+                </div>
+                <div class="card" data-modal="volume7">
+                    <div class="card-icon">🍂</div>
+                    <h3 class="card-title">第七部：大结局</h3>
+                    <p class="card-text">
+                        崇祯帝的悲剧人生，明朝的最终灭亡，以及南明的短暂抗争。历史的轮回与启示。
+                    </p>
+                    <div class="card-tags">
+                        <span class="tag crimson">崇祯</span>
+                        <span class="tag">明朝灭亡</span>
+                        <span class="tag violet">南明</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Chapter 4: Figures -->
+        <section class="chapter fade-in" id="figures">
+            <div class="chapter-header">
+                <div class="chapter-number">肆</div>
+                <div class="chapter-meta">
+                    <div class="chapter-label">Chapter 04</div>
+                    <h2 class="chapter-title">历史<span class="highlight">人物</span></h2>
+                    <p class="chapter-desc">
+                        明朝涌现出众多影响历史进程的人物，他们的抉择与命运共同书写了这段波澜壮阔的历史。
+                    </p>
+                </div>
+            </div>
+            <div class="card-grid">
+                <div class="card">
+                    <div class="card-icon">👑</div>
+                    <h3 class="card-title">朱元璋</h3>
+                    <p class="card-text">
+                        明朝开国皇帝，从放牛娃到皇帝的传奇人生。他的雄才大略和猜忌多疑，深刻影响了明朝的政治格局。
+                    </p>
+                    <div class="card-tags">
+                        <span class="tag crimson">开国皇帝</span>
+                        <span class="tag">洪武大帝</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-icon">⚔️</div>
+                    <h3 class="card-title">朱棣</h3>
+                    <p class="card-text">
+                        永乐大帝，通过靖难之役夺取皇位。迁都北京、郑和下西洋，开创永乐盛世。
+                    </p>
+                    <div class="card-tags">
+                        <span class="tag">永乐大帝</span>
+                        <span class="tag jade">靖难之役</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-icon">📜</div>
+                    <h3 class="card-title">张居正</h3>
+                    <p class="card-text">
+                        明朝最伟大的改革家，推行一条鞭法，整顿吏治，使明朝一度中兴。但身后遭遇清算。
+                    </p>
+                    <div class="card-tags">
+                        <span class="tag violet">改革家</span>
+                        <span class="tag">一条鞭法</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🛡️</div>
+                    <h3 class="card-title">海瑞</h3>
+                    <p class="card-text">
+                        清官的典范，以刚正不阿著称。抬棺上疏，直言进谏，成为后世清廉官员的象征。
+                    </p>
+                    <div class="card-tags">
+                        <span class="tag">清官</span>
+                        <span class="tag crimson">刚正不阿</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🎪</div>
+                    <h3 class="card-title">王守仁</h3>
+                    <p class="card-text">
+                        心学创始人，立德立功立言三不朽的圣人。平定宁王叛乱，开创阳明心学。
+                    </p>
+                    <div class="card-tags">
+                        <span class="tag">心学</span>
+                        <span class="tag jade">阳明心学</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-icon">👑</div>
+                    <h3 class="card-title">崇祯帝</h3>
+                    <p class="card-text">
+                        明朝最后一位皇帝，勤政却无力回天。自缢煤山，留下"任贼分裂朕尸，勿伤百姓一人"的遗言。
+                    </p>
+                    <div class="card-tags">
+                        <span class="tag crimson">亡国之君</span>
+                        <span class="tag">悲剧英雄</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Chapter 5: Quotes -->
+        <section class="chapter fade-in" id="quotes">
+            <div class="chapter-header">
+                <div class="chapter-number">伍</div>
+                <div class="chapter-meta">
+                    <div class="chapter-label">Chapter 05</div>
+                    <h2 class="chapter-title">经典<span class="highlight">语录</span></h2>
+                    <p class="chapter-desc">
+                        书中充满了对历史的深刻思考和对人性的洞察，这些语录至今仍发人深省。
+                    </p>
+                </div>
+            </div>
+            <div class="quotes-grid">
+                <div class="quote-card">
+                    <p class="quote-text">
+                        "你还很年轻，将来你会遇到很多人，经历很多事，得到很多，也会失去很多，但无论如何，有两样东西，你绝不能丢弃，一个叫良心，另一个叫理想。"
+                    </p>
+                    <p class="quote-source">—— <strong>当年明月</strong></p>
+                </div>
+                <div class="quote-card">
+                    <p class="quote-text">
+                        "所谓百年功名、千秋霸业、万古流芳，与一件事情相比，其实算不了什么。这件事情就是——用你喜欢的方式度过一生。"
+                    </p>
+                    <p class="quote-source">—— <strong>当年明月</strong></p>
+                </div>
+                <div class="quote-card">
+                    <p class="quote-text">
+                        "成功只有一个——按照自己的方式，去度过人生。"
+                    </p>
+                    <p class="quote-source">—— <strong>当年明月</strong></p>
+                </div>
+                <div class="quote-card">
+                    <p class="quote-text">
+                        "在这个世界上，最不缺的就是聪明人，最缺的是忠厚人。"
+                    </p>
+                    <p class="quote-source">—— <strong>当年明月</strong></p>
+                </div>
+                <div class="quote-card">
+                    <p class="quote-text">
+                        "懂得暴力的人是强壮的，懂得克制暴力的人才是强大的。"
+                    </p>
+                    <p class="quote-source">—— <strong>当年明月</strong></p>
+                </div>
+                <div class="quote-card">
+                    <p class="quote-text">
+                        "人生最痛苦的地方就在于，明明已经无法忍受，却还要忍受下去。"
+                    </p>
+                    <p class="quote-source">—— <strong>当年明月</strong></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Chapter 6: Timeline -->
+        <section class="chapter fade-in" id="timeline">
+            <div class="chapter-header">
+                <div class="chapter-number">陆</div>
+                <div class="chapter-meta">
+                    <div class="chapter-label">Chapter 06</div>
+                    <h2 class="chapter-title">明朝<span class="highlight">时间线</span></h2>
+                    <p class="chapter-desc">
+                        从1368年到1644年，明朝历经276年，16位皇帝，留下了无数传奇故事。
+                    </p>
+                </div>
+            </div>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-year">1368年</div>
+                    <h3 class="timeline-title">明朝建立</h3>
+                    <p class="timeline-desc">朱元璋在应天府称帝，建立明朝，年号洪武。明朝正式取代元朝，成为中原正统王朝。</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-year">1402年</div>
+                    <h3 class="timeline-title">靖难之役</h3>
+                    <p class="timeline-desc">燕王朱棣通过"靖难之役"夺取皇位，成为明朝第三位皇帝，年号永乐。</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-year">1405-1433年</div>
+                    <h3 class="timeline-title">郑和下西洋</h3>
+                    <p class="timeline-desc">郑和七次下西洋，最远到达非洲东海岸，展示了明朝的海上实力。</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-year">1449年</div>
+                    <h3 class="timeline-title">土木堡之变</h3>
+                    <p class="timeline-desc">明英宗朱祁镇御驾亲征瓦剌，兵败被俘，明朝由盛转衰的转折点。</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-year">1572-1620年</div>
+                    <h3 class="timeline-title">万历年间</h3>
+                    <p class="timeline-desc">张居正推行改革，明朝一度中兴。万历后期怠政，为明朝衰落埋下伏笔。</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-year">1644年</div>
+                    <h3 class="timeline-title">明朝灭亡</h3>
+                    <p class="timeline-desc">李自成攻入北京，崇祯帝自缢煤山，明朝灭亡。历史翻开新的一页。</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Chapter 7: Value -->
+        <section class="chapter fade-in" id="value">
+            <div class="chapter-header">
+                <div class="chapter-number">柒</div>
+                <div class="chapter-meta">
+                    <div class="chapter-label">Chapter 07</div>
+                    <h2 class="chapter-title">阅读<span class="highlight">价值</span></h2>
+                    <p class="chapter-desc">
+                        《明朝那些事儿》不仅是一部历史读物，更是一部关于人性、权力和命运的深刻思考。它以独特的视角和幽默的笔法，让历史走出学术象牙塔，成为大众都能享受的文化盛宴。
+                    </p>
+                </div>
+            </div>
+            <div class="card-grid">
+                <div class="card">
+                    <div class="card-icon">📖</div>
+                    <h3 class="card-title">历史普及价值</h3>
+                    <p class="card-text">
+                        打破了传统历史著作的枯燥印象，用现代语言和幽默笔法讲述历史。通过生动的人物心理描写和戏剧化叙事，让普通读者也能轻松理解复杂的历史事件，被誉为"最适合大众阅读的明朝历史"。
+                    </p>
+                    <div class="card-tags">
+                        <span class="tag">通俗易懂</span>
+                        <span class="tag jade">历史普及</span>
+                        <span class="tag violet">现代叙事</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🧠</div>
+                    <h3 class="card-title">人性洞察价值</h3>
+                    <p class="card-text">
+                        深入刻画历史人物的内心世界，展现人性的多面性与复杂性。从朱元璋的猜忌与雄才，到张居正的改革与权谋，从海瑞的刚正与孤独，到崇祯的勤政与悲剧，每个角色都是人性的生动写照。
+                    </p>
+                    <div class="card-tags">
+                        <span class="tag">人性剖析</span>
+                        <span class="tag violet">权谋智慧</span>
+                        <span class="tag crimson">忠诚与背叛</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-icon">💡</div>
+                    <h3 class="card-title">人生启示价值</h3>
+                    <p class="card-text">
+                        历史人物的选择与命运，给现代人以深刻启示。成功不是功名利禄，而是用自己喜欢的方式度过一生；理想与现实如何平衡；坚持与变通的智慧，书中都有生动诠释。
+                    </p>
+                    <div class="card-tags">
+                        <span class="tag">人生哲学</span>
+                        <span class="tag">成功定义</span>
+                        <span class="tag jade">理想与现实</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-icon">✍️</div>
+                    <h3 class="card-title">文学叙事价值</h3>
+                    <p class="card-text">
+                        独创"历史小说化"叙事手法，将枯燥的史料转化为生动的故事。巧妙运用悬念、伏笔、对比等文学技巧，让历史读起来像小说一样引人入胜，开创了历史通俗写作的新范式。
+                    </p>
+                    <div class="card-tags">
+                        <span class="tag">叙事技巧</span>
+                        <span class="tag crimson">文学创新</span>
+                        <span class="tag">故事化写作</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🔍</div>
+                    <h3 class="card-title">历史研究价值</h3>
+                    <p class="card-text">
+                        以《明史》《明实录》等正史为基础，结合野史、笔记等多元史料，形成独特的历史解读视角。虽为通俗读物，但对历史事件的分析严谨，为大众理解明史提供了可靠入口。
+                    </p>
+                    <div class="card-tags">
+                        <span class="tag">史料运用</span>
+                        <span class="tag jade">历史解读</span>
+                        <span class="tag">学术普及</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🎓</div>
+                    <h3 class="card-title">教育思维价值</h3>
+                    <p class="card-text">
+                        通过历史案例培养读者的批判性思维和系统思考能力。让读者学会从多角度分析问题，理解历史事件的复杂性，避免简单化的道德判断，提升历史素养和思维深度。
+                    </p>
+                    <div class="card-tags">
+                        <span class="tag">思维训练</span>
+                        <span class="tag violet">批判性思考</span>
+                        <span class="tag">历史素养</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🌍</div>
+                    <h3 class="card-title">社会文化价值</h3>
+                    <p class="card-text">
+                        引发全民读史热潮，推动历史文化的大众传播。改变了几代人对历史的认知方式，让历史从课本走向生活，从课堂走向社会，成为当代中国重要的文化现象。
+                    </p>
+                    <div class="card-tags">
+                        <span class="tag">文化传播</span>
+                        <span class="tag crimson">历史热</span>
+                        <span class="tag">社会影响</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal Overlay -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-header-left">
+                    <div class="modal-icon" id="modalIcon"></div>
+                    <div>
+                        <div class="modal-title" id="modalTitle"></div>
+                        <div class="modal-subtitle" id="modalSubtitle"></div>
+                    </div>
+                </div>
+                <button class="modal-close" id="modalClose">&times;</button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Dynamic content -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p class="footer-text">《明朝那些事儿》— 当年明月</p>
+        <p class="footer-text">历史是一面镜子，照见过去，也照见未来。</p>
+        <div class="footer-links">
+            <a href="https://book.douban.com/subject/2584002/" class="footer-link" target="_blank">豆瓣</a>
+            <a href="https://www.amazon.cn/" class="footer-link" target="_blank">亚马逊</a>
+            <a href="https://www.jd.com/" class="footer-link" target="_blank">京东</a>
+        </div>
+    </footer>
+
+    <script>
+        // ===== PARTICLES =====
+        function createParticles() {
+            const container = document.getElementById('particles');
+            const count = 30;
+            
+            for (let i = 0; i < count; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                particle.style.animationDelay = Math.random() * 10 + 's';
+                particle.style.width = (Math.random() * 2 + 1) + 'px';
+                particle.style.height = particle.style.width;
+                container.appendChild(particle);
+            }
+        }
+        createParticles();
+
+        // ===== PROGRESS BAR =====
+        function updateProgress() {
+            const scrollTop = window.scrollY;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const progress = (scrollTop / docHeight) * 100;
+            
+            document.getElementById('progressBar').style.width = progress + '%';
+            document.getElementById('progressText').textContent = Math.round(progress) + '%';
+            
+            const ring = document.getElementById('progressRing');
+            const circumference = 2 * Math.PI * 15.5;
+            const offset = circumference - (progress / 100) * circumference;
+            ring.style.strokeDashoffset = offset;
+        }
+        window.addEventListener('scroll', updateProgress);
+
+        // ===== NAVIGATION =====
+        const sections = document.querySelectorAll('section[id]');
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        function updateActiveNav() {
+            const scrollPos = window.scrollY + 100;
+
+            sections.forEach(section => {
+                const top = section.offsetTop;
+                const height = section.offsetHeight;
+                const id = section.getAttribute('id');
+
+                if (scrollPos >= top && scrollPos < top + height) {
+                    navLinks.forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href') === '#' + id) {
+                            link.classList.add('active');
+                        }
+                    });
+                }
+            });
+        }
+        window.addEventListener('scroll', updateActiveNav);
+
+
+
+        // ===== FADE IN ANIMATION =====
+        const fadeElements = document.querySelectorAll('.fade-in');
+        
+        const fadeObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        fadeElements.forEach(el => fadeObserver.observe(el));
+
+        // ===== MODAL =====
+        const modalData = {
+            volume1: {
+                icon: '👑',
+                title: '第一部：洪武大帝',
+                subtitle: '1368-1398年 · 洪武年间',
+                sections: [
+                    {
+                        title: '作品概述',
+                        content: '《洪武大帝》是《明朝那些事儿》系列的第一部，从朱元璋的出身写起，讲述他如何从一个贫苦农民、放牛娃、和尚，一步步成长为开国皇帝的传奇历程。这一部重点描写了元末明初的乱世风云，以及朱元璋如何在群雄逐鹿中脱颖而出，建立大明王朝。'
+                    },
+                    {
+                        title: '核心人物',
+                        content: '朱元璋（明太祖）：从社会最底层崛起的开国皇帝，雄才大略却也猜忌多疑。他的政治智慧、军事才能和残酷手段，深刻影响了明朝的政治格局。马皇后：朱元璋的贤内助，以贤德著称。徐达、常遇春等开国名将：为明朝建立立下赫赫战功。'
+                    },
+                    {
+                        title: '历史背景',
+                        content: '元朝末年，政治腐败，民不聊生。红巾军起义爆发，天下大乱。朱元璋加入郭子兴的红巾军，凭借过人的才能和机遇，逐步壮大势力，先后击败陈友谅、张士诚等割据势力，最终北伐成功，推翻元朝，建立明朝。'
+                    }
+                ],
+                highlights: [
+                    { value: '31年', label: '洪武年间' },
+                    { value: '16位', label: '主要人物' },
+                    { value: '20+', label: '重大战役' }
+                ],
+                chapters: [
+                    { title: '第一章：朱重八的童年', desc: '贫苦农家的放牛娃，父母双亡，被迫出家为僧' },
+                    { title: '第二章：乱世崛起', desc: '加入红巾军，初露锋芒，结识贤内助马氏' },
+                    { title: '第三章：群雄逐鹿', desc: '与陈友谅、张士诚等势力的生死较量' },
+                    { title: '第四章：鄱阳湖大战', desc: '决定性的水战，以少胜多击败陈友谅' },
+                    { title: '第五章：建立大明', desc: '南京称帝，国号大明，年号洪武' },
+                    { title: '第六章：北伐中原', desc: '徐达北伐，攻克大都，推翻元朝' },
+                    { title: '第七章：洪武治国', desc: '废除丞相、严惩贪腐、文字狱等政治举措' }
+                ]
+            },
+            volume2: {
+                icon: '⚔️',
+                title: '第二部：万国来朝',
+                subtitle: '1402-1433年 · 永乐盛世',
+                sections: [
+                    {
+                        title: '作品概述',
+                        content: '《万国来朝》讲述永乐大帝朱棣的雄才伟略，以及明朝前期的辉煌与隐忧。这一部重点描写靖难之役、永乐盛世、郑和下西洋等重大历史事件，展现明朝最辉煌的时期之一。'
+                    },
+                    {
+                        title: '核心人物',
+                        content: '朱棣（明成祖）：通过靖难之役夺取皇位的皇帝，迁都北京、编纂《永乐大典》、派郑和下西洋，开创永乐盛世。郑和：七次下西洋的航海家，最远到达非洲东海岸，展示了明朝的海上实力。'
+                    },
+                    {
+                        title: '历史背景',
+                        content: '建文帝朱允炆即位后推行削藩政策，引发燕王朱棣的反抗。靖难之役历时四年，朱棣最终夺取皇位。即位后，朱棣励精图治，开创了明朝最辉煌的永乐盛世。'
+                    }
+                ],
+                highlights: [
+                    { value: '31年', label: '永乐年间' },
+                    { value: '7次', label: '郑和下西洋' },
+                    { value: '30+', label: '朝贡国家' }
+                ],
+                chapters: [
+                    { title: '第一章：建文削藩', desc: '建文帝即位，推行削藩政策，引发诸王不安' },
+                    { title: '第二章：靖难之役', desc: '燕王朱棣起兵，历时四年夺取皇位' },
+                    { title: '第三章：永乐登基', desc: '朱棣即位，迁都北京，营建紫禁城' },
+                    { title: '第四章：郑和下西洋', desc: '七次远航，展示国威，开辟海上丝绸之路' },
+                    { title: '第五章：永乐大典', desc: '编纂中国最大的类书，保存文化遗产' },
+                    { title: '第六章：五征漠北', desc: '朱棣亲征蒙古，维护边疆安全' },
+                    { title: '第七章：永乐盛世', desc: '政治清明、经济繁荣、文化昌盛的黄金时代' }
+                ]
+            },
+            volume3: {
+                icon: '🏰',
+                title: '第三部：妖孽宫廷',
+                subtitle: '1435-1505年 · 宫廷斗争',
+                sections: [
+                    {
+                        title: '作品概述',
+                        content: '《妖孽宫廷》聚焦明朝中期的政治斗争，讲述宦官专权、党争不断、宫廷内部的尔虞我诈。这一部从宣德年间写到弘治年间，展现明朝由盛转衰的关键时期。'
+                    },
+                    {
+                        title: '核心人物',
+                        content: '王振：宦官专权的开端，导致土木堡之变。于谦：力挽狂澜的民族英雄，保卫北京。明英宗：亲征瓦剌被俘，后又复辟的传奇皇帝。'
+                    },
+                    {
+                        title: '历史背景',
+                        content: '明宣宗去世后，年幼的明英宗即位，宦官王振逐渐掌权。1449年，王振怂恿英宗亲征瓦剌，结果在土木堡惨败，英宗被俘。于谦临危受命，保卫北京，另立新君。'
+                    }
+                ],
+                highlights: [
+                    { value: '70年', label: '时间跨度' },
+                    { value: '土木堡', label: '重大事件' },
+                    { value: '宦官', label: '政治特色' }
+                ],
+                chapters: [
+                    { title: '第一章：宣德之治', desc: '明宣宗的仁政，为盛世画上句号' },
+                    { title: '第二章：王振专权', desc: '宦官势力崛起，干预朝政' },
+                    { title: '第三章：土木堡之变', desc: '英宗亲征被俘，明朝由盛转衰' },
+                    { title: '第四章：北京保卫战', desc: '于谦临危受命，力挽狂澜' },
+                    { title: '第五章：夺门之变', desc: '英宗复辟，于谦冤死' },
+                    { title: '第六章：成化怠政', desc: '明宪宗沉迷炼丹，宦官汪直专权' },
+                    { title: '第七章：弘治中兴', desc: '明孝宗勤政爱民，开创中兴局面' }
+                ]
+            },
+            volume4: {
+                icon: '🗡️',
+                title: '第四部：粉饰太平',
+                subtitle: '1521-1567年 · 嘉靖年间',
+                sections: [
+                    {
+                        title: '作品概述',
+                        content: '《粉饰太平》讲述嘉靖年间的权谋斗争，海瑞等清官的抗争，以及倭寇入侵的历史。这一部展现嘉靖皇帝的统治，以及明朝社会的深层矛盾。'
+                    },
+                    {
+                        title: '核心人物',
+                        content: '嘉靖皇帝：沉迷炼丹修道，却精于权术操控。海瑞：清官典范，抬棺上疏的刚直之臣。严嵩：权倾朝野的奸臣，把持朝政二十余年。'
+                    },
+                    {
+                        title: '历史背景',
+                        content: '嘉靖皇帝即位后，大礼议之争引发政治动荡。此后嘉靖沉迷修道，却通过精妙的权术操控朝政。严嵩父子把持朝政，倭寇侵扰东南沿海，内忧外患交织。'
+                    }
+                ],
+                highlights: [
+                    { value: '45年', label: '嘉靖年间' },
+                    { value: '海瑞', label: '清官代表' },
+                    { value: '倭寇', label: '外患问题' }
+                ],
+                chapters: [
+                    { title: '第一章：大礼议之争', desc: '嘉靖即位初期的政治斗争' },
+                    { title: '第二章：嘉靖修道', desc: '皇帝沉迷炼丹，朝政荒废' },
+                    { title: '第三章：严嵩专权', desc: '奸臣当道，把持朝政二十余年' },
+                    { title: '第四章：海瑞上疏', desc: '抬棺上疏，直言进谏的清官典范' },
+                    { title: '第五章：倭寇之患', desc: '东南沿海的倭寇侵扰，戚继光抗倭' },
+                    { title: '第六章：嘉靖驾崩', desc: '嘉靖皇帝去世，隆庆开海' },
+                    { title: '第七章：隆庆开关', desc: '开放海禁，促进海上贸易' }
+                ]
+            },
+            volume5: {
+                icon: '🔥',
+                title: '第五部：帝国飘摇',
+                subtitle: '1572-1620年 · 万历年间',
+                sections: [
+                    {
+                        title: '作品概述',
+                        content: '《帝国飘摇》讲述万历年间的政治风云，张居正改革的兴衰，以及明朝由盛转衰的关键时期。这一部展现万历皇帝的怠政，以及党争的加剧。'
+                    },
+                    {
+                        title: '核心人物',
+                        content: '万历皇帝：前期勤政，后期怠政近三十年。张居正：明朝最伟大的改革家，推行一条鞭法。戚继光：抗倭名将，整顿边防。'
+                    },
+                    {
+                        title: '历史背景',
+                        content: '万历皇帝即位初期，张居正推行改革，使明朝一度中兴。但张居正死后遭清算，万历皇帝开始怠政，近三十年不上朝。辽东崛起的后金势力，成为明朝的心腹大患。'
+                    }
+                ],
+                highlights: [
+                    { value: '48年', label: '万历年间' },
+                    { value: '一条鞭法', label: '重大改革' },
+                    { value: '党争', label: '政治特色' }
+                ],
+                chapters: [
+                    { title: '第一章：万历即位', desc: '年幼即位，张居正辅政' },
+                    { title: '第二章：张居正改革', desc: '推行一条鞭法，整顿吏治' },
+                    { title: '第三章：万历怠政', desc: '近三十年不上朝，朝政荒废' },
+                    { title: '第四章：万历三大征', desc: '宁夏、播州、朝鲜之役' },
+                    { title: '第五章：国本之争', desc: '立太子引发的政治风波' },
+                    { title: '第六章：东林党争', desc: '东林党与其他党派的斗争' },
+                    { title: '第七章：萨尔浒之战', desc: '明军惨败，后金崛起' }
+                ]
+            },
+            volume6: {
+                icon: '🌅',
+                title: '第六部：日暮西山',
+                subtitle: '1620-1644年 · 明朝末年',
+                sections: [
+                    {
+                        title: '作品概述',
+                        content: '《日暮西山》讲述明朝末年的内忧外患，农民起义、后金崛起，帝国走向末路。这一部展现天启、崇祯两朝的挣扎与衰亡。'
+                    },
+                    {
+                        title: '核心人物',
+                        content: '魏忠贤：权倾朝野的宦官，九千岁。崇祯皇帝：勤政却无力回天的亡国之君。李自成：农民起义领袖，推翻明朝。'
+                    },
+                    {
+                        title: '历史背景',
+                        content: '天启年间，魏忠贤专权，政治腐败达到极点。崇祯即位后铲除魏忠贤，但积重难返。农民起义此起彼伏，后金不断侵扰，内忧外患交织，明朝走向灭亡。'
+                    }
+                ],
+                highlights: [
+                    { value: '24年', label: '时间跨度' },
+                    { value: '内忧外患', label: '双重危机' },
+                    { value: '农民起义', label: '致命打击' }
+                ],
+                chapters: [
+                    { title: '第一章：天启怠政', desc: '木匠皇帝，魏忠贤专权' },
+                    { title: '第二章：阉党横行', desc: '魏忠贤权倾朝野，迫害东林党' },
+                    { title: '第三章：崇祯即位', desc: '铲除魏忠贤，勤政治国' },
+                    { title: '第四章：农民起义', desc: '李自成、张献忠等起义军兴起' },
+                    { title: '第五章：辽东战事', desc: '袁崇焕守辽东，后金步步紧逼' },
+                    { title: '第六章：松锦大战', desc: '明军惨败，辽东防线崩溃' },
+                    { title: '第七章：末日来临', desc: '李自成攻入北京，崇祯自缢' }
+                ]
+            },
+            volume7: {
+                icon: '🍂',
+                title: '第七部：大结局',
+                subtitle: '1644-1662年 · 明朝灭亡',
+                sections: [
+                    {
+                        title: '作品概述',
+                        content: '《大结局》讲述崇祯帝的悲剧人生，明朝的最终灭亡，以及南明的短暂抗争。这一部是整个系列的终结，展现历史的轮回与启示。'
+                    },
+                    {
+                        title: '核心人物',
+                        content: '崇祯皇帝：勤政却无力回天的亡国之君，自缢煤山。李自成：农民起义领袖，建立大顺政权。吴三桂：引清兵入关的关键人物。'
+                    },
+                    {
+                        title: '历史背景',
+                        content: '1644年，李自成攻入北京，崇祯帝自缢煤山，明朝灭亡。吴三桂引清兵入关，满清入主中原。南明政权在南方建立，但最终未能恢复明朝统治。'
+                    }
+                ],
+                highlights: [
+                    { value: '18年', label: '南明时期' },
+                    { value: '煤山', label: '崇祯殉国' },
+                    { value: '历史轮回', label: '最终启示' }
+                ],
+                chapters: [
+                    { title: '第一章：崇祯的悲剧', desc: '勤政爱民却生不逢时的末代皇帝' },
+                    { title: '第二章：李自成进京', desc: '农民军攻入北京，建立大顺政权' },
+                    { title: '第三章：崇祯殉国', desc: '自缢煤山，留下遗言' },
+                    { title: '第四章：吴三桂降清', desc: '引清兵入关，改变历史走向' },
+                    { title: '第五章：满清入关', desc: '入主中原，建立清朝' },
+                    { title: '第六章：南明抗争', desc: '南明政权的建立与失败' },
+                    { title: '第七章：历史的启示', desc: '明朝灭亡的深层原因与历史教训' }
+                ]
+            }
+        };
+
+        function openModal(modalId) {
+            const data = modalData[modalId];
+            if (!data) return;
+
+            const overlay = document.getElementById('modalOverlay');
+            const icon = document.getElementById('modalIcon');
+            const title = document.getElementById('modalTitle');
+            const subtitle = document.getElementById('modalSubtitle');
+            const body = document.getElementById('modalBody');
+
+            icon.textContent = data.icon;
+            title.textContent = data.title;
+            subtitle.textContent = data.subtitle;
+
+            let bodyHTML = '';
+
+            data.sections.forEach(section => {
+                bodyHTML += `
+                    <div class="modal-section">
+                        <h3 class="modal-section-title">${section.title}</h3>
+                        <p class="modal-text">${section.content}</p>
+                    </div>
+                `;
+            });
+
+            if (data.chapters && data.chapters.length > 0) {
+                bodyHTML += `
+                    <div class="modal-section">
+                        <h3 class="modal-section-title">章节介绍</h3>
+                        <div class="modal-chapters">
+                `;
+                data.chapters.forEach(chapter => {
+                    bodyHTML += `
+                        <div class="modal-chapter">
+                            <div class="modal-chapter-title">${chapter.title}</div>
+                            <div class="modal-chapter-desc">${chapter.desc}</div>
+                        </div>
+                    `;
+                });
+                bodyHTML += '</div></div>';
+            }
+
+            if (data.highlights && data.highlights.length > 0) {
+                bodyHTML += `
+                    <div class="modal-section">
+                        <h3 class="modal-section-title">关键数据</h3>
+                        <div class="modal-highlights">
+                `;
+                data.highlights.forEach(highlight => {
+                    bodyHTML += `
+                        <div class="modal-highlight">
+                            <div class="modal-highlight-value">${highlight.value}</div>
+                            <div class="modal-highlight-label">${highlight.label}</div>
+                        </div>
+                    `;
+                });
+                bodyHTML += '</div></div>';
+            }
+
+            body.innerHTML = bodyHTML;
+            overlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            const overlay = document.getElementById('modalOverlay');
+            const modalBody = document.getElementById('modalBody');
+            overlay.classList.remove('active');
+            document.body.style.overflow = '';
+            modalBody.scrollTop = 0;
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.card[data-modal]');
+            cards.forEach(card => {
+                card.addEventListener('click', function() {
+                    const modalId = this.getAttribute('data-modal');
+                    openModal(modalId);
+                });
+            });
+
+            document.getElementById('modalClose').addEventListener('click', closeModal);
+            document.getElementById('modalOverlay').addEventListener('click', function(e) {
+                if (e.target === this) closeModal();
+            });
+
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') closeModal();
+            });
+        });
+    </script>
+</body>
+</html>
