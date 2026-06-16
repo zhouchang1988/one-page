@@ -1,0 +1,1390 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>藏海传 · 权谋复仇传奇</title>
+    <link rel="preconnect" href="https://fonts.loli.net">
+    <link href="https://fonts.loli.net/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0f1419;
+            --bg-secondary: #1a1f2e;
+            --bg-card: rgba(26, 31, 46, 0.9);
+            --bg-card-hover: rgba(36, 41, 56, 0.95);
+            
+            --gold-primary: #d4a853;
+            --gold-light: #f0d78c;
+            --gold-glow: rgba(212, 168, 83, 0.4);
+            --gold-subtle: rgba(212, 168, 83, 0.1);
+            
+            --vermilion: #c0392b;
+            --vermilion-light: #e74c3c;
+            --vermilion-glow: rgba(192, 57, 43, 0.3);
+            
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            
+            --border-subtle: rgba(212, 168, 83, 0.15);
+            --border-active: rgba(212, 168, 83, 0.5);
+            
+            --font-display: 'Noto Serif SC', serif;
+            --font-body: 'Noto Sans SC', sans-serif;
+            
+            --space-1: 4px;
+            --space-2: 8px;
+            --space-3: 12px;
+            --space-4: 16px;
+            --space-5: 20px;
+            --space-6: 24px;
+            --space-8: 32px;
+            --space-10: 40px;
+            --space-12: 48px;
+            --space-16: 64px;
+            
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 20px;
+            --radius-xl: 28px;
+            
+            --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.4);
+            --shadow-hover: 0 12px 48px rgba(212, 168, 83, 0.25);
+            
+            --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+            --duration-normal: 0.3s;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: var(--space-8);
+            position: relative;
+            background: 
+                radial-gradient(ellipse at 20% 50%, rgba(212, 168, 83, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 50%, rgba(192, 57, 43, 0.1) 0%, transparent 50%),
+                linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d4a853' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.5;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-2);
+            background: var(--gold-subtle);
+            border: 1px solid var(--border-subtle);
+            padding: var(--space-2) var(--space-4);
+            border-radius: 100px;
+            font-size: 0.875rem;
+            color: var(--gold-primary);
+            margin-bottom: var(--space-6);
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-badge-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--gold-primary);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .hero-title {
+            font-family: var(--font-display);
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: var(--space-4);
+            position: relative;
+            z-index: 1;
+        }
+
+        .char-gold {
+            background: linear-gradient(135deg, var(--gold-primary), var(--gold-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: none;
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin-bottom: var(--space-6);
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-quote {
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            font-style: italic;
+            max-width: 500px;
+            margin-bottom: var(--space-8);
+            padding: var(--space-4);
+            border-left: 3px solid var(--gold-primary);
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: var(--space-8);
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: var(--space-8);
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-stat {
+            text-align: center;
+        }
+
+        .hero-stat-value {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--gold-primary);
+            line-height: 1;
+        }
+
+        .hero-stat-label {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            margin-top: var(--space-1);
+        }
+
+        .hero-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-2);
+            background: linear-gradient(135deg, var(--gold-primary), var(--vermilion));
+            color: var(--bg-primary);
+            padding: var(--space-3) var(--space-6);
+            border-radius: 100px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all var(--duration-normal) var(--ease-out);
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px var(--gold-glow);
+        }
+
+        .hero-cta-arrow {
+            transition: transform var(--duration-normal) var(--ease-out);
+        }
+
+        .hero-cta:hover .hero-cta-arrow {
+            transform: translateX(4px);
+        }
+
+        /* Navigation */
+        .nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(15, 20, 25, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-subtle);
+            padding: var(--space-3) 0;
+        }
+
+        .nav-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--space-6);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-brand {
+            font-family: var(--font-display);
+            font-weight: 700;
+            color: var(--gold-primary);
+            font-size: 1.1rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: var(--space-4);
+            list-style: none;
+            flex-wrap: wrap;
+        }
+
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.875rem;
+            padding: var(--space-2) var(--space-3);
+            border-radius: var(--radius-sm);
+            transition: all var(--duration-normal) var(--ease-out);
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: var(--gold-primary);
+            background: var(--gold-subtle);
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: var(--space-4);
+        }
+
+        .nav-progress {
+            position: relative;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .nav-progress-ring {
+            width: 100%;
+            height: 100%;
+            transform: rotate(-90deg);
+        }
+
+        .nav-progress-ring circle {
+            fill: none;
+            stroke-width: 3;
+        }
+
+        .nav-progress-ring .bg {
+            stroke: var(--border-subtle);
+        }
+
+        .nav-progress-ring .fill {
+            stroke: var(--gold-primary);
+            stroke-linecap: round;
+            transition: stroke-dashoffset 0.3s ease;
+        }
+
+        #progressText {
+            position: absolute;
+            font-size: 0.6rem;
+            color: var(--gold-primary);
+            font-weight: 600;
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--gold-primary), var(--vermilion));
+            z-index: 1000;
+            transition: width 0.1s ease;
+        }
+
+        /* Sections */
+        .section {
+            padding: var(--space-16) var(--space-6);
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: var(--space-12);
+        }
+
+        .section-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-2);
+            background: var(--gold-subtle);
+            border: 1px solid var(--border-subtle);
+            padding: var(--space-1) var(--space-3);
+            border-radius: 100px;
+            font-size: 0.75rem;
+            color: var(--gold-primary);
+            margin-bottom: var(--space-4);
+        }
+
+        .section-title {
+            font-family: var(--font-display);
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: var(--space-3);
+        }
+
+        .section-desc {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: var(--space-8);
+            transition: all var(--duration-normal) var(--ease-out);
+        }
+
+        .card:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--border-active);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .card-icon {
+            font-size: 2.5rem;
+            margin-bottom: var(--space-4);
+        }
+
+        .card-title {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: var(--space-3);
+        }
+
+        .card-text {
+            color: var(--text-secondary);
+            line-height: 1.8;
+        }
+
+        .card-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--space-2);
+            margin-top: var(--space-4);
+        }
+
+        .tag {
+            display: inline-block;
+            padding: var(--space-1) var(--space-3);
+            background: var(--gold-subtle);
+            border: 1px solid var(--border-subtle);
+            border-radius: 100px;
+            font-size: 0.75rem;
+            color: var(--gold-primary);
+        }
+
+        .tag.vermilion {
+            background: var(--vermilion-glow);
+            border-color: rgba(192, 57, 43, 0.3);
+            color: var(--vermilion-light);
+        }
+
+        /* Intro Section */
+        .intro-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--space-6);
+        }
+
+        .intro-grid .card {
+            text-align: center;
+        }
+
+        .intro-grid .card-icon {
+            display: flex;
+            justify-content: center;
+        }
+
+        .intro-grid .card-tags {
+            justify-content: center;
+        }
+
+        /* Author Team Cards */
+        #author .card {
+            text-align: center;
+        }
+
+        #author .card-icon {
+            display: flex;
+            justify-content: center;
+        }
+
+        /* Author Section */
+        .author-card {
+            display: flex;
+            gap: var(--space-8);
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .author-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--gold-primary), var(--vermilion));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            flex-shrink: 0;
+        }
+
+        .author-info {
+            flex: 1;
+        }
+
+        .author-name {
+            font-family: var(--font-display);
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--gold-primary);
+            margin-bottom: var(--space-2);
+        }
+
+        .author-role {
+            color: var(--text-muted);
+            margin-bottom: var(--space-4);
+        }
+
+        /* Characters Grid */
+        .characters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--space-6);
+        }
+
+        .character-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: var(--space-6);
+            text-align: center;
+            transition: all var(--duration-normal) var(--ease-out);
+        }
+
+        .character-card:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--border-active);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .character-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--gold-subtle), var(--vermilion-glow));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            margin: 0 auto var(--space-4);
+        }
+
+        .character-name {
+            font-family: var(--font-display);
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--gold-primary);
+            margin-bottom: var(--space-1);
+        }
+
+        .character-actor {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            margin-bottom: var(--space-3);
+        }
+
+        .character-desc {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding-left: var(--space-10);
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 16px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(180deg, var(--gold-primary), var(--vermilion));
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: var(--space-8);
+            padding: var(--space-6);
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+        }
+
+        .timeline-item:hover {
+            border-color: var(--border-active);
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: -36px;
+            top: 24px;
+            width: 12px;
+            height: 12px;
+            background: var(--gold-primary);
+            border-radius: 50%;
+            border: 3px solid var(--bg-primary);
+            box-shadow: 0 0 0 2px var(--gold-primary);
+        }
+
+        .timeline-year {
+            font-family: var(--font-display);
+            font-size: 0.875rem;
+            color: var(--gold-primary);
+            font-weight: 600;
+            margin-bottom: var(--space-2);
+        }
+
+        .timeline-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--space-2);
+        }
+
+        .timeline-desc {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* Quote Cards */
+        .quote-card {
+            background: linear-gradient(135deg, var(--gold-subtle), rgba(192, 57, 43, 0.1));
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: var(--space-8);
+            margin-bottom: var(--space-6);
+            text-align: center;
+        }
+
+        .quote-text {
+            font-family: var(--font-display);
+            font-size: 1.25rem;
+            font-style: italic;
+            color: var(--text-primary);
+            line-height: 1.8;
+            margin-bottom: var(--space-4);
+        }
+
+        .quote-source {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        .quote-source strong {
+            color: var(--gold-primary);
+        }
+
+        /* Analysis Cards */
+        .analysis-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--space-6);
+        }
+
+        .analysis-grid .card {
+            text-align: center;
+        }
+
+        .analysis-grid .card-icon {
+            display: flex;
+            justify-content: center;
+        }
+
+        /* Back to Top */
+        .back-to-top {
+            position: fixed;
+            bottom: var(--space-8);
+            right: var(--space-8);
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--gold-primary), var(--vermilion));
+            color: var(--bg-primary);
+            border: none;
+            cursor: pointer;
+            font-size: 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all var(--duration-normal) var(--ease-out);
+            z-index: 100;
+        }
+
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .back-to-top:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border-subtle);
+            padding: var(--space-12) var(--space-6);
+            text-align: center;
+        }
+
+        .footer-title {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--gold-primary);
+            margin-bottom: var(--space-3);
+        }
+
+        .footer-desc {
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto var(--space-6);
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: var(--space-6);
+            flex-wrap: wrap;
+        }
+
+        .footer-link {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.875rem;
+            transition: color var(--duration-normal) var(--ease-out);
+        }
+
+        .footer-link:hover {
+            color: var(--gold-primary);
+        }
+
+        /* Fade In Animation */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s var(--ease-out), transform 0.6s var(--ease-out);
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero {
+                padding: var(--space-6);
+            }
+
+            .hero-title {
+                font-size: clamp(2rem, 6vw, 3.5rem);
+            }
+
+            .hero-stats {
+                gap: var(--space-4);
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .author-card {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+
+            .characters-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .timeline {
+                padding-left: var(--space-8);
+            }
+
+            .timeline-dot {
+                left: -28px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .section {
+                padding: var(--space-10) var(--space-4);
+            }
+
+            .card {
+                padding: var(--space-6);
+            }
+
+            .hero-stat-value {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Progress Bar -->
+    <div class="progress-bar" id="progressBar"></div>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-badge fade-in">
+            <span class="hero-badge-dot"></span>
+            古装权谋 · 复仇传奇
+        </div>
+        <h1 class="hero-title fade-in">
+            <span class="char-gold">藏海传</span>
+        </h1>
+        <p class="hero-subtitle fade-in">十年隐忍，一朝归来；营造纵横，权谋天下</p>
+        <blockquote class="hero-quote fade-in">
+            "仇恨不用写在脸上，放在心里就好。心是自己的，别人看不见。脸在外面，人人能见。"
+        </blockquote>
+        <div class="hero-stats fade-in">
+            <div class="hero-stat">
+                <div class="hero-stat-value">40集</div>
+                <div class="hero-stat-label">剧集长度</div>
+            </div>
+            <div class="hero-stat">
+                <div class="hero-stat-value">7.1</div>
+                <div class="hero-stat-label">豆瓣评分</div>
+            </div>
+            <div class="hero-stat">
+                <div class="hero-stat-value">9.5</div>
+                <div class="hero-stat-label">IMDb评分</div>
+            </div>
+            <div class="hero-stat">
+                <div class="hero-stat-value">30亿+</div>
+                <div class="hero-stat-label">播放量</div>
+            </div>
+        </div>
+        <a href="#intro" class="hero-cta fade-in">
+            开始探索
+            <span class="hero-cta-arrow">→</span>
+        </a>
+    </section>
+
+    <!-- Navigation -->
+    <nav class="nav" id="nav">
+        <div class="nav-inner">
+            <div class="nav-brand">藏海传</div>
+            <ul class="nav-links">
+                <li><a href="#intro" class="nav-link active">作品简介</a></li>
+                <li><a href="#author" class="nav-link">主创团队</a></li>
+                <li><a href="#characters" class="nav-link">主要人物</a></li>
+                <li><a href="#story" class="nav-link">剧情脉络</a></li>
+                <li><a href="#quotes" class="nav-link">经典语录</a></li>
+                <li><a href="#analysis" class="nav-link">深度评析</a></li>
+            </ul>
+            <div class="nav-right">
+                <div class="nav-progress">
+                    <svg class="nav-progress-ring" viewBox="0 0 36 36">
+                        <circle class="bg" cx="18" cy="18" r="15" />
+                        <circle class="fill" id="progressRing" cx="18" cy="18" r="15"
+                            stroke-dasharray="94.25" stroke-dashoffset="94.25" />
+                    </svg>
+                    <span id="progressText">0%</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Introduction Section -->
+    <section id="intro" class="section">
+        <div class="section-header fade-in">
+            <div class="section-badge">📚 作品简介</div>
+            <h2 class="section-title">一部权谋复仇的史诗</h2>
+            <p class="section-desc">融合东方美学与非遗技艺，以权谋剧形式创新演绎传统武侠叙事</p>
+        </div>
+        <div class="intro-grid">
+            <div class="card fade-in">
+                <div class="card-icon">🎬</div>
+                <h3 class="card-title">剧集信息</h3>
+                <p class="card-text">
+                    《藏海传》是由郑晓龙担任总导演、曹译文执导的古装权谋传奇剧，改编自南派三叔的小说《万海戏麟》。该剧于2025年5月18日在央视八套和优酷首播，并登陆Disney+中国港澳台地区，共40集。
+                </p>
+                <div class="card-tags">
+                    <span class="tag">古装</span>
+                    <span class="tag">权谋</span>
+                    <span class="tag">复仇</span>
+                    <span class="tag vermilion">2025</span>
+                </div>
+            </div>
+            <div class="card fade-in">
+                <div class="card-icon">📖</div>
+                <h3 class="card-title">原作改编</h3>
+                <p class="card-text">
+                    改编自南派三叔的《万海戏麟》，原著以宏大的世界观和复杂的人物关系著称。编剧赵柳逸在改编过程中，将原著的奇幻元素与历史权谋巧妙融合，创造出独具特色的"中式权谋"叙事风格。
+                </p>
+                <div class="card-tags">
+                    <span class="tag">南派三叔</span>
+                    <span class="tag">万海戏麟</span>
+                    <span class="tag vermilion">IP改编</span>
+                </div>
+            </div>
+            <div class="card fade-in">
+                <div class="card-icon">🏆</div>
+                <h3 class="card-title">荣誉成就</h3>
+                <p class="card-text">
+                    该剧在IMDb获得9.5分，成为中剧悬疑类评分Top1；Disney+全球190个地区登顶热播榜；获CMG第四届中国电视剧年度盛典年度海外传播大剧、年度优秀电视剧；入围第31届上海电视节白玉兰奖最佳中国电视剧、最佳男主角、最佳导演等多项荣誉。
+                </p>
+                <div class="card-tags">
+                    <span class="tag">IMDb 9.5</span>
+                    <span class="tag">白玉兰提名</span>
+                    <span class="tag">金莲花奖</span>
+                    <span class="tag vermilion">全球热播</span>
+                </div>
+            </div>
+            <div class="card fade-in">
+                <div class="card-icon">🎭</div>
+                <h3 class="card-title">剧情梗概</h3>
+                <p class="card-text">
+                    大雍国钦天监监正蒯铎之子稚奴，童年时亲历满门覆灭之祸。十年后化名藏海重返京城，凭借营造技艺和纵横之术，在朝堂上步步高升，最终揭破阴谋、手刃仇人、守卫国家。
+                </p>
+                <div class="card-tags">
+                    <span class="tag">复仇</span>
+                    <span class="tag">成长</span>
+                    <span class="tag">权谋</span>
+                    <span class="tag vermilion">家国情怀</span>
+                </div>
+            </div>
+            <div class="card fade-in">
+                <div class="card-icon">🎵</div>
+                <h3 class="card-title">音乐原声</h3>
+                <p class="card-text">
+                    主题曲《日光之下》由谢文雅Casey演唱，片尾曲《藏海》由刘易昇作曲、杨熙填词。配乐融合了传统民乐与现代编曲，为剧集增添了浓厚的东方美学氛围。
+                </p>
+                <div class="card-tags">
+                    <span class="tag">谢文雅</span>
+                    <span class="tag">刘易昇</span>
+                    <span class="tag vermilion">原创配乐</span>
+                </div>
+            </div>
+            <div class="card fade-in">
+                <div class="card-icon">📺</div>
+                <h3 class="card-title">播出平台</h3>
+                <p class="card-text">
+                    该剧在央视八套黄金档首播，同时在优酷全网独播，并登陆Disney+中国港澳台地区。首播收视触达6.4亿人，创下2025年电视剧播放冠军纪录。
+                </p>
+                <div class="card-tags">
+                    <span class="tag">央视八套</span>
+                    <span class="tag">优酷</span>
+                    <span class="tag">Disney+</span>
+                    <span class="tag vermilion">全球热播</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Author Section -->
+    <div style="background: var(--bg-secondary); border-radius: var(--radius-xl); margin: 0 auto; max-width: 1200px; padding: 0 var(--space-6);">
+        <section id="author" class="section">
+            <div class="section-header fade-in">
+                <div class="section-badge">🎬 主创团队</div>
+                <h2 class="section-title">匠心打造的创作团队</h2>
+                <p class="section-desc">顶级导演阵容与实力派演员的精彩碰撞</p>
+            </div>
+        <div class="author-card fade-in">
+            <div class="author-avatar">🎥</div>
+            <div class="author-info">
+                <h3 class="author-name">郑晓龙（总导演）</h3>
+                <p class="author-role">中国著名导演，代表作《甄嬛传》《芈月传》《红高粱》</p>
+                <p class="card-text">
+                    郑晓龙是中国电视剧界的标杆人物，擅长执导历史题材和女性传奇作品。此次担任《藏海传》总导演，延续了他对权谋题材的深刻理解，将东方美学与现代叙事手法完美融合，打造出又一部精品古装剧。
+                </p>
+            </div>
+        </div>
+        <div style="margin-top: var(--space-8); display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-6);">
+            <div class="card fade-in" style="text-align: center;">
+                <div class="card-icon">✍️</div>
+                <h3 class="card-title" style="font-size: 1.1rem;">曹译文</h3>
+                <p class="card-text" style="font-size: 0.875rem;">导演</p>
+            </div>
+            <div class="card fade-in" style="text-align: center;">
+                <div class="card-icon">📝</div>
+                <h3 class="card-title" style="font-size: 1.1rem;">赵柳逸</h3>
+                <p class="card-text" style="font-size: 0.875rem;">编剧</p>
+            </div>
+            <div class="card fade-in" style="text-align: center;">
+                <div class="card-icon">⭐</div>
+                <h3 class="card-title" style="font-size: 1.1rem;">肖战</h3>
+                <p class="card-text" style="font-size: 0.875rem;">领衔主演</p>
+            </div>
+            <div class="card fade-in" style="text-align: center;">
+                <div class="card-icon">🌟</div>
+                <h3 class="card-title" style="font-size: 1.1rem;">张婧仪</h3>
+                <p class="card-text" style="font-size: 0.875rem;">领衔主演</p>
+            </div>
+        </div>
+    </section>
+    </div>
+
+    <!-- Characters Section -->
+    <section id="characters" class="section">
+        <div class="section-header fade-in">
+            <div class="section-badge">👥 主要人物</div>
+            <h2 class="section-title">权谋漩涡中的众生相</h2>
+            <p class="section-desc">每个角色都在命运的棋盘上扮演着关键角色</p>
+        </div>
+        <div class="characters-grid">
+            <div class="character-card fade-in">
+                <div class="character-avatar">👤</div>
+                <div class="character-name">藏海</div>
+                <div class="character-actor">演员：肖战</div>
+                <div class="character-desc">原名稚奴，蒯铎之子。童年亲历灭门之祸，十年隐忍后化名藏海重返京城，凭借营造技艺与纵横之术，步步为营，最终揭破阴谋、手刃仇人。</div>
+            </div>
+            <div class="character-card fade-in">
+                <div class="character-avatar">🌸</div>
+                <div class="character-name">香暗荼</div>
+                <div class="character-actor">演员：张婧仪</div>
+                <div class="character-desc">原名明香暗荼，枕楼老板，冬夏郡主。到大雍为质，封柔远公主。与藏海相遇相识，共同经历风雨，最终携手远走高飞。</div>
+            </div>
+            <div class="character-card fade-in">
+                <div class="character-avatar">⚔️</div>
+                <div class="character-name">庄之行</div>
+                <div class="character-actor">演员：周奇</div>
+                <div class="character-desc">平津侯府二公子，庶子。为保住庄家门楣，于城门下斩杀父亲庄芦隐。从纨绔子弟成长为有担当的将军。</div>
+            </div>
+            <div class="character-card fade-in">
+                <div class="character-avatar">👑</div>
+                <div class="character-name">庄芦隐</div>
+                <div class="character-actor">演员：黄觉</div>
+                <div class="character-desc">平津侯，荣禄大夫。藏海的灭门仇人，被曹静贤陷害后起兵攻入皇城，最终于城下遭庄之行斩杀。</div>
+            </div>
+            <div class="character-card fade-in">
+                <div class="character-avatar">👸</div>
+                <div class="character-name">明玉肃提</div>
+                <div class="character-actor">演员：余男</div>
+                <div class="character-desc">冬夏女王，香暗荼之母。为了女儿和国家的利益，与藏海合作，共同对抗大雍朝堂的阴谋。</div>
+            </div>
+            <div class="character-card fade-in">
+                <div class="character-avatar">👩</div>
+                <div class="character-name">赵上弦</div>
+                <div class="character-actor">演员：陈妍希</div>
+                <div class="character-desc">蒯铎之妻，稚奴、月奴之母。在灭门之夜保护孩子，是藏海心中永远的牵挂。</div>
+            </div>
+            <div class="character-card fade-in">
+                <div class="character-avatar">🐉</div>
+                <div class="character-name">皇帝</div>
+                <div class="character-actor">演员：张国强</div>
+                <div class="character-desc">大雍国皇帝，表面昏庸实则深藏不露。在藏海的帮助下，最终识破阴谋，稳固朝纲。</div>
+            </div>
+            <div class="character-card fade-in">
+                <div class="character-avatar">🎭</div>
+                <div class="character-name">赵秉文</div>
+                <div class="character-actor">演员：田小洁</div>
+                <div class="character-desc">户部尚书，内阁次辅。表面是藏海的恩公，实则是蒯家灭门的幕后主谋，最终被藏海的喑兵所杀。</div>
+            </div>
+            <div class="character-card fade-in">
+                <div class="character-avatar">🔮</div>
+                <div class="character-name">褚怀明</div>
+                <div class="character-actor">演员：沙宝亮</div>
+                <div class="character-desc">前钦天监监正，平津侯府幕僚。精通天文术数，依附平津侯，是藏海在侯府的对手之一。</div>
+            </div>
+            <div class="character-card fade-in">
+                <div class="character-avatar">🏗️</div>
+                <div class="character-name">星斗大师</div>
+                <div class="character-actor">演员：张铎</div>
+                <div class="character-desc">藏海的师傅之一，擅长建筑堪舆。教导藏海营造技艺，是藏海复仇路上的重要引路人。</div>
+            </div>
+            <div class="character-card fade-in">
+                <div class="character-avatar">💫</div>
+                <div class="character-name">六初</div>
+                <div class="character-actor">演员：白冰</div>
+                <div class="character-desc">藏海的师傅之一，擅长控制情感。教导藏海纵横之术和人心操控，帮助他在朝堂上周旋。</div>
+            </div>
+            <div class="character-card fade-in">
+                <div class="character-avatar">🏛️</div>
+                <div class="character-name">永容王爷</div>
+                <div class="character-actor">演员：乔振宇</div>
+                <div class="character-desc">皇帝的亲弟弟，身份尊贵。在朝堂权力斗争中扮演着重要角色，与藏海有着微妙的关系。</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Story Timeline Section -->
+    <div style="background: var(--bg-secondary); border-radius: var(--radius-xl); margin: 0 auto; max-width: 1200px; padding: 0 var(--space-6);">
+        <section id="story" class="section">
+        <div class="section-header fade-in">
+            <div class="section-badge">📜 剧情脉络</div>
+            <h2 class="section-title">权谋与复仇的交织</h2>
+            <p class="section-desc">从灭门之痛到天下大义的成长之路</p>
+        </div>
+        <div class="timeline">
+            <div class="timeline-item fade-in">
+                <div class="timeline-dot"></div>
+                <div class="timeline-year">祯顺九年</div>
+                <div class="timeline-title">封禅台坍塌</div>
+                <div class="timeline-desc">钦天监监正蒯铎负责监修的封禅台在完工前三月突然坍塌，他下井查看时发现劳工昏迷，更遭遇僵尸兵围攻，最终取得发蓝光的葵玺。</div>
+            </div>
+            <div class="timeline-item fade-in">
+                <div class="timeline-dot"></div>
+                <div class="timeline-year">祯顺九年</div>
+                <div class="timeline-title">蒯家灭门</div>
+                <div class="timeline-desc">平津侯以私藏不义之物为由灭蒯家满门，10岁的稚奴躲入地道幸免于难，从此背负血海深仇，开始十年的隐忍与修炼。</div>
+            </div>
+            <div class="timeline-item fade-in">
+                <div class="timeline-dot"></div>
+                <div class="timeline-year">十年后</div>
+                <div class="timeline-title">化名藏海归来</div>
+                <div class="timeline-desc">稚奴学成营造技艺与纵横之术，化名藏海重返京城，拜入仇人平津侯麾下为谋士，开始步步为营的复仇计划。</div>
+            </div>
+            <div class="timeline-item fade-in">
+                <div class="timeline-dot"></div>
+                <div class="timeline-year">侯府岁月</div>
+                <div class="timeline-title">智斗群雄</div>
+                <div class="timeline-desc">藏海在平津侯府中与褚怀明、杨真、瞿蛟等幕僚斗智斗勇，凭借过人的谋略逐渐获得平津侯的信任。</div>
+            </div>
+            <div class="timeline-item fade-in">
+                <div class="timeline-dot"></div>
+                <div class="timeline-year">朝堂崛起</div>
+                <div class="timeline-title">从谋士到首辅</div>
+                <div class="timeline-desc">藏海从一介布衣谋士逐步晋升，挂职钦天监，解决多件要案，最终成为内阁首辅，权倾朝野。</div>
+            </div>
+            <div class="timeline-item fade-in">
+                <div class="timeline-dot"></div>
+                <div class="timeline-year">真相大白</div>
+                <div class="timeline-title">揭开阴谋</div>
+                <div class="timeline-desc">藏海发现蒯家灭门的幕后主谋并非平津侯，而是赵秉文。赵秉文当面承认罪行后被藏海的喑兵所杀。</div>
+            </div>
+            <div class="timeline-item fade-in">
+                <div class="timeline-dot"></div>
+                <div class="timeline-year">大结局</div>
+                <div class="timeline-title">功成身退</div>
+                <div class="timeline-desc">藏海拒绝入值内阁，辞官致仕，与香暗荼远走高飞，带着癸玺游历河川，欲查明其奥妙后彻底毁掉，从此过上神仙日子。</div>
+            </div>
+        </div>
+    </section>
+    </div>
+
+    <!-- Quotes Section -->
+    <section id="quotes" class="section">
+        <div class="section-header fade-in">
+            <div class="section-badge">💬 经典语录</div>
+            <h2 class="section-title">字字珠玑的权谋智慧</h2>
+            <p class="section-desc">台词中蕴含的人生哲理与处世之道</p>
+        </div>
+        <div class="quote-card fade-in">
+            <p class="quote-text">"我命不该绝！"</p>
+            <p class="quote-source">—— <strong>藏海</strong></p>
+        </div>
+        <div class="quote-card fade-in">
+            <p class="quote-text">"仇恨不用写在脸上，放在心里就好。心是自己的，别人看不见。脸在外面，人人能见。"</p>
+            <p class="quote-source">—— <strong>藏海</strong></p>
+        </div>
+        <div class="quote-card fade-in">
+            <p class="quote-text">"总有一天你会明白，这世上最厉害的本事，就是用真话、实话来骗人。"</p>
+            <p class="quote-source">—— <strong>藏海</strong></p>
+        </div>
+        <div class="quote-card fade-in">
+            <p class="quote-text">"我不是为他卖命的，我是为我自己。"</p>
+            <p class="quote-source">—— <strong>藏海</strong></p>
+        </div>
+        <div class="quote-card fade-in">
+            <p class="quote-text">"智者不寿，聪明人死得早。"</p>
+            <p class="quote-source">—— <strong>庄芦隐</strong>（平津侯）</p>
+        </div>
+        <div class="quote-card fade-in">
+            <p class="quote-text">"大恩如大仇，没人愿意背负你一生的恩情。长久无法偿还的恩情，最后不是变得心安理得，就是变成了怨恨。"</p>
+            <p class="quote-source">—— <strong>藏海</strong></p>
+        </div>
+        <div class="quote-card fade-in">
+            <p class="quote-text">"如果事事都指望后人，那后人的日子，只会一天不如一天，我们还有何脸面，立于天地之间。"</p>
+            <p class="quote-source">—— <strong>皇帝</strong></p>
+        </div>
+        <div class="quote-card fade-in">
+            <p class="quote-text">"你要做的，是让人相信你想让他们相信的事。最重要的不是扮得多真，而是知道对方最怕什么。"</p>
+            <p class="quote-source">—— <strong>藏海</strong></p>
+        </div>
+    </section>
+
+    <!-- Analysis Section -->
+    <div style="background: var(--bg-secondary); border-radius: var(--radius-xl); margin: 0 auto; max-width: 1200px; padding: 0 var(--space-6);">
+        <section id="analysis" class="section">
+        <div class="section-header fade-in">
+            <div class="section-badge">📊 深度评析</div>
+            <h2 class="section-title">权谋棋局中的人性与美学</h2>
+            <p class="section-desc">超越"爽剧"框架的叙事革新与哲学思辨</p>
+        </div>
+
+        <!-- 核心观点 -->
+        <div class="card fade-in" style="margin-bottom: var(--space-8); border-left: 3px solid var(--gold-primary); background: linear-gradient(135deg, var(--gold-subtle), var(--bg-card));">
+            <div class="card-icon">💡</div>
+            <h3 class="card-title">人民日报评价</h3>
+            <p class="card-text" style="font-size: 1.1rem; line-height: 2;">
+                "《藏海传》突破了国产古装剧中把复仇叙事简化为'以血还血'爽感宣泄的创作谱系，在已有的创作体系里寻求革新，将'复仇'与'成长'这两大主题交织为关于人性蜕变与自我救赎的双生叙事，在极致的矛盾冲突中注入了更多东方美学与哲学思辨的气质。"
+            </p>
+            <p class="card-text" style="margin-top: var(--space-4); color: var(--gold-primary);">—— 人民艺起评</p>
+        </div>
+
+        <!-- 人性分析 -->
+        <h3 style="font-family: var(--font-display); font-size: 1.5rem; color: var(--gold-primary); margin-bottom: var(--space-6); text-align: center;">🎭 人性的灰度与复杂性</h3>
+        <div class="analysis-grid" style="margin-bottom: var(--space-12);">
+            <div class="card fade-in">
+                <div class="card-icon">👥</div>
+                <h3 class="card-title">"全员恶人"的设计</h3>
+                <p class="card-text">打破传统正邪对立的二元叙事，采用"全员恶人"设计。每个角色都在权力漩涡中挣扎，没有纯粹的善恶，只有被时代与命运挤压后的选择。正如北京大学影视评论人王乐所言："这部剧最大的成功在于，没有人天生就是恶人。"</p>
+            </div>
+            <div class="card fade-in">
+                <div class="card-icon">💔</div>
+                <h3 class="card-title">复仇对人性的异化</h3>
+                <p class="card-text">藏海在复仇过程中逐渐意识到仇恨对人性的扭曲。面对仇敌之子庄之行的天真，他因利用无辜者而陷入愧疚；与香暗荼的情感纠葛，让他意识到仇恨之外的人性温暖。复仇不是终点，而是理解人性复杂性的起点。</p>
+            </div>
+            <div class="card fade-in">
+                <div class="card-icon">🎭</div>
+                <h3 class="card-title">面具与真实自我的撕裂</h3>
+                <p class="card-text">藏海在朝堂上不动声色地布局谋算，却会在深夜对着亲人的遗物卸下心防、痛彻心扉。他对敌人狠辣果决，却对朋友报以性命相托。这种极致理性中透出的人性破绽，让观众意识到这个"智多星"本质上仍是个背负创伤的凡人。</p>
+            </div>
+        </div>
+
+        <!-- 叙事革新 -->
+        <h3 style="font-family: var(--font-display); font-size: 1.5rem; color: var(--gold-primary); margin-bottom: var(--space-6); text-align: center;">📖 权谋叙事的革新</h3>
+        <div class="analysis-grid" style="margin-bottom: var(--space-12);">
+            <div class="card fade-in">
+                <div class="card-icon">🔄</div>
+                <h3 class="card-title">从"复仇爽感"到"成长思辨"</h3>
+                <p class="card-text">不同于传统复仇剧的"以暴制暴"套路，《藏海传》以"堪舆营造术"与"纵横之术"为武器，构建起智斗为核心的权谋叙事。"封禅台风水破局""枕楼机关陷阱"等情节，将古代建筑智慧与权谋博弈巧妙融合，被赞为"中式权谋天花板"。</p>
+            </div>
+            <div class="card fade-in">
+                <div class="card-icon">👁️</div>
+                <h3 class="card-title">单一视角的沉浸体验</h3>
+                <p class="card-text">不同于《琅琊榜》等经典权谋剧的"上帝视角"，该剧采用单一主角视角，观众全程代入藏海的困境与成长，体验"如履薄冰"的紧张感。藏海混入侯府时需压抑仇恨伪装冷静，甚至利用无辜者时的矛盾心理，展现了复仇对人性的异化与救赎的可能。</p>
+            </div>
+            <div class="card fade-in">
+                <div class="card-icon">🎯</div>
+                <h3 class="card-title">阳谋与阴谋的交织</h3>
+                <p class="card-text">剧中大量运用"众目睽睽下请君入瓮"的阳谋设计，不同于传统权谋剧的暗箱操作。藏海的谋略往往在阳光下进行，敌人明知是陷阱却不得不踏入，这种"明知山有虎"的张力让权谋叙事有了新的表达维度。</p>
+            </div>
+        </div>
+
+        <!-- 文化与美学 -->
+        <h3 style="font-family: var(--font-display); font-size: 1.5rem; color: var(--gold-primary); margin-bottom: var(--space-6); text-align: center;">🎨 东方美学与文化传承</h3>
+        <div class="analysis-grid" style="margin-bottom: var(--space-12);">
+            <div class="card fade-in">
+                <div class="card-icon">🏗️</div>
+                <h3 class="card-title">堪舆营造术的"落地"呈现</h3>
+                <p class="card-text">创作团队致力于将堪舆营造这种"听起来有点神乎其神的技能"以很落地的方式呈现。制片人张本透露："它是传统文化的一部分，也有很多科学依托。我们从这个角度出发，寻找其与现实的潜在联系。"这种"去神秘化"的处理让传统文化焕发新生。</p>
+            </div>
+            <div class="card fade-in">
+                <div class="card-icon">📜</div>
+                <h3 class="card-title">纵横之术的现代演绎</h3>
+                <p class="card-text">剧中的纵横之术并非简单的权谋手段，而是对人性弱点的精准把握。"用真话编织谎言""让人相信你想让他们相信的事"等台词，将古代智慧与现代心理学巧妙融合，让年轻观众在权谋中看到职场生存的影子。</p>
+            </div>
+            <div class="card fade-in">
+                <div class="card-icon">🎨</div>
+                <h3 class="card-title">非遗技艺的视觉呈现</h3>
+                <p class="card-text">从服化道到场景布置，每一帧都充满古典韵味。剧集融合东方美学与非遗技艺，将营造技艺、堪舆术数等传统文化元素融入权谋叙事，让观众在追剧的同时感受到中华文化的深厚底蕴。</p>
+            </div>
+        </div>
+
+        <!-- 现代隐喻 -->
+        <h3 style="font-family: var(--font-display); font-size: 1.5rem; color: var(--gold-primary); margin-bottom: var(--space-6); text-align: center;">💼 现代隐喻与职场共鸣</h3>
+        <div class="analysis-grid" style="margin-bottom: var(--space-12);">
+            <div class="card fade-in">
+                <div class="card-icon">🎭</div>
+                <h3 class="card-title">"戴面具"的职场人生</h3>
+                <p class="card-text">有日本观众在Twitter表示："《藏海传》让我想到职场上的'笑面虎'，很多人其实每天都在'戴面具'生活，只是我们不像藏海那样有有机会选择反擊。"藏海面对敌人时的冷靜与残酷，在亲人面前的脆弱与羞愧，恰恰是许多人在现代职场、人际中所面临的真实写照。</p>
+            </div>
+            <div class="card fade-in">
+                <div class="card-icon">🎯</div>
+                <h3 class="card-title">"杀猪盘式复仇"的心理学</h3>
+                <p class="card-text">剧中融入大量现代语境的隐喻，如"杀猪盘式复仇""用真话编织谎言"等心理操作手法，引起年轻世代强烈共鸣。这些古代权谋手段与现代PUA、职场套路的相似性，让观众在历史故事中看到了当代社会的影子。</p>
+            </div>
+            <div class="card fade-in">
+                <div class="card-icon">💡</div>
+                <h3 class="card-title">"大恩如大仇"的人性洞察</h3>
+                <p class="card-text">"大恩如大仇，没人愿意背负你一生的恩情。长久无法偿还的恩情，最后不是变得心安理得，就是变成了怨恨。"这句台词精准击中了现代人际关系中的痛点，让观众在权谋故事中找到了处理现实关系的智慧。</p>
+            </div>
+        </div>
+
+        <!-- 演技分析 -->
+        <h3 style="font-family: var(--font-display); font-size: 1.5rem; color: var(--gold-primary); margin-bottom: var(--space-6); text-align: center;">🎬 教科书级的演技呈现</h3>
+        <div class="analysis-grid" style="margin-bottom: var(--space-12);">
+            <div class="card fade-in">
+                <div class="card-icon">👁️</div>
+                <h3 class="card-title">瞳孔叙事学</h3>
+                <p class="card-text">肖战将重点放在眼部肌肉的微表情控制上——当他说出"东北方第三步砖下有暗簧"时，瞳孔会精准聚焦于虚拟的砖缝位置，眼睑肌肉轻微抽搐，模拟出强光照射下观察机关的生理反应。这种细节处理让观众忽略了场景的假定性。</p>
+            </div>
+            <div class="card fade-in">
+                <div class="card-icon">😊</div>
+                <h3 class="card-title">微笑作为铠甲</h3>
+                <p class="card-text">见到仇人画像时，肖战让藏海嘴角扬起一个诡异的微笑，弧度精准控制在15度左右，上唇提起时带动右侧颧骨的轻微抽动，形成介于痛苦与解脱之间的复杂表情。十年蛰伏已让他学会用微笑作为铠甲，而眼底一闪而过的神经性震颤，才是真实创伤的生理反应。</p>
+            </div>
+            <div class="card fade-in">
+                <div class="card-icon">😢</div>
+                <h3 class="card-title">极致理性中的人性破绽</h3>
+                <p class="card-text">在指令间隙的瞬间失神，背过身时嘴角无意识地下垂0.5秒，喉结快速滚动一次——这个被镜头捕捉到的细节，恰是角色在冷静智谋下隐藏的恐惧碎片。这种在极致理性中透出的人性破绽，比任何大段内心独白都更具冲击力。</p>
+            </div>
+        </div>
+
+        <!-- 主题升华 -->
+        <h3 style="font-family: var(--font-display); font-size: 1.5rem; color: var(--gold-primary); margin-bottom: var(--space-6); text-align: center;">🌟 从复仇到救赎的主题升华</h3>
+        <div class="analysis-grid">
+            <div class="card fade-in">
+                <div class="card-icon">🔄</div>
+                <h3 class="card-title">复仇不是终点</h3>
+                <p class="card-text">当藏海最终放下仇恨、选择守护家国时，剧集完成了一次对传统主题的创造性转化。正如人民日报所言："复仇不是终点，而是理解人性复杂性与历史延续性的起点。"这种创作思路，为国产剧的类型创新带来了新启示。</p>
+            </div>
+            <div class="card fade-in">
+                <div class="card-icon">🌍</div>
+                <h3 class="card-title">个体命运与家国责任</h3>
+                <p class="card-text">藏海的人生格局逐步从"报仇雪恨"的小我视角，向"心怀天下"的大义境界升华，完成了从个体复仇到铭记家国责任的蜕变。这一过程不仅展现了角色的立体成长，更将创作视角延伸至对人性复杂性的深度探讨，以及对家国天下命题的深刻思考。</p>
+            </div>
+            <div class="card fade-in">
+                <div class="card-icon">💬</div>
+                <h3 class="card-title">超越语言的情感共鸣</h3>
+                <p class="card-text">一如肖战在微博留言所说："你看，有这么多人懂你，小海。"这种共鸣超越了语言与地域，让《藏海传》从一部电视剧，成为一场关于命运、选择与人性的深层对话。它并不试图给出善恶标准答案，而是让观众在矛盾与挣扎中做出自己的判断。</p>
+            </div>
+        </div>
+    </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-title fade-in">藏海传</div>
+        <p class="footer-desc fade-in">
+            十年隐忍，一朝归来；营造纵横，权谋天下。<br>
+            这是一个关于复仇、成长与救赎的故事。
+        </p>
+        <div class="footer-links fade-in">
+            <a href="https://movie.douban.com/subject/27181010/" class="footer-link" target="_blank">豆瓣</a>
+            <a href="https://www.imdb.com/title/tt27181010/" class="footer-link" target="_blank">IMDb</a>
+            <a href="https://www.youku.com/" class="footer-link" target="_blank">优酷</a>
+            <a href="https://www.disneyplus.com/" class="footer-link" target="_blank">Disney+</a>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <button class="back-to-top" id="backToTop" aria-label="返回顶部">↑</button>
+
+    <script>
+        // Progress Bar
+        const progressBar = document.getElementById('progressBar');
+        const progressRing = document.getElementById('progressRing');
+        const progressText = document.getElementById('progressText');
+        const circumference = 2 * Math.PI * 15;
+
+        window.addEventListener('scroll', () => {
+            const scrollTop = window.scrollY;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const progress = (scrollTop / docHeight) * 100;
+            
+            progressBar.style.width = progress + '%';
+            
+            const offset = circumference - (progress / 100) * circumference;
+            progressRing.style.strokeDashoffset = offset;
+            progressText.textContent = Math.round(progress) + '%';
+        });
+
+        // Navigation Active State
+        const sections = document.querySelectorAll('section[id]');
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 100;
+                if (window.scrollY >= sectionTop) {
+                    current = section.getAttribute('id');
+                }
+            });
+            
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + current) {
+                    link.classList.add('active');
+                }
+            });
+        });
+
+        // Back to Top Button
+        const backToTop = document.getElementById('backToTop');
+        window.addEventListener('scroll', () => {
+            backToTop.classList.toggle('visible', window.scrollY > 300);
+        });
+        backToTop.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // Fade In Animation
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+    </script>
+</body>
+</html>
