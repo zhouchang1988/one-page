@@ -49,6 +49,29 @@
   .ctrl-btn:hover { background: rgba(255,255,255,0.15); color: #fff; }
   .ctrl-btn.on { border-color: rgba(120, 225, 200, 0.55); color: rgba(140, 235, 210, 0.95); }
 
+  #loader {
+    position: fixed; inset: 0; z-index: 100;
+    background: #05242c;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    transition: opacity 0.6s;
+  }
+  #loader.hide { opacity: 0; pointer-events: none; }
+  #loader-bar-wrap {
+    width: 220px; height: 3px; border-radius: 2px;
+    background: rgba(255,255,255,0.1); overflow: hidden;
+  }
+  #loader-bar {
+    width: 0%; height: 100%; border-radius: 2px;
+    background: rgba(120, 225, 200, 0.7);
+    transition: width 0.3s;
+  }
+  #loader-text {
+    margin-top: 14px;
+    font: 14px/1 "Songti SC", serif;
+    color: rgba(235, 245, 238, 0.45);
+    letter-spacing: 3px;
+  }
+
   #font-wrap { position: relative; }
   #font-menu {
     position: absolute; top: calc(100% + 6px); right: 0;
@@ -86,6 +109,10 @@
 </style>
 </head>
 <body>
+<div id="loader">
+  <div id="loader-bar-wrap"><div id="loader-bar"></div></div>
+  <div id="loader-text">正在加载…</div>
+</div>
 <canvas id="pond"></canvas>
 <div id="title">鱼戏莲叶间<br><small>江南可采莲 · 莲叶何田田</small></div>
 <div id="status">正在加载…</div>
@@ -111,6 +138,14 @@ const statusEl = document.getElementById('status');
 const camBtn = document.getElementById('cam-toggle');
 const fsBtn = document.getElementById('fs-toggle');
 const videoEl = document.getElementById('cam-preview');
+const loaderEl = document.getElementById('loader');
+const loaderBar = document.getElementById('loader-bar');
+
+let loadProgress = 0;
+function setLoadProgress(pct) {
+  loadProgress = pct;
+  loaderBar.style.width = pct + '%';
+}
 
 let W = 0, H = 0;
 const TAU = Math.PI * 2;
@@ -560,7 +595,13 @@ const KOI_VARIANTS = [
 ];
 
 const fishes = [];
-const FISH_COUNT = 54;
+const FISH_COUNT = 60;
+
+const COLOR_WEIGHTS = [
+  { variants: [0, 4], weight: 35 },  // 红：红白 + 绯红
+  { variants: [1, 2], weight: 25 },  // 黄：全橙 + 橙黑
+  { variants: [3],    weight: 10 },  // 白：白金
+];
 const SPR = 2; // 贴图超采样倍率
 
 function koiBodyPath() {
@@ -615,7 +656,10 @@ class Koi {
     this.stateT = 0;
     this.seekCooldown = rand(0, 150);
     this.target = null;
-    const v = KOI_VARIANTS[Math.floor(Math.random() * KOI_VARIANTS.length)];
+    const totalW = COLOR_WEIGHTS.reduce((s, c) => s + c.weight, 0);
+    let r = Math.random() * totalW, chosen = COLOR_WEIGHTS[0];
+    for (const cw of COLOR_WEIGHTS) { r -= cw.weight; if (r <= 0) { chosen = cw; break; } }
+    const v = KOI_VARIANTS[chosen.variants[Math.floor(Math.random() * chosen.variants.length)]];
     this.color = v;
     const spots = [];
     if (v.spots) {
@@ -1033,12 +1077,22 @@ function tick(now) {
 
 // ═══════════════ 启动 ═══════════════
 
+setLoadProgress(15);
 resize();
 addEventListener('resize', resize);
+setLoadProgress(35);
 initCaustics();
+setLoadProgress(55);
 for (let i = 0; i < FISH_COUNT; i++) fishes.push(new Koi());
+setLoadProgress(75);
 requestAnimationFrame(tick);
-startCamera();  // 进入页面即请求摄像头，失败自动回退鼠标
+setLoadProgress(90);
+startCamera();
+(async () => {
+  try { await document.fonts.ready; } catch(e) {}
+  setLoadProgress(100);
+  setTimeout(() => loaderEl.classList.add('hide'), 300);
+})();
 </script>
 </body>
 </html>
