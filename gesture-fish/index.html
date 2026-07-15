@@ -541,7 +541,18 @@ class Food {
   }
 }
 
+function isOnLeaf(x, y) {
+  for (const lf of leaves) {
+    const sway = Math.sin(frame * 0.008 + lf.phase) * 0.025;
+    const bob = Math.sin(frame * 0.012 + lf.phase) * 1.6;
+    const lx = lf.x + bob, ly = lf.y;
+    if (dist(x, y, lx, ly) < lf.r * 0.92) return true;
+  }
+  return false;
+}
+
 function dropFood(x, y) {
+  if (isOnLeaf(x, y)) return;
   x = clamp(x, 50, W - 50);
   y = clamp(y, 50, H - 50);
   const n = 6 + Math.floor(Math.random() * 5);
@@ -1070,8 +1081,8 @@ function tick(now) {
   drawCaustics(f);
   for (const k of fishes) k.draw();
   for (const fd of foods) fd.draw();
-  drawLeaves(frame);
   drawRipples();
+  drawLeaves(frame);
   drawCursor();
 }
 
