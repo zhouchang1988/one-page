@@ -135,7 +135,7 @@
   const TILT = -0.42, TILT_C = Math.cos(TILT), TILT_S = Math.sin(TILT); // 星系盘整体倾斜
 
   const isMobile = matchMedia('(pointer: coarse)').matches;
-  const COUNT = isMobile ? 1300 : 2600;
+  const COUNT = isMobile ? 1050 : 2100;
 
   // ---------- 星尘精灵（预渲染发光贴图，比逐个 arc 快一个量级） ----------
   const PALETTE = [
@@ -186,10 +186,11 @@
         wob: rand(0.04, 0.13),                       // 轨道半径起伏，边缘呈不规则波瓣
         wobK: 2 + (Math.random() * 2 | 0),
         wobP: rand(0, Math.PI * 2),
-        omega: 1.5 / Math.sqrt(r + 40) * (0.85 + Math.random() * 0.3),
+        omega: 2.1 / Math.sqrt(r + 40) * (0.85 + Math.random() * 0.3),
+        zh: gauss() * (halo ? 26 : 6 + 16 * (1 - t)),  // 盘厚度：核心鼓包厚、外盘薄、晕星最散
         x: 0, y: 0, vx: 0, vy: 0, placed: false,
-        size: (t < 0.22 ? 1.5 : 1.0) * rand(0.8, 2.4),
-        alpha: rand(0.35, 1),
+        size: (t < 0.22 ? 1.5 : 1.0) * rand(1.0, 3.0),
+        alpha: rand(0.22, 0.8),
         sprite: sprites[ci]
       });
     }
@@ -197,6 +198,32 @@
 
   // ---------- 临时粒子：爆发火花 / 冲击波 / 流星 ----------
   const sparks = [], rings = [], meteors = [];
+
+  // ---------- 逃逸星尘：少量粒子从星系缓缓飘向屏幕四周 ----------
+  const dust = [];
+  const DUST_N = isMobile ? 26 : 50;
+  function resetDust(d) {
+    const a = Math.random() * Math.PI * 2;
+    const r = rand(40, MAXR * 0.75);
+    d.x = CX + Math.cos(a) * r;
+    d.y = CY + Math.sin(a) * r * 0.6;
+    const out = Math.atan2(d.y - CY, d.x - CX) + rand(-0.5, 0.5);
+    const v = rand(0.15, 0.45);
+    d.vx = Math.cos(out) * v;
+    d.vy = Math.sin(out) * v;
+    d.life = 0;
+    d.size = rand(0.7, 1.8);
+    d.sprite = sprites[Math.random() * sprites.length | 0];
+  }
+  function buildDust() {
+    dust.length = 0;
+    for (let i = 0; i < DUST_N; i++) {
+      const d = {};
+      resetDust(d);
+      d.life = Math.random();          // 初始相位错开，避免同时淡入
+      dust.push(d);
+    }
+  }
 
   function burst(x, y, power) {
     const n = Math.min(90, 30 + power * 60 | 0);
@@ -277,6 +304,7 @@
     ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
     paintBackground();
     buildGalaxy();
+    buildDust();
   }
   addEventListener('resize', resize);
 
@@ -395,7 +423,7 @@
 
     // 尾迹淡出：擦除上一帧的 alpha，让背景画布透出来
     ctx.globalCompositeOperation = 'destination-out';
-    ctx.fillStyle = 'rgba(0,0,0,0.22)';
+    ctx.fillStyle = 'rgba(0,0,0,0.3)';
     ctx.fillRect(0, 0, W, H);
     ctx.globalCompositeOperation = 'lighter';
 
@@ -414,7 +442,7 @@
       const ex = Math.cos(p.theta) * rw;
       const ey = Math.sin(p.theta) * rw * p.squash;
       const hx = CX + ex * TILT_C - ey * TILT_S;
-      const hy = CY + ex * TILT_S + ey * TILT_C;
+      const hy = CY + ex * TILT_S + ey * TILT_C + p.zh;
       if (!p.placed) { p.x = hx; p.y = hy; p.placed = true; }
 
       // 弹簧回位（让星系被扰动后自我修复）
@@ -451,9 +479,23 @@
       p.vx *= 0.93; p.vy *= 0.93;
       p.x += p.vx; p.y += p.vy;
 
-      const sz = p.size * 6;
-      ctx.globalAlpha = p.alpha;
+      // 深度感：转到盘的近侧（sin 为正）时更大更亮，远侧更小更暗
+      const near = (Math.sin(p.theta) + 1) / 2;
+      const sz = p.size * 6 * (0.75 + near * 0.55);
+      ctx.globalAlpha = p.alpha * (0.6 + near * 0.4);
       ctx.drawImage(p.sprite, p.x - sz / 2, p.y - sz / 2, sz, sz);
+    }
+
+    // --- 逃逸星尘 ---
+    for (const d of dust) {
+      d.x += d.vx; d.y += d.vy;
+      d.vx *= 1.003; d.vy *= 1.003;               // 越飞越快，缓慢逃逸
+      d.life += dt * 0.25;
+      if (d.x < -50 || d.x > W + 50 || d.y < -50 || d.y > H + 50) { resetDust(d); continue; }
+      const t = Math.min(d.life, 1);
+      const sz = d.size * 6 * (1 + t * 0.8);      // 飞得越远越大，像迎面而来
+      ctx.globalAlpha = t * (1 - t * 0.45) * 0.6; // 淡入后缓慢转淡
+      ctx.drawImage(d.sprite, d.x - sz / 2, d.y - sz / 2, sz, sz);
     }
 
     // --- 火花 ---
@@ -526,7 +568,7 @@
 
     // --- 星系核心辉光 ---
     const coreG = ctx.createRadialGradient(CX, CY, 0, CX, CY, 130);
-    coreG.addColorStop(0, 'rgba(255,235,190,0.16)');
+    coreG.addColorStop(0, 'rgba(255,235,190,0.11)');
     coreG.addColorStop(1, 'rgba(0,0,0,0)');
     ctx.fillStyle = coreG;
     ctx.fillRect(CX - 130, CY - 130, 260, 260);
