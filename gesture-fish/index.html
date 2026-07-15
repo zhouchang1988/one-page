@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>鱼戏莲叶间</title>
+<link rel="preconnect" href="https://gstatic.loli.net" crossorigin>
+<link href="https://fonts.loli.net/css2?family=Ma+Shan+Zheng&family=Zhi+Mang+Xing&family=Liu+Jian+Mao+Cao&family=Long+Cang&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 100%; height: 100%; overflow: hidden; background: #05242c; }
+  canvas#pond { display: block; cursor: none; touch-action: none; }
+
+  #title {
+    position: fixed; top: 30px; left: 26px;
+    writing-mode: vertical-rl;
+    font-family: "Songti SC", "STSong", "Noto Serif SC", serif;
+    font-size: 32px; letter-spacing: 10px;
+    color: rgba(235, 245, 238, 0.9);
+    text-shadow: 0 2px 14px rgba(0, 20, 20, 0.55);
+    z-index: 10; pointer-events: none; user-select: none;
+  }
+  #title small {
+    font-size: 15px; letter-spacing: 7px;
+    color: rgba(235, 245, 238, 0.5); margin-top: 16px;
+  }
+
+  #status {
+    position: fixed; top: 18px; left: 50%; transform: translateX(-50%);
+    padding: 6px 16px; border-radius: 999px;
+    background: rgba(4, 30, 34, 0.45);
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    color: rgba(255,255,255,0.72);
+    font: 13px/1.5 system-ui, sans-serif;
+    z-index: 10; pointer-events: none; white-space: nowrap;
+    transition: color 0.3s;
+  }
+
+  #ctrl { position: fixed; top: 16px; right: 16px; display: flex; gap: 8px; z-index: 20; }
+  .ctrl-btn {
+    padding: 8px 16px; border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.25);
+    background: rgba(4, 30, 34, 0.5);
+    color: rgba(255,255,255,0.75);
+    font: 14px system-ui, sans-serif; cursor: pointer;
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    transition: all 0.2s;
+  }
+  .ctrl-btn:hover { background: rgba(255,255,255,0.15); color: #fff; }
+  .ctrl-btn.on { border-color: rgba(120, 225, 200, 0.55); color: rgba(140, 235, 210, 0.95); }
+
+  #font-wrap { position: relative; }
+  #font-menu {
+    position: absolute; top: calc(100% + 6px); right: 0;
+    min-width: 108px;
+    border: 1px solid rgba(255,255,255,0.22);
+    border-radius: 10px;
+    background: rgba(4, 30, 34, 0.72);
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    overflow: hidden;
+    display: none;
+  }
+  #font-menu.open { display: block; }
+  .font-item {
+    padding: 9px 18px;
+    color: rgba(255,255,255,0.78);
+    font-size: 17px; line-height: 1.3;
+    cursor: pointer; white-space: nowrap;
+    transition: background 0.15s;
+  }
+  .font-item:hover { background: rgba(255,255,255,0.14); color: #fff; }
+  .font-item.active { color: rgba(140, 235, 210, 0.95); }
+
+  #cam-preview {
+    position: fixed; bottom: 16px; right: 16px; width: 180px;
+    border-radius: 10px; border: 2px solid rgba(255,255,255,0.18);
+    transform: scaleX(-1); z-index: 10; display: none;
+  }
+  #cam-preview.active { display: block; }
+
+  #hint {
+    position: fixed; bottom: 18px; left: 24px; z-index: 10;
+    font: 13px system-ui, sans-serif; color: rgba(255,255,255,0.42);
+    pointer-events: none; user-select: none; line-height: 1.9;
+  }
+</style>
+</head>
+<body>
+<canvas id="pond"></canvas>
+<div id="title">鱼戏莲叶间<br><small>江南可采莲 · 莲叶何田田</small></div>
+<div id="status">正在加载…</div>
+<div id="ctrl">
+  <div id="font-wrap">
+    <button id="font-toggle" class="ctrl-btn">字体 ▾</button>
+    <div id="font-menu"></div>
+  </div>
+  <button id="fs-toggle" class="ctrl-btn">全屏</button>
+  <button id="cam-toggle" class="ctrl-btn">开启摄像头</button>
+</div>
+<video id="cam-preview" autoplay playsinline muted></video>
+<div id="hint">轻滑水面 · 起涟漪<br>手势悬停一秒 / 鼠标长按一秒 · 落鱼食</div>
+
+<script>
+'use strict';
+
+// ═══════════════ 基础：画布与工具 ═══════════════
+
+const canvas = document.getElementById('pond');
+const ctx = canvas.getContext('2d');
+const statusEl = document.getElementById('status');
+const camBtn = document.getElementById('cam-toggle');
+const fsBtn = document.getElementById('fs-toggle');
+const videoEl = document.getElementById('cam-preview');
+
+let W = 0, H = 0;
+const TAU = Math.PI * 2;
+const rand = (a, b) => a + Math.random() * (b - a);
+const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
+const dist = (x1, y1, x2, y2) => Math.hypot(x2 - x1, y2 - y1);
+// 归一化角度到 (-π, π]
+const normAng = a => ((a % TAU) + TAU + Math.PI) % TAU - Math.PI;
+
+let waterCache = null;
+
+function resize() {
+  W = innerWidth; H = innerHeight;
+  const dpr = Math.min(devicePixelRatio || 1, 2);
+  canvas.width = W * dpr; canvas.height = H * dpr;
+  canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  buildWater();
+  layoutLeaves();
+}
+
+function buildWater() {
+  waterCache = document.createElement('canvas');
+  waterCache.width = W; waterCache.height = H;
+  const g = waterCache.getContext('2d');
+  const grad = g.createRadialGradient(W * 0.42, H * 0.36, Math.min(W, H) * 0.08,
+                                      W * 0.5, H * 0.5, Math.hypot(W, H) * 0.62);
+  grad.addColorStop(0, '#1d6167');
+  grad.addColorStop(0.55, '#0e414a');
+  grad.addColorStop(1, '#05242c');
+  g.fillStyle = grad;
+  g.fillRect(0, 0, W, H);
+}
+
+// ═══════════════ 输入：鼠标 / 手势统一抽象 ═══════════════
+
+const input = {
+  mx: -999, my: -999, mouseSeen: false, mouseInside: false, pointerDown: false,
+  handDetected: false, lastHandTime: 0,
+  camActive: false,
+  mode: 'mouse', lastMode: 'mouse',
+};
+
+// 指针：鼠标 1 个；手势模式按左右手最多 2 个，各自独立平滑/涟漪/投喂
+function makePointer(kind) {
+  return {
+    kind, x: -999, y: -999, px: -999, py: -999,
+    tx: 0, ty: 0, lastSeen: 0, active: false,
+    dwellAnchor: null, dwellMs: 0, lastRippleAt: 0,
+  };
+}
+const mousePtr = makePointer('mouse');
+const handPtrs = { Left: makePointer('hand'), Right: makePointer('hand') };
+const activePointers = [];
+
+addEventListener('mousemove', e => {
+  input.mx = e.clientX; input.my = e.clientY;
+  input.mouseSeen = true; input.mouseInside = true;
+});
+addEventListener('mousedown', () => { input.pointerDown = true; });
+addEventListener('mouseup', () => { input.pointerDown = false; });
+document.addEventListener('mouseleave', () => { input.mouseInside = false; input.pointerDown = false; });
+document.addEventListener('mouseenter', () => { input.mouseInside = true; });
+addEventListener('touchstart', e => {
+  const t = e.touches[0];
+  input.mx = t.clientX; input.my = t.clientY;
+  input.mouseSeen = true; input.mouseInside = true; input.pointerDown = true;
+}, { passive: true });
+addEventListener('touchmove', e => {
+  const t = e.touches[0];
+  input.mx = t.clientX; input.my = t.clientY;
+}, { passive: true });
+addEventListener('touchend', () => { input.mouseInside = false; input.pointerDown = false; });
+
+function updateInput() {
+  const now = performance.now();
+  activePointers.length = 0;
+
+  const handFresh = input.camActive &&
+    (input.handDetected || now - input.lastHandTime < 350);
+
+  if (handFresh) {
+    input.mode = 'hand';
+    for (const key of ['Left', 'Right']) {
+      const p = handPtrs[key];
+      if (now - p.lastSeen >= 350) { p.active = false; continue; }
+      p.px = p.x; p.py = p.y;
+      // 死区 + 自适应平滑：5px 内的微小抖动直接忽略；
+      // 越大的移动跟随越快，慢移则格外柔和
+      const hd = Math.hypot(p.tx - p.x, p.ty - p.y);
+      if (hd > 5) {
+        const k = 0.03 + clamp((hd - 5) / 90, 0, 1) * 0.09;  // 平滑系数 0.03 ~ 0.12
+        p.x += (p.tx - p.x) * k;
+        p.y += (p.ty - p.y) * k;
+      }
+      p.active = true;
+      activePointers.push(p);
+    }
+    mousePtr.active = false;
+  } else {
+    input.mode = 'mouse';
+    handPtrs.Left.active = handPtrs.Right.active = false;
+    const p = mousePtr;
+    p.px = p.x; p.py = p.y;
+    p.x = input.mx; p.y = input.my;
+    p.active = input.mouseSeen && input.mouseInside;
+    // 模式切换瞬间坐标会跳变，避免误判为高速滑动
+    if (input.mode !== input.lastMode) { p.px = p.x; p.py = p.y; }
+    if (p.active) activePointers.push(p);
+  }
+  input.lastMode = input.mode;
+}
+
+// ═══════════════ 摄像头 / MediaPipe 手势 ═══════════════
+
+let mpHands = null, mpCamera = null;
+let statusOverride = null, statusUntil = 0;
+
+function setStatus(msg, ms = 5000) {
+  statusOverride = msg;
+  statusUntil = performance.now() + ms;
+}
+
+function refreshStatus() {
+  const now = performance.now();
+  if (statusOverride && now < statusUntil) {
+    statusEl.textContent = statusOverride;
+    statusEl.style.color = 'rgba(255,255,255,0.72)';
+    return;
+  }
+  statusOverride = null;
+  if (input.camActive && input.mode === 'hand') {
+    statusEl.textContent = activePointers.length >= 2 ? '✋✋ 双手控制中' : '✋ 手势控制中';
+    statusEl.style.color = 'rgba(140,235,210,0.95)';
+  } else if (input.camActive) {
+    statusEl.textContent = '请对摄像头伸出手 · 或用鼠标';
+    statusEl.style.color = 'rgba(255,255,255,0.72)';
+  } else {
+    statusEl.textContent = '🖱 鼠标控制中';
+    statusEl.style.color = 'rgba(255,255,255,0.72)';
+  }
+}
+
+function loadScript(src) {
+  return new Promise((res, rej) => {
+    const s = document.createElement('script');
+    s.src = src; s.crossOrigin = 'anonymous';
+    s.onload = res; s.onerror = rej;
+    document.head.appendChild(s);
+  });
+}
+
+async function ensureMediaPipe() {
+  if (typeof Hands === 'undefined')
+    await loadScript('https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1675469240/hands.js');
+  if (typeof Camera === 'undefined')
+    await loadScript('https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils@0.3.1675466862/camera_utils.js');
+}
+
+function onHandResults(results) {
+  const now = performance.now();
+  const lms = results.multiHandLandmarks || [];
+  const handed = results.multiHandedness || [];
+  const used = new Set();
+  for (let i = 0; i < Math.min(lms.length, 2); i++) {
+    // 用左右手标签区分两个指针，标签重复时占用另一侧
+    let key = handed[i] && handed[i].label === 'Right' ? 'Right' : 'Left';
+    if (used.has(key)) key = key === 'Left' ? 'Right' : 'Left';
+    used.add(key);
+    const p = handPtrs[key];
+    const tip = lms[i][8]; // 食指指尖
+    p.tx = (1 - tip.x) * W; // 镜像
+    p.ty = tip.y * H;
+    if (now - p.lastSeen > 500) {  // 这只手刚出现：直接落位并重置状态
+      p.x = p.tx; p.y = p.ty; p.px = p.x; p.py = p.y;
+      p.dwellAnchor = null; p.dwellMs = 0;
+    }
+    p.lastSeen = now;
+  }
+  input.handDetected = lms.length > 0;
+  if (lms.length > 0) input.lastHandTime = now;
+}
+
+async function startCamera() {
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    setStatus('浏览器不支持摄像头，使用鼠标模式');
+    return;
+  }
+  setStatus('正在请求摄像头…', 60000);
+  try {
+    const probe = await navigator.mediaDevices.getUserMedia({ video: true });
+    probe.getTracks().forEach(t => t.stop());
+  } catch (err) {
+    let msg = '摄像头不可用，使用鼠标模式';
+    if (err && err.name === 'NotAllowedError') msg = '已拒绝摄像头，使用鼠标模式';
+    else if (err && err.name === 'NotFoundError') msg = '未找到摄像头，使用鼠标模式';
+    else if (err && err.name === 'NotReadableError') msg = '摄像头被占用，使用鼠标模式';
+    setStatus(msg, 6000);
+    return;
+  }
+  try {
+    setStatus('正在加载手势模型…', 60000);
+    await ensureMediaPipe();
+    if (!mpHands) {
+      mpHands = new Hands({
+        locateFile: f => `https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1675469240/${f}`,
+      });
+      mpHands.setOptions({
+        maxNumHands: 2, modelComplexity: 0,
+        minDetectionConfidence: 0.5, minTrackingConfidence: 0.4,
+      });
+      mpHands.onResults(onHandResults);
+    }
+    mpCamera = new Camera(videoEl, {
+      onFrame: async () => { await mpHands.send({ image: videoEl }); },
+      width: 640, height: 480,
+    });
+    await mpCamera.start();
+    input.camActive = true;
+    videoEl.classList.add('active');
+    camBtn.textContent = '关闭摄像头';
+    camBtn.classList.add('on');
+    setStatus('✋ 摄像头已开启 · 伸出手试试', 4000);
+  } catch (err) {
+    console.warn('手势模块加载失败:', err);
+    setStatus('手势模块加载失败（检查网络），使用鼠标模式', 6000);
+  }
+}
+
+function stopCamera() {
+  if (mpCamera) { mpCamera.stop(); mpCamera = null; }
+  videoEl.srcObject = null;
+  videoEl.classList.remove('active');
+  input.camActive = false;
+  input.handDetected = false;
+  camBtn.textContent = '开启摄像头';
+  camBtn.classList.remove('on');
+  setStatus('已关闭摄像头，使用鼠标模式', 3000);
+}
+
+camBtn.addEventListener('click', () => {
+  if (input.camActive) stopCamera();
+  else startCamera();
+});
+
+// ═══════════════ 全屏开关 ═══════════════
+
+fsBtn.addEventListener('click', () => {
+  const doc = document, el = document.documentElement;
+  if (!doc.fullscreenElement && !doc.webkitFullscreenElement) {
+    (el.requestFullscreen || el.webkitRequestFullscreen).call(el);
+  } else {
+    (doc.exitFullscreen || doc.webkitExitFullscreen).call(doc);
+  }
+});
+function onFsChange() {
+  const on = !!(document.fullscreenElement || document.webkitFullscreenElement);
+  fsBtn.textContent = on ? '退出全屏' : '全屏';
+}
+document.addEventListener('fullscreenchange', onFsChange);
+document.addEventListener('webkitfullscreenchange', onFsChange);
+
+// ═══════════════ 标题字体切换 ═══════════════
+
+const FONTS = [
+  { label: '宋体', family: '"Songti SC", "STSong", "Noto Serif SC", serif', size: 32 },
+  { label: '楷书', family: '"Ma Shan Zheng", "Songti SC", serif',           size: 38 },
+  { label: '行书', family: '"Zhi Mang Xing", "Songti SC", serif',           size: 38 },
+  { label: '草书', family: '"Liu Jian Mao Cao", "Songti SC", serif',        size: 38 },
+  { label: '龙藏', family: '"Long Cang", "Songti SC", serif',               size: 38 },
+];
+const titleEl = document.getElementById('title');
+const fontBtn = document.getElementById('font-toggle');
+const fontMenu = document.getElementById('font-menu');
+
+FONTS.forEach((ft, i) => {
+  const item = document.createElement('div');
+  item.className = 'font-item' + (i === 0 ? ' active' : '');
+  item.textContent = ft.label;
+  item.style.fontFamily = ft.family;  // 菜单项用自身字体预览
+  item.addEventListener('click', () => {
+    titleEl.style.fontFamily = ft.family;
+    titleEl.style.fontSize = ft.size + 'px';
+    fontMenu.querySelectorAll('.font-item').forEach(el => el.classList.remove('active'));
+    item.classList.add('active');
+    fontMenu.classList.remove('open');
+  });
+  fontMenu.appendChild(item);
+});
+
+fontBtn.addEventListener('click', e => {
+  e.stopPropagation();
+  fontMenu.classList.toggle('open');
+});
+document.addEventListener('click', () => fontMenu.classList.remove('open'));
+
+// ═══════════════ 涟漪 ═══════════════
+
+const ripples = [];
+
+function addRipple(x, y, opts = {}) {
+  if (ripples.length > 80) ripples.shift();
+  ripples.push({
+    x, y, r: opts.r0 ?? 3,
+    maxR: opts.maxR ?? 60,
+    speed: opts.speed ?? 1.5,
+    alpha: opts.alpha ?? 0.3,
+  });
+}
+
+function updateRipples(f) {
+  for (let i = ripples.length - 1; i >= 0; i--) {
+    const rp = ripples[i];
+    rp.r += rp.speed * f;
+    if (rp.r >= rp.maxR) ripples.splice(i, 1);
+  }
+}
+
+function drawRipples() {
+  ctx.save();
+  ctx.strokeStyle = '#cfeee8';
+  for (const rp of ripples) {
+    const t = rp.r / rp.maxR;
+    const a = rp.alpha * (1 - t);
+    if (a <= 0.01) continue;
+    ctx.globalAlpha = a;
+    ctx.lineWidth = 1.6 + t * 1.4;
+    ctx.beginPath();
+    ctx.arc(rp.x, rp.y, rp.r, 0, TAU);
+    ctx.stroke();
+    if (rp.r > 14) {
+      ctx.globalAlpha = a * 0.5;
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
+      ctx.arc(rp.x, rp.y, rp.r - 10, 0, TAU);
+      ctx.stroke();
+    }
+  }
+  ctx.restore();
+}
+
+// ═══════════════ 鱼食与投喂判定 ═══════════════
+// 手势模式：悬停 1 秒；鼠标模式：长按 1 秒（悬停不算）
+
+const foods = [];
+const DWELL_TIME = 1000;
+
+class Food {
+  constructor(x, y, delay) {
+    this.x = x; this.y = y;
+    this.r = rand(2.6, 4.2);
+    this.maxN = rand(80, 140);
+    this.nutrition = this.maxN;
+    this.t = -delay;
+    this.landed = false;
+    this.dead = false;
+    this.bobPhase = rand(0, TAU);
+  }
+  update(f) {
+    this.t += f;
+    if (this.t < 0) return;
+    if (!this.landed) {
+      if (this.t >= 16) {
+        this.landed = true;
+        addRipple(this.x, this.y, { maxR: 26, alpha: 0.28, speed: 1.2 });
+      }
+      return;
+    }
+    this.x += Math.sin(this.t * 0.03 + this.bobPhase) * 0.06 * f;
+    this.nutrition -= 0.02 * f;
+    if (this.nutrition <= 0 || this.t > 2200) this.dead = true;
+  }
+  draw() {
+    if (this.t < 0) return;
+    let s;
+    if (!this.landed) {
+      // easeOutBack 落水弹性
+      const p = clamp(this.t / 16, 0, 1);
+      const c1 = 1.70158, c3 = c1 + 1;
+      s = 1 + c3 * Math.pow(p - 1, 3) + c1 * Math.pow(p - 1, 2);
+    } else {
+      s = 0.35 + 0.65 * clamp(this.nutrition / this.maxN, 0, 1);
+    }
+    const r = this.r * s;
+    if (r <= 0.3) return;
+    ctx.save();
+    ctx.globalAlpha = this.landed ? clamp(this.nutrition / this.maxN * 2.5, 0, 0.95) : 0.95;
+    ctx.fillStyle = '#caa05e';
+    ctx.beginPath(); ctx.arc(this.x, this.y, r, 0, TAU); ctx.fill();
+    ctx.fillStyle = '#e8c98c';
+    ctx.beginPath(); ctx.arc(this.x - r * 0.25, this.y - r * 0.25, r * 0.5, 0, TAU); ctx.fill();
+    ctx.restore();
+  }
+}
+
+function dropFood(x, y) {
+  x = clamp(x, 50, W - 50);
+  y = clamp(y, 50, H - 50);
+  const n = 6 + Math.floor(Math.random() * 5);
+  for (let i = 0; i < n; i++) {
+    const a = rand(0, TAU), d = rand(4, 36);
+    foods.push(new Food(x + Math.cos(a) * d, y + Math.sin(a) * d, i * 5));
+  }
+  while (foods.length > 90) foods.shift();
+  addRipple(x, y, { maxR: 54, alpha: 0.4, speed: 1.6 });
+}
+
+function updateDwell(dtMs) {
+  if (input.mode === 'hand') {
+    mousePtr.dwellMs = 0;
+    for (const p of activePointers) {
+      // 手势：位置停留判定（容忍抖动），每只手独立计时
+      const R = 34;
+      if (!p.dwellAnchor || dist(p.x, p.y, p.dwellAnchor.x, p.dwellAnchor.y) > R) {
+        p.dwellAnchor = { x: p.x, y: p.y };
+        p.dwellMs = 0;
+        continue;
+      }
+      p.dwellMs += dtMs;
+      if (p.dwellMs >= DWELL_TIME) {
+        dropFood(p.dwellAnchor.x, p.dwellAnchor.y);
+        p.dwellMs = -450;
+      }
+    }
+  } else {
+    // 鼠标：按住计时，悬停不算
+    handPtrs.Left.dwellMs = handPtrs.Right.dwellMs = 0;
+    const p = mousePtr;
+    p.dwellAnchor = null;
+    if (!p.active || !input.pointerDown) { p.dwellMs = 0; return; }
+    p.dwellMs += dtMs;
+    if (p.dwellMs >= DWELL_TIME) {
+      dropFood(p.x, p.y);
+      p.dwellMs = -450;
+    }
+  }
+}
+
+// ═══════════════ 锦鲤 ═══════════════
+
+const KOI_VARIANTS = [
+  { body: '#f4efe4', spots: '#d9482b', fin: 'rgba(244,239,228,0.75)' }, // 红白
+  { body: '#f0862f', spots: null,      fin: 'rgba(246,180,110,0.75)' }, // 全橙
+  { body: '#ef9c38', spots: '#3a332c', fin: 'rgba(243,185,104,0.75)' }, // 橙黑
+  { body: '#f6f0df', spots: '#eaa63a', fin: 'rgba(240,226,200,0.75)' }, // 白金
+  { body: '#dd5a2f', spots: '#f4efe4', fin: 'rgba(232,122,82,0.75)' },  // 绯红
+];
+
+const fishes = [];
+const FISH_COUNT = 54;
+const SPR = 2; // 贴图超采样倍率
+
+function koiBodyPath() {
+  const p = new Path2D();
+  p.moveTo(28, 0);
+  p.bezierCurveTo(27, 7, 18, 11, 6, 11.5);
+  p.bezierCurveTo(-6, 12, -18, 8, -26, 3);
+  p.lineTo(-26, -3);
+  p.bezierCurveTo(-18, -8, -6, -12, 6, -11.5);
+  p.bezierCurveTo(18, -11, 27, -7, 28, 0);
+  return p;
+}
+
+// 预渲染鱼身贴图（含斑纹、眼睛），运行时只画贴图+鳍尾，54 条也流畅
+function makeKoiSprite(variant, spots) {
+  const c = document.createElement('canvas');
+  c.width = 70 * SPR; c.height = 40 * SPR;   // 覆盖局部坐标 x:[-34,36] y:[-20,20]
+  const g = c.getContext('2d');
+  g.setTransform(SPR, 0, 0, SPR, 34 * SPR, 20 * SPR);
+  const body = koiBodyPath();
+
+  g.fillStyle = variant.body;
+  g.fill(body);
+
+  if (spots.length) {
+    g.save();
+    g.clip(body);
+    g.fillStyle = variant.spots;
+    for (const sp of spots) {
+      g.beginPath(); g.arc(sp.x, sp.y, sp.r, 0, TAU); g.fill();
+    }
+    g.restore();
+  }
+
+  g.fillStyle = '#26221e';
+  g.beginPath(); g.arc(22, 5.2, 1.4, 0, TAU); g.fill();
+  g.beginPath(); g.arc(22, -5.2, 1.4, 0, TAU); g.fill();
+  return c;
+}
+
+class Koi {
+  constructor() {
+    this.x = rand(W * 0.08, W * 0.92);
+    this.y = rand(H * 0.08, H * 0.92);
+    this.heading = rand(0, TAU);
+    this.wanderTarget = this.heading;
+    this.speed = 0.7;
+    this.baseSpeed = rand(0.45, 0.95);
+    this.size = rand(0.55, 1.05);
+    this.phase = rand(0, TAU);
+    this.state = 'wander';
+    this.stateT = 0;
+    this.seekCooldown = rand(0, 150);
+    this.target = null;
+    const v = KOI_VARIANTS[Math.floor(Math.random() * KOI_VARIANTS.length)];
+    this.color = v;
+    const spots = [];
+    if (v.spots) {
+      const n = 1 + Math.floor(Math.random() * 3);
+      for (let i = 0; i < n; i++) {
+        const r = rand(3.5, 6.5);
+        spots.push({ x: rand(-14, 16), y: (Math.random() - 0.5) * 2 * (10 - r * 0.6), r });
+      }
+    }
+    this.sprite = makeKoiSprite(v, spots);
+  }
+
+  pickFood() {
+    const cands = foods.filter(fd => fd.landed && !fd.dead);
+    if (!cands.length) return null;
+    cands.sort((a, b) =>
+      (a.x - this.x) ** 2 + (a.y - this.y) ** 2 -
+      ((b.x - this.x) ** 2 + (b.y - this.y) ** 2));
+    return cands[Math.floor(Math.random() * Math.min(cands.length, 3))];
+  }
+
+  scatter() {
+    const fx = this.target ? this.target.x : this.x;
+    const fy = this.target ? this.target.y : this.y;
+    this.heading = Math.atan2(this.y - fy, this.x - fx) + rand(-0.6, 0.6);
+    this.wanderTarget = this.heading;
+    this.state = 'flee';
+    this.stateT = rand(45, 90);
+    this.speed = rand(3.0, 4.2);
+    this.seekCooldown = rand(240, 420);
+    this.target = null;
+    addRipple(this.x, this.y, { maxR: 30, alpha: 0.16, speed: 1.4 });
+  }
+
+  update(f, frame) {
+    let desired = this.heading, desiredSpeed = this.baseSpeed, turnRate = 0.028;
+
+    switch (this.state) {
+      case 'wander': {
+        if (this.seekCooldown > 0) this.seekCooldown -= f;
+        else {
+          const t = this.pickFood();
+          if (t) { this.target = t; this.state = 'seek'; }
+        }
+        if (Math.random() < 0.008 * f)
+          this.wanderTarget = this.heading + rand(-1.4, 1.4);
+        this.wanderTarget += rand(-0.03, 0.03) * f;
+        desired = this.wanderTarget;
+        desiredSpeed = this.baseSpeed * (1 + 0.35 * Math.sin(this.phase * 0.13));
+        break;
+      }
+      case 'seek': {
+        if (!this.target || this.target.dead) { this.state = 'wander'; this.target = null; break; }
+        const d = dist(this.x, this.y, this.target.x, this.target.y);
+        desired = Math.atan2(this.target.y - this.y, this.target.x - this.x);
+        desiredSpeed = 2.5;
+        turnRate = 0.07;
+        if (d < 26 * this.size) {
+          this.state = 'eat';
+          this.stateT = rand(55, 110);
+        }
+        break;
+      }
+      case 'eat': {
+        if (!this.target || this.target.dead) { this.scatter(); break; }
+        const d = dist(this.x, this.y, this.target.x, this.target.y);
+        desired = Math.atan2(this.target.y - this.y, this.target.x - this.x);
+        desiredSpeed = clamp((d - 14 * this.size) * 0.07, 0.12, 0.9);
+        turnRate = 0.09;
+        this.target.nutrition -= 0.55 * f;
+        if (Math.floor(frame) % 28 === 0)
+          addRipple(this.target.x, this.target.y, { maxR: 20, alpha: 0.14, speed: 1.1 });
+        this.stateT -= f;
+        if (this.stateT <= 0 || this.target.nutrition <= 0) {
+          if (this.target.nutrition <= 0) this.target.dead = true;
+          this.scatter();  // 吃一点就散开
+        }
+        break;
+      }
+      case 'flee': {
+        desired = this.heading;
+        desiredSpeed = Math.max(this.baseSpeed, this.speed * 0.975);
+        turnRate = 0.015;
+        this.stateT -= f;
+        if (this.stateT <= 0) this.state = 'wander';
+        break;
+      }
+    }
+
+    // 边界回转
+    const m = 60;
+    if (this.x < m || this.x > W - m || this.y < m || this.y > H - m) {
+      desired = Math.atan2(H / 2 - this.y, W / 2 - this.x) + rand(-0.3, 0.3);
+      turnRate = Math.max(turnRate, 0.05);
+      this.wanderTarget = desired;
+    }
+
+    const dh = normAng(desired - this.heading);
+    this.heading += clamp(dh, -turnRate * f, turnRate * f);
+    this.speed += clamp(desiredSpeed - this.speed, -0.08 * f, 0.05 * f);
+    this.x += Math.cos(this.heading) * this.speed * f;
+    this.y += Math.sin(this.heading) * this.speed * f;
+    this.x = clamp(this.x, 16, W - 16);
+    this.y = clamp(this.y, 16, H - 16);
+    this.phase += (0.11 + this.speed * 0.075) * f;
+  }
+
+  draw() {
+    const s = this.size;
+    const ang = this.heading + Math.sin(this.phase * 0.5) * 0.06;
+    const tailAng = Math.sin(this.phase) * (0.32 + clamp(this.speed * 0.09, 0, 0.28));
+
+    // 水底投影
+    ctx.save();
+    ctx.translate(this.x + 5, this.y + 8);
+    ctx.rotate(ang);
+    ctx.scale(s, s);
+    ctx.globalAlpha = 0.14;
+    ctx.fillStyle = '#00151a';
+    ctx.beginPath(); ctx.ellipse(-2, 0, 27, 9, 0, 0, TAU); ctx.fill();
+    ctx.restore();
+
+    ctx.save();
+    ctx.translate(this.x, this.y);
+    ctx.rotate(ang);
+    ctx.scale(s, s);
+    ctx.globalAlpha = 0.96;
+
+    // 尾鳍（分叉）
+    ctx.save();
+    ctx.translate(-24, 0);
+    ctx.rotate(tailAng);
+    ctx.fillStyle = this.color.fin;
+    ctx.beginPath();
+    ctx.moveTo(2, 0);
+    ctx.quadraticCurveTo(-10, 9, -22, 13);
+    ctx.quadraticCurveTo(-12, 2, -13, 0);
+    ctx.quadraticCurveTo(-12, -2, -22, -13);
+    ctx.quadraticCurveTo(-10, -9, 2, 0);
+    ctx.fill();
+    ctx.restore();
+
+    // 胸鳍
+    const flap = Math.sin(this.phase * 0.85) * 0.16;
+    ctx.fillStyle = this.color.fin;
+    for (const side of [1, -1]) {
+      ctx.save();
+      ctx.translate(7, side * 11);
+      ctx.rotate(side * (0.62 + flap));
+      ctx.beginPath(); ctx.ellipse(0, 0, 8, 3.6, 0, 0, TAU); ctx.fill();
+      ctx.restore();
+    }
+
+    // 鱼身贴图
+    ctx.drawImage(this.sprite, -34, -20, 70, 40);
+
+    ctx.restore();
+  }
+}
+
+// 鱼群轻微分离，避免叠在一起
+function separateFish(f) {
+  for (let i = 0; i < fishes.length; i++) {
+    for (let j = i + 1; j < fishes.length; j++) {
+      const a = fishes[i], b = fishes[j];
+      const dx = b.x - a.x, dy = b.y - a.y;
+      const d = Math.hypot(dx, dy);
+      const minD = 24 * (a.size + b.size) / 2;
+      if (d > 0.01 && d < minD) {
+        const push = (minD - d) * 0.12 * f / d;
+        a.x -= dx * push; a.y -= dy * push;
+        b.x += dx * push; b.y += dy * push;
+      }
+    }
+  }
+}
+
+// ═══════════════ 莲叶与莲花 ═══════════════
+
+const LEAF_COUNT = 18;
+const leafFracs = [];   // 首次生成后固定，resize 只重映射像素
+const leaves = [];
+const flowers = [];
+
+function genLeafFracs() {
+  let tries = 0;
+  while (leafFracs.length < LEAF_COUNT && tries < 6000) {
+    tries++;
+    const fx = rand(0.04, 0.96), fy = rand(0.04, 0.96);
+    const fr = rand(0.038, 0.095);
+    let ok = true;
+    for (const o of leafFracs) {
+      // 允许轻微交叠，层叠更自然
+      const px = (fx - o.fx) * W, py = (fy - o.fy) * H;
+      if (Math.hypot(px, py) < (fr + o.fr) * Math.min(W, H) * 0.8) { ok = false; break; }
+    }
+    if (ok) leafFracs.push({ fx, fy, fr });
+  }
+}
+
+function layoutLeaves() {
+  if (!leafFracs.length) genLeafFracs();
+  leaves.length = 0;
+  const mn = Math.min(W, H);
+  for (const d of leafFracs) {
+    leaves.push({
+      x: d.fx * W, y: d.fy * H, r: d.fr * mn,
+      notch: rand(0.5, 0.85),
+      notchDir: rand(0, TAU),
+      hue: rand(96, 130), sat: rand(0.38, 0.5), lit: rand(0.26, 0.34),
+      phase: rand(0, TAU),
+    });
+  }
+  // 两朵莲花，各倚一片莲叶
+  flowers.length = 0;
+  for (const idx of [2, 11]) {
+    const l = leaves[idx % leaves.length];
+    flowers.push({
+      x: l.x + l.r * 0.95, y: l.y + l.r * 0.7,
+      r: mn * 0.03, phase: rand(0, TAU),
+    });
+  }
+}
+
+function hsl(h, s, l, a = 1) { return `hsla(${h},${s * 100}%,${l * 100}%,${a})`; }
+
+function drawLeaves(frame) {
+  for (const lf of leaves) {
+    const sway = Math.sin(frame * 0.008 + lf.phase) * 0.025;
+    const bob = Math.sin(frame * 0.012 + lf.phase) * 1.6;
+    ctx.save();
+    ctx.translate(lf.x + bob, lf.y);
+    ctx.rotate(lf.notchDir + sway);
+
+    // 叶下阴影
+    ctx.globalAlpha = 0.22;
+    ctx.fillStyle = '#02181d';
+    ctx.beginPath(); ctx.ellipse(5, 7, lf.r * 1.02, lf.r * 0.96, 0, 0, TAU); ctx.fill();
+    ctx.globalAlpha = 1;
+
+    // 叶面（带缺口的圆）
+    const a0 = lf.notch / 2, a1 = TAU - lf.notch / 2;
+    const grad = ctx.createRadialGradient(0, 0, lf.r * 0.1, 0, 0, lf.r);
+    grad.addColorStop(0, hsl(lf.hue, lf.sat, lf.lit + 0.10));
+    grad.addColorStop(0.8, hsl(lf.hue, lf.sat, lf.lit));
+    grad.addColorStop(1, hsl(lf.hue, lf.sat + 0.05, lf.lit - 0.05));
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.arc(0, 0, lf.r, a0, a1);
+    ctx.closePath();
+    ctx.fill();
+
+    // 叶脉
+    ctx.strokeStyle = 'rgba(230,245,225,0.13)';
+    ctx.lineWidth = 1.2;
+    const veins = 9;
+    for (let i = 0; i <= veins; i++) {
+      const a = a0 + (a1 - a0) * (i / veins);
+      ctx.beginPath();
+      ctx.moveTo(Math.cos(a) * lf.r * 0.12, Math.sin(a) * lf.r * 0.12);
+      ctx.lineTo(Math.cos(a) * lf.r * 0.88, Math.sin(a) * lf.r * 0.88);
+      ctx.stroke();
+    }
+    // 叶心
+    ctx.fillStyle = hsl(lf.hue, lf.sat * 0.7, lf.lit + 0.14, 0.8);
+    ctx.beginPath(); ctx.arc(0, 0, lf.r * 0.07, 0, TAU); ctx.fill();
+
+    ctx.restore();
+  }
+
+  // 莲花
+  for (const fl of flowers) {
+    const sway = Math.sin(frame * 0.01 + fl.phase) * 0.04;
+    ctx.save();
+    ctx.translate(fl.x, fl.y);
+    ctx.rotate(sway);
+    ctx.globalAlpha = 0.2;
+    ctx.fillStyle = '#02181d';
+    ctx.beginPath(); ctx.ellipse(3, 5, fl.r * 1.25, fl.r * 1.1, 0, 0, TAU); ctx.fill();
+    ctx.globalAlpha = 1;
+    // 外层花瓣
+    ctx.fillStyle = '#efb7c8';
+    for (let i = 0; i < 8; i++) {
+      const a = (i / 8) * TAU;
+      ctx.save();
+      ctx.rotate(a);
+      ctx.translate(fl.r * 0.62, 0);
+      ctx.beginPath(); ctx.ellipse(0, 0, fl.r * 0.72, fl.r * 0.3, 0, 0, TAU); ctx.fill();
+      ctx.restore();
+    }
+    // 内层花瓣
+    ctx.fillStyle = '#e795ad';
+    for (let i = 0; i < 6; i++) {
+      const a = (i / 6) * TAU + 0.4;
+      ctx.save();
+      ctx.rotate(a);
+      ctx.translate(fl.r * 0.36, 0);
+      ctx.beginPath(); ctx.ellipse(0, 0, fl.r * 0.5, fl.r * 0.24, 0, 0, TAU); ctx.fill();
+      ctx.restore();
+    }
+    // 花心
+    ctx.fillStyle = '#f2cf5e';
+    ctx.beginPath(); ctx.arc(0, 0, fl.r * 0.2, 0, TAU); ctx.fill();
+    ctx.restore();
+  }
+}
+
+// ═══════════════ 光斑（水下光影） ═══════════════
+
+const caustics = [];
+function initCaustics() {
+  for (let i = 0; i < 5; i++) {
+    caustics.push({
+      x: rand(0, W), y: rand(0, H),
+      r: rand(120, 280),
+      vx: rand(-0.2, 0.2), vy: rand(-0.15, 0.15),
+      a: rand(0.03, 0.055),
+    });
+  }
+}
+
+function drawCaustics(f) {
+  ctx.save();
+  ctx.globalCompositeOperation = 'lighter';
+  for (const c of caustics) {
+    c.x += c.vx * f; c.y += c.vy * f;
+    if (c.x < -c.r) c.x = W + c.r; if (c.x > W + c.r) c.x = -c.r;
+    if (c.y < -c.r) c.y = H + c.r; if (c.y > H + c.r) c.y = -c.r;
+    const g = ctx.createRadialGradient(c.x, c.y, 0, c.x, c.y, c.r);
+    g.addColorStop(0, `rgba(180,235,225,${c.a})`);
+    g.addColorStop(1, 'rgba(180,235,225,0)');
+    ctx.fillStyle = g;
+    ctx.beginPath(); ctx.arc(c.x, c.y, c.r, 0, TAU); ctx.fill();
+  }
+  ctx.restore();
+}
+
+// ═══════════════ 光标指示（含投喂进度） ═══════════════
+
+function drawCursor() {
+  for (const p of activePointers) {
+    const x = p.x, y = p.y;
+    ctx.save();
+    // 中心点
+    ctx.globalAlpha = 0.7;
+    ctx.fillStyle = '#eafaf5';
+    ctx.beginPath(); ctx.arc(x, y, 3.2, 0, TAU); ctx.fill();
+    // 外圈
+    ctx.globalAlpha = 0.22;
+    ctx.strokeStyle = '#eafaf5';
+    ctx.lineWidth = 1.2;
+    ctx.beginPath(); ctx.arc(x, y, 20, 0, TAU); ctx.stroke();
+    // 投喂进度弧
+    const prog = clamp(p.dwellMs / DWELL_TIME, 0, 1);
+    if (prog > 0.06) {
+      ctx.globalAlpha = 0.9;
+      ctx.strokeStyle = '#ffd98a';
+      ctx.lineWidth = 3;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.arc(x, y, 13, -Math.PI / 2, -Math.PI / 2 + prog * TAU);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+}
+
+// ═══════════════ 主循环 ═══════════════
+
+let lastT = performance.now();
+let frame = 0;
+
+function tick(now) {
+  requestAnimationFrame(tick);
+  const dtMs = clamp(now - lastT, 1, 50);
+  lastT = now;
+  const f = dtMs / 16.667;
+  frame += f;
+
+  updateInput();
+  refreshStatus();
+
+  // 滑动 → 涟漪（每个指针独立；速度过低不触发，手势阈值更高以忽略残余抖动）
+  const minSpd = input.mode === 'hand' ? 3.2 : 2.2;
+  for (const p of activePointers) {
+    const spd = dist(p.x, p.y, p.px, p.py) / f;
+    if (spd > minSpd && spd < 90 && now - p.lastRippleAt > 90) {
+      addRipple(p.x, p.y, {
+        maxR: clamp(48 + spd * 3.2, 54, 140),
+        alpha: 0.26, speed: 1.15,
+      });
+      p.lastRippleAt = now;
+    }
+  }
+
+  updateDwell(dtMs);
+  updateRipples(f);
+  for (let i = foods.length - 1; i >= 0; i--) {
+    foods[i].update(f);
+    if (foods[i].dead) foods.splice(i, 1);
+  }
+  for (const k of fishes) k.update(f, frame);
+  separateFish(f);
+
+  // ── 绘制（自下而上）──
+  ctx.drawImage(waterCache, 0, 0, W, H);
+  drawCaustics(f);
+  for (const k of fishes) k.draw();
+  for (const fd of foods) fd.draw();
+  drawLeaves(frame);
+  drawRipples();
+  drawCursor();
+}
+
+// ═══════════════ 启动 ═══════════════
+
+resize();
+addEventListener('resize', resize);
+initCaustics();
+for (let i = 0; i < FISH_COUNT; i++) fishes.push(new Koi());
+requestAnimationFrame(tick);
+startCamera();  // 进入页面即请求摄像头，失败自动回退鼠标
+</script>
+</body>
+</html>
