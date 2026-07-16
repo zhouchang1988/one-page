@@ -106,6 +106,22 @@
     font: 13px system-ui, sans-serif; color: rgba(255,255,255,0.42);
     pointer-events: none; user-select: none; line-height: 1.9;
   }
+
+  @media (max-width: 640px) {
+    #title {
+      top: 16px; left: 14px;
+      font-size: 24px; letter-spacing: 6px;
+    }
+    #title small {
+      font-size: 12px; letter-spacing: 4px;
+    }
+    #status { font-size: 11px; padding: 4px 12px; top: 12px; }
+    #ctrl { top: 10px; right: 10px; gap: 5px; }
+    .ctrl-btn { padding: 6px 10px; font-size: 12px; }
+    .font-item { padding: 7px 14px; font-size: 15px; }
+    #cam-preview { width: 120px; bottom: 10px; right: 10px; }
+    #hint { left: 14px; bottom: 12px; font-size: 11px; line-height: 1.7; }
+  }
 </style>
 </head>
 <body>
