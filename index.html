@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>One Page</title>
+<link rel="preconnect" href="https://fonts.loli.net">
+<link rel="preconnect" href="https://gstatic.loli.net" crossorigin>
+<link href="https://fonts.loli.net/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Noto+Serif+SC:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  /* ─── Reset ─── */
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  /* ─── Light Tokens ─── */
+  :root {
+    --bg:        #f0e9e0;
+    --surface:   #faf6f1;
+    --text:      #2c2420;
+    --text-secondary: #8c7a6b;
+    --border:    #e0d5c8;
+    --accent:    #b85a3a;
+    --accent-hover: #9e4a2e;
+    --accent-glow: rgba(184, 90, 58, 0.08);
+    --radius:    10px;
+    --shadow:    0 2px 6px rgba(44, 36, 32, 0.06), 0 1px 2px rgba(44, 36, 32, 0.04);
+    --shadow-hover: 0 12px 28px rgba(44, 36, 32, 0.10), 0 4px 12px rgba(44, 36, 32, 0.06);
+    --font-serif: 'Playfair Display', Georgia, 'Times New Roman', serif;
+    --font-body:  'Noto Serif SC', 'Source Han Serif SC', 'STSong', 'SimSun', Georgia, serif;
+  }
+
+  /* ─── Dark Tokens ─── */
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg:        #161210;
+      --surface:   #241f1c;
+      --text:      #ede4d9;
+      --text-secondary: #9a8d80;
+      --border:    #3d3530;
+      --accent:    #d97a5a;
+      --accent-hover: #e88e6e;
+      --accent-glow: rgba(217, 122, 90, 0.10);
+      --shadow:    0 2px 6px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2);
+      --shadow-hover: 0 12px 28px rgba(0, 0, 0, 0.5), 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+  }
+
+  /* ─── Base ─── */
+  body {
+    font-family: var(--font-body);
+    background-color: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Warm ambient glow at top */
+  body::before {
+    content: '';
+    position: fixed;
+    top: -180px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 700px;
+    height: 600px;
+    background: radial-gradient(ellipse, var(--accent-glow) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Subtle noise texture */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    opacity: 0.025;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+    background-size: 256px 256px;
+    pointer-events: none;
+    z-index: 999;
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 80px 24px 96px;
+  }
+
+  /* ─── Header ─── */
+  header {
+    text-align: center;
+    margin-bottom: 64px;
+  }
+
+  h1 {
+    font-family: var(--font-serif);
+    font-size: 2.8rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    color: var(--text);
+  }
+
+  header p {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    margin-top: 10px;
+  }
+
+  /* Decorative divider */
+  .header-divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    margin-top: 28px;
+  }
+  .header-divider .line {
+    height: 1px;
+    width: 48px;
+    background: var(--border);
+  }
+  .header-divider .diamond {
+    color: var(--accent);
+    font-size: 0.45rem;
+    line-height: 1;
+    opacity: 0.7;
+  }
+
+  /* ─── Categories ─── */
+  .category {
+    margin-bottom: 52px;
+  }
+
+  .category h2 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-serif);
+    font-size: 0.88rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text-secondary);
+    margin-bottom: 18px;
+    padding-left: 2px;
+  }
+
+  .category h2 .marker {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    background: var(--accent);
+    transform: rotate(45deg);
+    flex-shrink: 0;
+    opacity: 0.6;
+  }
+
+  /* ─── Grid ─── */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 14px;
+  }
+
+  /* ─── Card ─── */
+  .card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 24px 26px 22px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    text-decoration: none;
+    color: inherit;
+    box-shadow: var(--shadow);
+    transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
+                box-shadow 0.35s ease,
+                border-color 0.35s ease;
+    overflow: hidden;
+    animation: fadeInUp 0.7s ease-out both;
+  }
+
+  /* Accent border bar — hidden by default, reveals on hover */
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 12px;
+    right: 12px;
+    height: 2px;
+    background: var(--accent);
+    border-radius: 0 0 2px 2px;
+    opacity: 0;
+    transform: scaleX(0.6);
+    transition: opacity 0.35s ease, transform 0.35s ease;
+  }
+
+  .card:hover::before {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+
+  .card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-hover);
+    border-color: var(--accent);
+  }
+
+  .card h3 {
+    font-family: var(--font-serif);
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    line-height: 1.45;
+    color: var(--text);
+  }
+
+  .card p {
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+    line-height: 1.65;
+    flex: 1;
+  }
+
+  /* Arrow indicator */
+  .card-arrow {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--accent);
+    font-size: 0.95rem;
+    font-family: var(--font-body);
+    flex-shrink: 0;
+    align-self: flex-end;
+    margin-top: 14px;
+    border: 1px solid var(--border);
+    transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
+  }
+
+  .card:hover .card-arrow {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+    transform: translateX(3px);
+  }
+
+  /* ─── Staggered Entry ─── */
+  .grid a:nth-child(1)  { animation-delay: 0.05s; }
+  .grid a:nth-child(2)  { animation-delay: 0.12s; }
+  .grid a:nth-child(3)  { animation-delay: 0.19s; }
+  .grid a:nth-child(4)  { animation-delay: 0.26s; }
+  .grid a:nth-child(5)  { animation-delay: 0.33s; }
+  .grid a:nth-child(6)  { animation-delay: 0.40s; }
+  .grid a:nth-child(7)  { animation-delay: 0.47s; }
+  .grid a:nth-child(8)  { animation-delay: 0.54s; }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ─── Footer ─── */
+  footer {
+    text-align: center;
+    padding: 36px 0 8px;
+    border-top: 1px solid var(--border);
+    color: var(--text-secondary);
+    font-size: 0.82rem;
+    margin-top: 20px;
+  }
+
+  /* ─── Reduced Motion ─── */
+  @media (prefers-reduced-motion: reduce) {
+    .card {
+      animation: none;
+    }
+    .card:hover {
+      transform: none;
+    }
+    .card:hover .card-arrow {
+      transform: none;
+    }
+  }
+
+  /* ─── Responsive ─── */
+  @media (max-width: 640px) {
+    .container {
+      padding: 48px 16px 64px;
+    }
+    h1 {
+      font-size: 2rem;
+    }
+    header p {
+      font-size: 1rem;
+    }
+    .grid {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+    .card {
+      padding: 20px 20px 18px;
+    }
+    .category {
+      margin-bottom: 40px;
+    }
+    .header-divider .line {
+      width: 32px;
+    }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>One Page</h1>
+    <p>单页作品集，直接在浏览器中体验。</p>
+    <div class="header-divider">
+      <span class="line"></span>
+      <span class="diamond">&#9670;</span>
+      <span class="line"></span>
+    </div>
+  </header>
+
+  <section class="category">
+    <h2><span class="marker"></span>工具</h2>
+    <div class="grid">
+      <a class="card" href="logo-sim/index.html" target="_blank">
+        <h3>LOGO 语言模拟器 (Logo Simulator)</h3>
+        <p>一个基于浏览器的 LOGO 编程语言模拟器，支持编写和执行 LOGO 指令控制海龟画图。</p>
+        <span class="card-arrow">&rarr;</span>
+      </a>
+      <a class="card" href="pic-tool/index.html" target="_blank">
+        <h3>图片调整大小工具 (Pic Tool)</h3>
+        <p>一个纯前端的图片尺寸调整工具，支持拖拽上传图片、自定义宽高比例、预览和下载调整后的图片。</p>
+        <span class="card-arrow">&rarr;</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="category">
+    <h2><span class="marker"></span>互动体验</h2>
+    <div class="grid">
+      <a class="card" href="finger-galaxy/index.html" target="_blank">
+        <h3>指尖星河 (Finger Galaxy)</h3>
+        <p>手势/鼠标控制的星空互动页面。通过手指或鼠标在 Canvas 上绘制星尘轨迹，呈现沉浸式的银河交互体验。</p>
+        <span class="card-arrow">&rarr;</span>
+      </a>
+      <a class="card" href="gesture-fish/index.html" target="_blank">
+        <h3>鱼戏莲叶间 (Gesture Fish)</h3>
+        <p>基于 MediaPipe 手势识别的锦鲤池塘互动页面。支持鼠标和摄像头手势双模式：滑动水面产生涟漪，悬停/长按投喂鱼食，60 条锦鲤在莲叶间自由游弋。</p>
+        <span class="card-arrow">&rarr;</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="category">
+    <h2><span class="marker"></span>游戏</h2>
+    <div class="grid">
+      <a class="card" href="skill-five/index.html" target="_blank">
+        <h3>技能五子棋 (Skill Five)</h3>
+        <p>一个带有特殊技能的五子棋游戏，支持双人对战和人机对战，基于纯前端技术实现，无需后端服务器。</p>
+        <span class="card-arrow">&rarr;</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="category">
+    <h2><span class="marker"></span>作品展示</h2>
+    <div class="grid">
+      <a class="card" href="dear-you/index.html" target="_blank">
+        <h3>给阿嬷的情书 (Dear You)</h3>
+        <p>一封献给阿嬷的电子情书，温暖怀旧的单页页面，配有背景音乐，以细腻的视觉设计表达对祖母的深情。</p>
+        <span class="card-arrow">&rarr;</span>
+      </a>
+      <a class="card" href="huan-cheng/index.html" target="_blank">
+        <h3>幻城 (Huan Cheng)</h3>
+        <p>郭敬明玄幻经典小说《幻城》的单页介绍页面，以冰雪主题呈现小说中的奇幻世界观、人物和故事线。</p>
+        <span class="card-arrow">&rarr;</span>
+      </a>
+      <a class="card" href="ming-chao/index.html" target="_blank">
+        <h3>明朝那些事儿 (Ming Chao)</h3>
+        <p>当年明月历史著作《明朝那些事儿》的单页介绍页面，以明朝风格的视觉设计展示明朝历史脉络与精彩章节。</p>
+        <span class="card-arrow">&rarr;</span>
+      </a>
+      <a class="card" href="sou-shen-ji/index.html" target="_blank">
+        <h3>搜神记与蛮荒记 (Sou Shen Ji)</h3>
+        <p>树下野狐神话史诗《搜神记》与《蛮荒记》的单页介绍页面，以深邃的神话风格呈现远古洪荒世界观、人物与故事。</p>
+        <span class="card-arrow">&rarr;</span>
+      </a>
+      <a class="card" href="xian-ni/index.html" target="_blank">
+        <h3>仙逆 (Xian Ni)</h3>
+        <p>耳根修仙小说《仙逆》的单页介绍与解析页面，以仙侠风格呈现"顺为凡，逆则仙"的修仙世界观、境界体系与故事脉络。</p>
+        <span class="card-arrow">&rarr;</span>
+      </a>
+      <a class="card" href="zang-hai-zhuan/index.html" target="_blank">
+        <h3>藏海传 (Zang Hai Zhuan)</h3>
+        <p>权谋复仇传奇《藏海传》的单页介绍页面，以暗色金饰风格呈现小说中的权谋世界与复仇故事线。</p>
+        <span class="card-arrow">&rarr;</span>
+      </a>
+    </div>
+  </section>
+
+  <footer>
+    Generated by sync.sh
+  </footer>
+</div>
+</body>
+</html>
