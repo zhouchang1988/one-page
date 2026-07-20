@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>云端都市 · Kimi City</title>
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    height: 100%;
+    overflow: hidden;
+    background: #0b0e18;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans SC", sans-serif;
+    color: #dfe4f0;
+  }
+
+  #scene {
+    display: block;
+    width: 100%;
+    height: 100%;
+    touch-action: none;
+    cursor: grab;
+  }
+  #scene:active { cursor: grabbing; }
+
+  /* Cinematic vignette */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(ellipse at center, transparent 55%, rgba(4, 6, 14, 0.55) 100%);
+  }
+
+  .panel {
+    position: fixed;
+    background: rgba(10, 13, 24, 0.58);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: 14px;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+    z-index: 10;
+  }
+
+  /* ── Help / title ── */
+  #help {
+    top: 18px;
+    left: 18px;
+    max-width: 292px;
+    padding: 4px 16px 14px;
+  }
+  #help summary {
+    cursor: pointer;
+    list-style: none;
+    padding: 10px 0 4px;
+    outline: none;
+  }
+  #help summary::-webkit-details-marker { display: none; }
+  #help h1 {
+    display: inline;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+  }
+  #help .sub {
+    display: block;
+    font-size: 11px;
+    color: #8b93a8;
+    margin-top: 3px;
+    letter-spacing: 0.04em;
+  }
+  #help summary::after {
+    content: '‹';
+    float: right;
+    color: #8b93a8;
+    transform: rotate(-90deg);
+    transition: transform .25s;
+    font-size: 14px;
+  }
+  #help:not([open]) summary::after { transform: rotate(0deg); }
+
+  #help ul {
+    list-style: none;
+    margin-top: 8px;
+    font-size: 12px;
+    line-height: 2.05;
+    color: #b8bfd0;
+  }
+  kbd {
+    display: inline-block;
+    min-width: 17px;
+    text-align: center;
+    padding: 0 5px;
+    margin: 0 1px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 10.5px;
+    color: #e8ecf5;
+    background: rgba(255, 255, 255, 0.09);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-bottom-width: 2px;
+    border-radius: 5px;
+  }
+
+  /* ── Action buttons ── */
+  #actions {
+    top: 18px;
+    right: 18px;
+    display: flex;
+    gap: 8px;
+    padding: 8px;
+  }
+  #actions button {
+    appearance: none;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.06);
+    color: #dfe4f0;
+    font-size: 12px;
+    padding: 7px 13px;
+    border-radius: 9px;
+    cursor: pointer;
+    transition: background .2s, color .2s, border-color .2s;
+  }
+  #actions button:hover { background: rgba(255, 255, 255, 0.13); }
+  #actions button.active {
+    background: #ff9a5c;
+    border-color: #ff9a5c;
+    color: #241304;
+    font-weight: 600;
+  }
+
+  /* ── HUD ── */
+  #hud {
+    bottom: 16px;
+    right: 16px;
+    padding: 8px 15px;
+    font-size: 12px;
+    font-variant-numeric: tabular-nums;
+    color: #aab2c5;
+    letter-spacing: 0.03em;
+  }
+  #hud b { color: #f0e2c8; font-weight: 600; }
+
+  /* ── Load failure ── */
+  #fallback {
+    position: fixed;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 10px;
+    background: #0b0e18;
+    z-index: 99;
+    text-align: center;
+    padding: 24px;
+  }
+  #fallback h2 { font-size: 17px; }
+  #fallback p { font-size: 13px; color: #8b93a8; }
+
+  @media (max-width: 640px) {
+    #help { max-width: 232px; }
+    #help ul { font-size: 11px; line-height: 1.95; }
+    #actions { top: auto; bottom: 16px; left: 16px; right: auto; }
+    #hud { bottom: 16px; right: 16px; }
+  }
+</style>
+</head>
+<body>
+<canvas id="scene"></canvas>
+
+<details class="panel" id="help" open>
+  <summary>
+    <h1>云端都市 · Kimi City</h1>
+    <span class="sub">Three.js 交互式三维城市</span>
+  </summary>
+  <ul>
+    <li>拖拽鼠标 / 单指滑动 — 环视</li>
+    <li><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> — 前后 / 左右飞行</li>
+    <li><kbd>Space</kbd> / <kbd>Shift</kbd> — 上升 / 下降</li>
+    <li>滚轮 — 调节飞行速度</li>
+    <li>双击 — 返回鸟瞰视角</li>
+    <li>双指上下滑 — 前进 / 后退 · 捏合 — 升降</li>
+  </ul>
+</details>
+
+<div class="panel" id="actions">
+  <button id="btn-auto" type="button">自动巡航</button>
+  <button id="btn-reset" type="button">重置视角</button>
+</div>
+
+<div class="panel" id="hud">高度 <b id="hud-alt">–</b> m · 速度 <b id="hud-spd">–</b></div>
+
+<div id="fallback">
+  <h2>Three.js 加载失败</h2>
+  <p>页面需要从 CDN 加载 three.js，请检查网络连接后刷新重试。</p>
+</div>
+
+<script type="module">
+let THREE;
+try {
+  THREE = await import('https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js');
+} catch (e) {
+  document.getElementById('fallback').style.display = 'flex';
+  throw e;
+}
+
+/* ── Seeded RNG：每次打开都是同一座城市 ── */
+function mulberry32(a) {
+  return function () {
+    a |= 0; a = (a + 0x6D2B79F5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+const rand = mulberry32(20260718);
+
+/* ── 城市常量 ── */
+const N = 22;                 // 每边街区数
+const PITCH = 64;             // 街区间距（含道路）
+const ROAD = 16;              // 道路宽度
+const AREA = PITCH - ROAD;    // 可建设范围
+const HALF = (N * PITCH) / 2; // 城市半径 704
+const WORLD = (N + 2) * PITCH;// 地面总尺寸 1536
+
+/* ── Renderer / Scene / Camera ── */
+const canvas = document.getElementById('scene');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.setSize(innerWidth, innerHeight);
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.1;
+
+const scene = new THREE.Scene();
+scene.fog = new THREE.Fog(0x241d33, 700, 2600);
+
+const camera = new THREE.PerspectiveCamera(60, innerWidth / innerHeight, 0.5, 8000);
+camera.rotation.order = 'YXZ';
+
+/* ── 天空穹顶（黄昏渐变 + 落日余晖） ── */
+scene.add(new THREE.Mesh(
+  new THREE.SphereGeometry(3800, 24, 16),
+  new THREE.ShaderMaterial({
+    side: THREE.BackSide, depthWrite: false, fog: false,
+    vertexShader: `
+      varying vec3 vP;
+      void main() { vP = position; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
+    fragmentShader: `
+      varying vec3 vP;
+      void main() {
+        vec3 dir = normalize(vP);
+        float h = dir.y;
+        vec3 zenith  = vec3(0.045, 0.065, 0.16);
+        vec3 horizon = vec3(0.36, 0.20, 0.27);
+        vec3 col = mix(horizon, zenith, smoothstep(-0.06, 0.5, h));
+        float sun = pow(max(dot(dir, normalize(vec3(-0.62, 0.07, -0.38))), 0.0), 6.0);
+        col += vec3(0.85, 0.42, 0.18) * sun * 0.55;
+        gl_FragColor = vec4(col, 1.0);
+      }`
+  })
+));
+
+/* ── 星星 ── */
+{
+  const n = 500, pos = new Float32Array(n * 3);
+  for (let i = 0; i < n; i++) {
+    const t = rand() * Math.PI * 2, u = 0.18 + rand() * 0.8;
+    const r = 3400, s = Math.sqrt(1 - u * u);
+    pos[i * 3] = Math.cos(t) * s * r;
+    pos[i * 3 + 1] = u * r;
+    pos[i * 3 + 2] = Math.sin(t) * s * r;
+  }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+  const stars = new THREE.Points(g, new THREE.PointsMaterial({
+    color: 0xcdd8ff, size: 1.6, sizeAttenuation: false,
+    transparent: true, opacity: 0.75, fog: false, depthWrite: false
+  }));
+  stars.frustumCulled = false;
+  scene.add(stars);
+}
+
+/* ── 灯光 ── */
+scene.add(new THREE.HemisphereLight(0x3a4a6b, 0x1a1418, 0.75));
+const sun = new THREE.DirectionalLight(0xff8a55, 0.9);
+sun.position.set(-600, 300, -400);
+scene.add(sun);
+const fill = new THREE.DirectionalLight(0x4a5f8a, 0.3);
+fill.position.set(500, 400, 600);
+scene.add(fill);
+
+/* ── 城市布局：街区 → 建筑 / 公园 ── */
+const buildings = [];
+const parkSet = new Set();
+
+for (let i = 0; i < N; i++) {
+  for (let j = 0; j < N; j++) {
+    const cx = -HALF + PITCH / 2 + i * PITCH;
+    const cz = -HALF + PITCH / 2 + j * PITCH;
+    const d = Math.hypot(cx, cz) / HALF;
+    const fall = Math.max(0, 1 - d);          // 市中心高、边缘低
+    if (rand() < 0.06 && fall < 0.85) { parkSet.add(i + ',' + j); continue; }
+
+    const hMax = 20 + 300 * Math.pow(fall, 2.4);
+    const put = (x, z, w, dd, h) =>
+      buildings.push({ x, z, w, d: dd, h: Math.max(12, h), v: (rand() * 3) | 0 });
+
+    const p = rand();
+    if (p < 0.3) {
+      // 独栋塔楼
+      put(cx, cz, AREA * (0.55 + rand() * 0.3), AREA * (0.55 + rand() * 0.3),
+          hMax * (0.55 + rand() * 0.45));
+    } else if (p < 0.65) {
+      // 双拼
+      const alongX = rand() < 0.5;
+      const w1 = AREA * 0.42, off = AREA / 4;
+      if (alongX) {
+        put(cx - off, cz, w1, AREA * (0.6 + rand() * 0.35), hMax * (0.3 + rand() * 0.5));
+        put(cx + off, cz, w1, AREA * (0.6 + rand() * 0.35), hMax * (0.3 + rand() * 0.5));
+      } else {
+        put(cx, cz - off, AREA * (0.6 + rand() * 0.35), w1, hMax * (0.3 + rand() * 0.5));
+        put(cx, cz + off, AREA * (0.6 + rand() * 0.35), w1, hMax * (0.3 + rand() * 0.5));
+      }
+    } else {
+      // 四联排
+      const s = AREA * 0.4, off = AREA / 4;
+      for (const sx of [-1, 1]) for (const sz of [-1, 1])
+        put(cx + sx * off, cz + sz * off, s, s, hMax * (0.25 + rand() * 0.45));
+    }
+  }
+}
+
+/* ── 地面纹理（道路网 + 街区 + 公园） ── */
+function makeGroundTexture() {
+  const c = document.createElement('canvas');
+  c.width = c.height = 2048;
+  const x = c.getContext('2d');
+  const S = 2048 / WORLD;
+  const P = v => (v + WORLD / 2) * S;
+
+  x.fillStyle = '#191e2b';
+  x.fillRect(0, 0, 2048, 2048);
+
+  for (let i = 0; i < N; i++) {
+    for (let j = 0; j < N; j++) {
+      const bx = -HALF + i * PITCH + ROAD / 2;
+      const bz = -HALF + j * PITCH + ROAD / 2;
+      const park = parkSet.has(i + ',' + j);
+      x.fillStyle = park ? '#14251c' : ((i + j) % 2 ? '#1c2231' : '#1a1f2e');
+      x.fillRect(P(bx), P(bz), AREA * S, AREA * S);
+      if (!park) {
+        x.strokeStyle = 'rgba(255,255,255,0.05)';
+        x.lineWidth = 1.5;
+        x.strokeRect(P(bx), P(bz), AREA * S, AREA * S);
+      }
+    }
+  }
+
+  // 道路
+  x.fillStyle = '#0e1220';
+  for (let k = 0; k <= N; k++) {
+    const p = -HALF + k * PITCH;
+    x.fillRect(P(p - ROAD / 2), P(-HALF - ROAD), ROAD * S, (N * PITCH + ROAD * 2) * S);
+    x.fillRect(P(-HALF - ROAD), P(p - ROAD / 2), (N * PITCH + ROAD * 2) * S, ROAD * S);
+  }
+
+  // 车道虚线
+  x.strokeStyle = 'rgba(220,190,120,0.32)';
+  x.lineWidth = Math.max(1, 0.5 * S);
+  x.setLineDash([5 * S, 7 * S]);
+  for (let k = 0; k <= N; k++) {
+    const p = P(-HALF + k * PITCH);
+    x.beginPath(); x.moveTo(p, P(-HALF)); x.lineTo(p, P(HALF)); x.stroke();
+    x.beginPath(); x.moveTo(P(-HALF), p); x.lineTo(P(HALF), p); x.stroke();
+  }
+  x.setLineDash([]);
+
+  const t = new THREE.CanvasTexture(c);
+  t.colorSpace = THREE.SRGBColorSpace;
+  t.anisotropy = renderer.capabilities.getMaxAnisotropy();
+  return t;
+}
+
+const ground = new THREE.Mesh(
+  new THREE.PlaneGeometry(WORLD, WORLD),
+  new THREE.MeshStandardMaterial({ map: makeGroundTexture(), roughness: 1, metalness: 0 })
+);
+ground.rotation.x = -Math.PI / 2;
+scene.add(ground);
+
+/* ── 市中心暖色光晕 ── */
+{
+  const c = document.createElement('canvas');
+  c.width = c.height = 256;
+  const x = c.getContext('2d');
+  const g = x.createRadialGradient(128, 128, 0, 128, 128, 128);
+  g.addColorStop(0, 'rgba(255,150,80,0.55)');
+  g.addColorStop(1, 'rgba(255,150,80,0)');
+  x.fillStyle = g;
+  x.fillRect(0, 0, 256, 256);
+  const glow = new THREE.Mesh(
+    new THREE.PlaneGeometry(1600, 1600),
+    new THREE.MeshBasicMaterial({
+      map: new THREE.CanvasTexture(c), transparent: true,
+      blending: THREE.AdditiveBlending, depthWrite: false, opacity: 0.32
+    })
+  );
+  glow.rotation.x = -Math.PI / 2;
+  glow.position.y = 1.5;
+  scene.add(glow);
+}
+
+/* ── 建筑立面纹理（亮灯窗户） ── */
+function makeFacadeTexture(variant) {
+  const c = document.createElement('canvas');
+  c.width = 128; c.height = 256;
+  const x = c.getContext('2d');
+  const bases = ['#232936', '#2a2f3a', '#202834'];
+  x.fillStyle = bases[variant];
+  x.fillRect(0, 0, 128, 256);
+  x.fillStyle = 'rgba(255,255,255,0.03)';
+  for (let i = 0; i < 8; i++) x.fillRect(i * 16, 0, 1, 256);
+
+  const cols = 6, rows = 16, cw = 128 / cols, ch = 256 / rows;
+  for (let r = 0; r < rows; r++) {
+    const darkFloor = rand() < 0.12;
+    for (let col = 0; col < cols; col++) {
+      const p = rand();
+      let color;
+      if (darkFloor || p < 0.30) color = '#0d1119';
+      else if (p < 0.72) color = `rgb(255,${(190 + rand() * 45) | 0},${(120 + rand() * 70) | 0})`;
+      else if (p < 0.88) color = 'rgb(170,205,250)';
+      else color = 'rgb(90,105,135)';
+      x.fillStyle = color;
+      x.fillRect(col * cw + 3, r * ch + 4, cw - 6, ch - 7);
+    }
+  }
+  const t = new THREE.CanvasTexture(c);
+  t.colorSpace = THREE.SRGBColorSpace;
+  return t;
+}
+
+/* ── 建筑实例化（3 种立面 × InstancedMesh） ── */
+{
+  const geo = new THREE.BoxGeometry(1, 1, 1);
+  geo.translate(0, 0.5, 0);
+  const topMat = new THREE.MeshStandardMaterial({ color: 0x141821, roughness: 0.95 });
+  const m4 = new THREE.Matrix4();
+  const q = new THREE.Quaternion();
+  const col = new THREE.Color();
+
+  for (let v = 0; v < 3; v++) {
+    const list = buildings.filter(b => b.v === v);
+    if (!list.length) continue;
+    const tex = makeFacadeTexture(v);
+    const sideMat = new THREE.MeshStandardMaterial({
+      map: tex, emissive: 0xffffff, emissiveMap: tex,
+      emissiveIntensity: 1.1, roughness: 0.85, metalness: 0.15
+    });
+    const mats = [sideMat, sideMat, topMat, topMat, sideMat, sideMat];
+    const im = new THREE.InstancedMesh(geo, mats, list.length);
+    list.forEach((b, idx) => {
+      m4.compose(
+        new THREE.Vector3(b.x, 0, b.z), q,
+        new THREE.Vector3(b.w, b.h, b.d)
+      );
+      im.setMatrixAt(idx, m4);
+      im.setColorAt(idx, col.setHSL(0.55 + rand() * 0.08, 0.12, 0.45 + rand() * 0.28));
+    });
+    im.instanceMatrix.needsUpdate = true;
+    if (im.instanceColor) im.instanceColor.needsUpdate = true;
+    scene.add(im);
+  }
+}
+
+/* ── 通用光点精灵纹理 ── */
+function makeSpriteTexture() {
+  const c = document.createElement('canvas');
+  c.width = c.height = 64;
+  const x = c.getContext('2d');
+  const g = x.createRadialGradient(32, 32, 0, 32, 32, 32);
+  g.addColorStop(0, 'rgba(255,255,255,1)');
+  g.addColorStop(0.4, 'rgba(255,255,255,0.6)');
+  g.addColorStop(1, 'rgba(255,255,255,0)');
+  x.fillStyle = g;
+  x.fillRect(0, 0, 64, 64);
+  return new THREE.CanvasTexture(c);
+}
+const spriteTex = makeSpriteTexture();
+
+/* ── 车流（白色 / 红色光点沿道路流动） ── */
+const CAR_N = 380;
+const carPos = new Float32Array(CAR_N * 3);
+const carCol = new Float32Array(CAR_N * 3);
+const cars = [];
+
+for (let i = 0; i < CAR_N; i++) {
+  const axis = rand() < 0.5 ? 0 : 1;
+  const k = 1 + ((rand() * (N - 1)) | 0);
+  const dir = rand() < 0.5 ? 1 : -1;
+  const lane = (axis === 0 ? dir : -dir) * ROAD * 0.22; // 右侧通行
+  const car = {
+    axis,
+    line: -HALF + k * PITCH,
+    lane,
+    t: (rand() * 2 - 1) * HALF,
+    v: dir * (16 + rand() * 26)
+  };
+  cars.push(car);
+  if (dir > 0) { carCol[i * 3] = 1; carCol[i * 3 + 1] = 0.92; carCol[i * 3 + 2] = 0.75; }
+  else { carCol[i * 3] = 1; carCol[i * 3 + 1] = 0.22; carCol[i * 3 + 2] = 0.15; }
+}
+
+const carGeo = new THREE.BufferGeometry();
+carGeo.setAttribute('position', new THREE.BufferAttribute(carPos, 3));
+carGeo.setAttribute('color', new THREE.BufferAttribute(carCol, 3));
+const carPoints = new THREE.Points(carGeo, new THREE.PointsMaterial({
+  size: 3.6, map: spriteTex, vertexColors: true, transparent: true, opacity: 0.95,
+  blending: THREE.AdditiveBlending, depthWrite: false
+}));
+carPoints.frustumCulled = false;
+scene.add(carPoints);
+
+function updateCars(dt) {
+  for (let i = 0; i < CAR_N; i++) {
+    const c = cars[i];
+    c.t += c.v * dt;
+    if (c.t > HALF) c.t -= 2 * HALF;
+    else if (c.t < -HALF) c.t += 2 * HALF;
+    if (c.axis === 0) {
+      carPos[i * 3] = c.t; carPos[i * 3 + 1] = 1.6; carPos[i * 3 + 2] = c.line + c.lane;
+    } else {
+      carPos[i * 3] = c.line + c.lane; carPos[i * 3 + 1] = 1.6; carPos[i * 3 + 2] = c.t;
+    }
+  }
+  carGeo.attributes.position.needsUpdate = true;
+}
+
+/* ── 楼顶红色航标灯 ── */
+let beaconMat;
+{
+  const tops = [...buildings].sort((a, b) => b.h - a.h).slice(0, 12);
+  const pos = new Float32Array(tops.length * 3);
+  tops.forEach((b, i) => { pos[i * 3] = b.x; pos[i * 3 + 1] = b.h + 3; pos[i * 3 + 2] = b.z; });
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+  beaconMat = new THREE.PointsMaterial({
+    color: 0xff4444, size: 6, map: spriteTex, transparent: true,
+    blending: THREE.AdditiveBlending, depthWrite: false
+  });
+  const pts = new THREE.Points(g, beaconMat);
+  pts.frustumCulled = false;
+  scene.add(pts);
+}
+
+/* ══════════ 飞行控制 ══════════ */
+const state = { yaw: 0, pitch: 0, speed: 80, auto: false };
+const velocity = new THREE.Vector3();
+const keys = {};
+const touchMove = { x: 0, y: 0, z: 0 };
+
+function syncAnglesFromCamera() {
+  state.yaw = camera.rotation.y;
+  state.pitch = camera.rotation.x;
+}
+
+function resetView() {
+  setAuto(false);
+  camera.position.set(430, 400, 430);
+  camera.lookAt(0, 60, 0);
+  syncAnglesFromCamera();
+  velocity.set(0, 0, 0);
+  state.speed = 80;
+}
+
+const btnAuto = document.getElementById('btn-auto');
+function setAuto(v) {
+  state.auto = v;
+  btnAuto.classList.toggle('active', v);
+  btnAuto.textContent = v ? '停止巡航' : '自动巡航';
+  if (!v) syncAnglesFromCamera();
+}
+
+addEventListener('keydown', e => {
+  if (e.code === 'Space') e.preventDefault();
+  keys[e.code] = true;
+  if (state.auto) setAuto(false);
+});
+addEventListener('keyup', e => { keys[e.code] = false; });
+addEventListener('blur', () => { for (const k in keys) keys[k] = false; });
+
+/* 鼠标 / 触摸指针 */
+const pointers = new Map();
+let prevMid = null, prevDist = 0;
+
+canvas.addEventListener('pointerdown', e => {
+  canvas.setPointerCapture(e.pointerId);
+  pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+  if (pointers.size === 2) {
+    const pts = [...pointers.values()];
+    prevMid = { x: (pts[0].x + pts[1].x) / 2, y: (pts[0].y + pts[1].y) / 2 };
+    prevDist = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
+  }
+  if (state.auto) setAuto(false);
+});
+
+canvas.addEventListener('pointermove', e => {
+  const p = pointers.get(e.pointerId);
+  if (!p) return;
+  const dx = e.clientX - p.x, dy = e.clientY - p.y;
+  p.x = e.clientX; p.y = e.clientY;
+
+  if (pointers.size === 1) {
+    state.yaw -= dx * 0.0028;
+    state.pitch = Math.max(-1.45, Math.min(1.45, state.pitch - dy * 0.0028));
+  } else if (pointers.size === 2) {
+    const pts = [...pointers.values()];
+    const mid = { x: (pts[0].x + pts[1].x) / 2, y: (pts[0].y + pts[1].y) / 2 };
+    const dist = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
+    if (prevMid) {
+      touchMove.y = Math.max(-1, Math.min(1, (prevMid.y - mid.y) / 40));
+      touchMove.z = Math.max(-1, Math.min(1, (dist - prevDist) / 60));
+    }
+    prevMid = mid; prevDist = dist;
+  }
+});
+
+const endPointer = e => {
+  pointers.delete(e.pointerId);
+  if (pointers.size < 2) { prevMid = null; touchMove.y = 0; touchMove.z = 0; }
+  if (pointers.size === 0) touchMove.x = 0;
+};
+canvas.addEventListener('pointerup', endPointer);
+canvas.addEventListener('pointercancel', endPointer);
+canvas.addEventListener('contextmenu', e => e.preventDefault());
+
+canvas.addEventListener('wheel', e => {
+  e.preventDefault();
+  state.speed = Math.max(8, Math.min(900, state.speed * Math.pow(1.0015, -e.deltaY)));
+  if (state.auto) setAuto(false);
+}, { passive: false });
+
+canvas.addEventListener('dblclick', resetView);
+
+btnAuto.addEventListener('click', () => { btnAuto.blur(); setAuto(!state.auto); });
+document.getElementById('btn-reset').addEventListener('click', function () { this.blur(); resetView(); });
+
+/* ── 主循环 ── */
+const clock = new THREE.Clock();
+const fwd = new THREE.Vector3();
+const right = new THREE.Vector3();
+const desired = new THREE.Vector3();
+const hudAlt = document.getElementById('hud-alt');
+const hudSpd = document.getElementById('hud-spd');
+let hudTimer = 0;
+
+function animate() {
+  requestAnimationFrame(animate);
+  const dt = Math.min(clock.getDelta(), 0.05);
+  const t = clock.elapsedTime;
+
+  if (state.auto) {
+    // 自动巡航：绕城环形航线
+    const a = t * 0.045;
+    camera.position.set(Math.cos(a) * 640, 300 + Math.sin(t * 0.21) * 70, Math.sin(a) * 640);
+    camera.lookAt(0, 90, 0);
+    syncAnglesFromCamera();
+    velocity.multiplyScalar(0.9);
+  } else {
+    const f = (keys.KeyW ? 1 : 0) - (keys.KeyS ? 1 : 0) + touchMove.y;
+    const s = (keys.KeyD ? 1 : 0) - (keys.KeyA ? 1 : 0) + touchMove.x;
+    const u = (keys.Space ? 1 : 0) - ((keys.ShiftLeft || keys.ShiftRight) ? 1 : 0) + touchMove.z;
+
+    const cp = Math.cos(state.pitch), sp = Math.sin(state.pitch);
+    const cy = Math.cos(state.yaw), sy = Math.sin(state.yaw);
+    fwd.set(-sy * cp, sp, -cy * cp);
+    right.set(cy, 0, -sy);
+
+    desired.set(0, 0, 0)
+      .addScaledVector(fwd, f)
+      .addScaledVector(right, s);
+    if (desired.lengthSq() > 1) desired.normalize();
+    desired.multiplyScalar(state.speed);
+    desired.y += u * state.speed * 0.85;
+
+    velocity.lerp(desired, 1 - Math.exp(-dt * 4));
+    camera.position.addScaledVector(velocity, dt);
+
+    // 边界约束
+    const LIM = HALF + 800;
+    camera.position.x = Math.max(-LIM, Math.min(LIM, camera.position.x));
+    camera.position.z = Math.max(-LIM, Math.min(LIM, camera.position.z));
+    camera.position.y = Math.max(3, Math.min(1500, camera.position.y));
+
+    camera.rotation.set(state.pitch, state.yaw, 0);
+
+    // 触摸输入衰减
+    const decay = Math.exp(-dt * 6);
+    touchMove.x *= decay; touchMove.y *= decay; touchMove.z *= decay;
+  }
+
+  updateCars(dt);
+  beaconMat.opacity = 0.2 + 0.8 * Math.max(0, Math.sin(t * 2.2));
+
+  hudTimer += dt;
+  if (hudTimer > 0.15) {
+    hudTimer = 0;
+    hudAlt.textContent = Math.round(camera.position.y);
+    hudSpd.textContent = state.auto ? '巡航中' : Math.round(state.speed);
+  }
+
+  renderer.render(scene, camera);
+}
+
+addEventListener('resize', () => {
+  camera.aspect = innerWidth / innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight);
+});
+
+resetView();
+animate();
+</script>
+</body>
+</html>

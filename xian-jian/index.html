@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>仙剑奇侠传 - 仗剑江湖为红颜</title>
+<link rel="preconnect" href="https://fonts.loli.net">
+<link rel="preconnect" href="https://gstatic.loli.net" crossorigin>
+<link href="https://fonts.loli.net/css2?family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        font-family: 'Noto Serif SC', 'STSong', 'SimSun', serif;
+        line-height: 1.9;
+        color: #dce8e6;
+        background: linear-gradient(160deg, #0a1522 0%, #0f2438 45%, #123146 100%);
+        min-height: 100vh;
+        overflow-x: hidden;
+    }
+
+    /* 远山云雾背景 */
+    body::before {
+        content: '';
+        position: fixed;
+        inset: 0;
+        background:
+            radial-gradient(ellipse 60% 40% at 80% 0%, rgba(127, 205, 192, 0.08), transparent 60%),
+            radial-gradient(ellipse 50% 35% at 15% 100%, rgba(232, 200, 125, 0.05), transparent 60%);
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    .container {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 0 24px;
+        position: relative;
+        z-index: 1;
+    }
+
+    /* ─── 头部 ─── */
+    header {
+        text-align: center;
+        padding: 110px 20px 90px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* 飘落的光点 */
+    .petal {
+        position: absolute;
+        top: -20px;
+        width: 8px;
+        height: 8px;
+        border-radius: 50% 0 50% 50%;
+        background: rgba(127, 205, 192, 0.5);
+        animation: fall linear infinite;
+        pointer-events: none;
+    }
+
+    @keyframes fall {
+        0%   { transform: translateY(0) rotate(0deg); opacity: 0; }
+        10%  { opacity: 0.8; }
+        100% { transform: translateY(110vh) rotate(540deg); opacity: 0; }
+    }
+
+    .sword-mark {
+        width: 64px;
+        height: 64px;
+        margin: 0 auto 28px;
+        opacity: 0.9;
+        animation: float 4s ease-in-out infinite;
+    }
+
+    @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50%      { transform: translateY(-10px); }
+    }
+
+    header h1 {
+        font-family: 'Ma Shan Zheng', 'Noto Serif SC', serif;
+        font-size: clamp(3.2rem, 9vw, 5.5rem);
+        font-weight: 400;
+        letter-spacing: 0.18em;
+        margin-bottom: 24px;
+        background: linear-gradient(120deg, #bfe8df 0%, #7fcdc0 40%, #e8c87d 75%, #bfe8df 100%);
+        background-size: 200% auto;
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: shine 6s linear infinite;
+        text-shadow: none;
+    }
+
+    @keyframes shine {
+        to { background-position: 200% center; }
+    }
+
+    header .subtitle {
+        font-size: clamp(1rem, 2.6vw, 1.3rem);
+        letter-spacing: 0.5em;
+        color: #9fc4bc;
+        margin-bottom: 34px;
+        text-indent: 0.5em;
+    }
+
+    header .meta {
+        display: inline-flex;
+        gap: 12px 28px;
+        flex-wrap: wrap;
+        justify-content: center;
+        font-size: 0.95rem;
+        color: #8aa8a2;
+    }
+
+    header .meta span::before {
+        content: '◆';
+        color: #e8c87d;
+        font-size: 0.6rem;
+        vertical-align: middle;
+        margin-right: 8px;
+    }
+
+    /* ─── 导航 ─── */
+    nav {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background: rgba(10, 21, 34, 0.85);
+        backdrop-filter: blur(10px);
+        border-top: 1px solid rgba(127, 205, 192, 0.15);
+        border-bottom: 1px solid rgba(127, 205, 192, 0.15);
+    }
+
+    nav ul {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        list-style: none;
+        gap: 4px;
+        padding: 10px 12px;
+    }
+
+    nav a {
+        display: block;
+        color: #a9c8c1;
+        text-decoration: none;
+        padding: 8px 20px;
+        border-radius: 999px;
+        font-size: 0.95rem;
+        letter-spacing: 0.1em;
+        transition: all 0.3s ease;
+    }
+
+    nav a:hover {
+        color: #0a1522;
+        background: #7fcdc0;
+        box-shadow: 0 0 18px rgba(127, 205, 192, 0.45);
+    }
+
+    /* ─── 通用区块 ─── */
+    section {
+        padding: 90px 0 30px;
+    }
+
+    .section-title {
+        text-align: center;
+        margin-bottom: 56px;
+    }
+
+    .section-title h2 {
+        font-family: 'Ma Shan Zheng', 'Noto Serif SC', serif;
+        font-size: 2.4rem;
+        font-weight: 400;
+        letter-spacing: 0.25em;
+        color: #e9f3f0;
+        display: inline-block;
+        position: relative;
+        padding-bottom: 16px;
+    }
+
+    .section-title h2::after {
+        content: '';
+        position: absolute;
+        left: 50%;
+        bottom: 0;
+        transform: translateX(-50%);
+        width: 72px;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, #e8c87d, transparent);
+    }
+
+    .section-title p {
+        margin-top: 14px;
+        color: #8aa8a2;
+        letter-spacing: 0.2em;
+        font-size: 0.95rem;
+    }
+
+    /* 滚动显现 */
+    .reveal {
+        opacity: 0;
+        transform: translateY(36px);
+        transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+
+    .reveal.visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    /* ─── 简介 ─── */
+    .intro-grid {
+        display: grid;
+        grid-template-columns: 1.4fr 1fr;
+        gap: 40px;
+        align-items: start;
+    }
+
+    .intro-text p {
+        margin-bottom: 18px;
+        color: #c3d6d1;
+        text-align: justify;
+    }
+
+    .intro-text strong {
+        color: #e8c87d;
+        font-weight: 600;
+    }
+
+    .info-card {
+        background: rgba(127, 205, 192, 0.06);
+        border: 1px solid rgba(127, 205, 192, 0.2);
+        border-radius: 12px;
+        padding: 28px 26px;
+    }
+
+    .info-card dl {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 14px 18px;
+        font-size: 0.95rem;
+    }
+
+    .info-card dt {
+        color: #7fcdc0;
+        letter-spacing: 0.15em;
+        white-space: nowrap;
+    }
+
+    .info-card dd {
+        color: #dce8e6;
+    }
+
+    /* ─── 世界观 ─── */
+    .world-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 22px;
+    }
+
+    .world-card {
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(127, 205, 192, 0.18);
+        border-radius: 12px;
+        padding: 30px 24px;
+        text-align: center;
+        transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    }
+
+    .world-card:hover {
+        transform: translateY(-6px);
+        border-color: rgba(232, 200, 125, 0.5);
+        box-shadow: 0 14px 32px rgba(0, 0, 0, 0.35);
+    }
+
+    .world-card .icon {
+        font-size: 2rem;
+        margin-bottom: 14px;
+        display: block;
+    }
+
+    .world-card h3 {
+        color: #e8c87d;
+        font-size: 1.15rem;
+        letter-spacing: 0.2em;
+        margin-bottom: 12px;
+    }
+
+    .world-card p {
+        font-size: 0.92rem;
+        color: #a9c0bb;
+        line-height: 1.8;
+    }
+
+    /* ─── 人物 ─── */
+    .char-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 24px;
+    }
+
+    .char-card {
+        position: relative;
+        background: linear-gradient(150deg, rgba(127, 205, 192, 0.08), rgba(255, 255, 255, 0.02));
+        border: 1px solid rgba(127, 205, 192, 0.2);
+        border-radius: 14px;
+        padding: 32px 28px;
+        overflow: hidden;
+        transition: transform 0.3s ease, border-color 0.3s ease;
+    }
+
+    .char-card::before {
+        content: attr(data-mark);
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-family: 'Ma Shan Zheng', serif;
+        font-size: 6.5rem;
+        color: rgba(127, 205, 192, 0.07);
+        pointer-events: none;
+    }
+
+    .char-card:hover {
+        transform: translateY(-6px);
+        border-color: rgba(127, 205, 192, 0.55);
+    }
+
+    .char-card .role {
+        font-size: 0.8rem;
+        color: #7fcdc0;
+        letter-spacing: 0.3em;
+        margin-bottom: 8px;
+    }
+
+    .char-card h3 {
+        font-family: 'Ma Shan Zheng', serif;
+        font-weight: 400;
+        font-size: 1.7rem;
+        color: #eef6f3;
+        letter-spacing: 0.12em;
+        margin-bottom: 12px;
+    }
+
+    .char-card p {
+        font-size: 0.93rem;
+        color: #a9c0bb;
+        position: relative;
+    }
+
+    .char-card .quote {
+        margin-top: 14px;
+        padding-top: 12px;
+        border-top: 1px dashed rgba(232, 200, 125, 0.3);
+        font-size: 0.88rem;
+        color: #e8c87d;
+        font-style: italic;
+    }
+
+    /* ─── 故事脉络 ─── */
+    .timeline {
+        position: relative;
+        max-width: 760px;
+        margin: 0 auto;
+        padding-left: 40px;
+    }
+
+    .timeline::before {
+        content: '';
+        position: absolute;
+        left: 10px;
+        top: 6px;
+        bottom: 6px;
+        width: 2px;
+        background: linear-gradient(180deg, #7fcdc0, #e8c87d, #7fcdc0);
+        opacity: 0.4;
+    }
+
+    .timeline-item {
+        position: relative;
+        padding-bottom: 40px;
+    }
+
+    .timeline-item:last-child {
+        padding-bottom: 0;
+    }
+
+    .timeline-item::before {
+        content: '';
+        position: absolute;
+        left: -36px;
+        top: 10px;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: #0f2438;
+        border: 2px solid #7fcdc0;
+        box-shadow: 0 0 12px rgba(127, 205, 192, 0.6);
+    }
+
+    .timeline-item h3 {
+        color: #e8c87d;
+        font-size: 1.15rem;
+        letter-spacing: 0.15em;
+        margin-bottom: 8px;
+    }
+
+    .timeline-item p {
+        color: #a9c0bb;
+        font-size: 0.95rem;
+    }
+
+    /* ─── 系列作品 ─── */
+    .series-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 18px;
+    }
+
+    .series-card {
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(127, 205, 192, 0.16);
+        border-radius: 12px;
+        padding: 24px 20px;
+        text-align: center;
+        transition: transform 0.3s ease, border-color 0.3s ease;
+    }
+
+    .series-card:hover {
+        transform: translateY(-5px);
+        border-color: rgba(232, 200, 125, 0.5);
+    }
+
+    .series-card .year {
+        font-size: 0.8rem;
+        color: #7fcdc0;
+        letter-spacing: 0.2em;
+    }
+
+    .series-card h3 {
+        font-size: 1.08rem;
+        color: #eef6f3;
+        margin: 8px 0 10px;
+        letter-spacing: 0.06em;
+    }
+
+    .series-card p {
+        font-size: 0.86rem;
+        color: #93aca6;
+    }
+
+    /* ─── 经典台词 ─── */
+    .quotes {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 22px;
+    }
+
+    .quote-card {
+        background: rgba(232, 200, 125, 0.05);
+        border-left: 3px solid #e8c87d;
+        border-radius: 0 12px 12px 0;
+        padding: 26px 24px;
+    }
+
+    .quote-card p {
+        font-size: 1rem;
+        color: #e6dfc8;
+        line-height: 2;
+    }
+
+    .quote-card cite {
+        display: block;
+        margin-top: 12px;
+        font-size: 0.85rem;
+        color: #8aa8a2;
+        font-style: normal;
+        letter-spacing: 0.15em;
+    }
+
+    /* ─── 页脚 ─── */
+    footer {
+        margin-top: 90px;
+        padding: 40px 20px 50px;
+        text-align: center;
+        border-top: 1px solid rgba(127, 205, 192, 0.15);
+        color: #6f8d87;
+        font-size: 0.88rem;
+        letter-spacing: 0.1em;
+        position: relative;
+        z-index: 1;
+    }
+
+    footer .end-line {
+        font-family: 'Ma Shan Zheng', serif;
+        font-size: 1.3rem;
+        color: #9fc4bc;
+        letter-spacing: 0.3em;
+        margin-bottom: 16px;
+    }
+
+    /* ─── 响应式 ─── */
+    @media (max-width: 720px) {
+        header { padding: 80px 16px 60px; }
+        .intro-grid { grid-template-columns: 1fr; }
+        section { padding: 64px 0 20px; }
+        .timeline { padding-left: 32px; }
+        .timeline-item::before { left: -28px; }
+    }
+</style>
+</head>
+<body>
+
+<header>
+    <div class="sword-mark">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M32 2 L36 20 L34 44 L30 44 L28 20 Z" fill="#7fcdc0"/>
+            <rect x="20" y="44" width="24" height="4" rx="2" fill="#e8c87d"/>
+            <rect x="29" y="48" width="6" height="10" rx="2" fill="#7fcdc0"/>
+            <circle cx="32" cy="60" r="3" fill="#e8c87d"/>
+        </svg>
+    </div>
+    <h1>仙剑奇侠传</h1>
+    <p class="subtitle">仗剑江湖为红颜</p>
+    <div class="meta">
+        <span>大宇资讯 DOMO 小组</span>
+        <span>制作人 · 姚壮宪</span>
+        <span>1995 年初代问世</span>
+        <span>中文 RPG 不朽经典</span>
+    </div>
+</header>
+
+<nav>
+    <ul>
+        <li><a href="#intro">作品简介</a></li>
+        <li><a href="#world">仙侠世界</a></li>
+        <li><a href="#characters">主要人物</a></li>
+        <li><a href="#story">故事脉络</a></li>
+        <li><a href="#series">系列作品</a></li>
+        <li><a href="#quotes">经典回响</a></li>
+    </ul>
+</nav>
+
+<main class="container">
+
+    <!-- 简介 -->
+    <section id="intro">
+        <div class="section-title reveal">
+            <h2>作品简介</h2>
+            <p>一剑钟情 · 廿载难忘</p>
+        </div>
+        <div class="intro-grid">
+            <div class="intro-text reveal">
+                <p>《仙剑奇侠传》是<strong>大宇资讯</strong>旗下 DOMO 小组于 1995 年推出的中文角色扮演游戏，由被誉为「<strong>仙剑之父</strong>」的<strong>姚壮宪</strong>主导制作。游戏以中国神话与武侠为骨、以宿命与深情为魂，讲述了余杭镇客栈伙计<strong>李逍遥</strong>阴差阳错踏上江湖路，与女娲后人<strong>赵灵儿</strong>、林家堡千金<strong>林月如</strong>、白苗少女<strong>阿奴</strong>之间缠绵悱恻的故事。</p>
+                <p>它以动人的剧情、凄美的结局和韵味悠长的配乐，成为一代玩家心中无法替代的回忆，被公认为中文游戏史上最具影响力的作品之一。「仙剑」二字，自此不只是一个游戏系列，更成为华人世界中「仙侠」题材的文化符号。</p>
+            </div>
+            <div class="info-card reveal">
+                <dl>
+                    <dt>类型</dt><dd>角色扮演（RPG）</dd>
+                    <dt>出品</dt><dd>大宇资讯 · DOMO 小组</dd>
+                    <dt>制作人</dt><dd>姚壮宪</dd>
+                    <dt>首发</dt><dd>1995 年（DOS 版）</dd>
+                    <dt>经典版本</dt><dd>98 柔情篇 · 新仙剑（2001）</dd>
+                    <dt>衍生</dt><dd>电视剧 · 舞台剧 · 漫画 · 小说</dd>
+                </dl>
+            </div>
+        </div>
+    </section>
+
+    <!-- 世界观 -->
+    <section id="world">
+        <div class="section-title reveal">
+            <h2>仙侠世界</h2>
+            <p>人鬼神妖 · 共存天地之间</p>
+        </div>
+        <div class="world-grid">
+            <div class="world-card reveal">
+                <span class="icon">🗡️</span>
+                <h3>蜀山仙剑派</h3>
+                <p>立于蜀山之巅的修仙名门，以御剑之术降妖除魔、守护苍生，是正道武林的精神领袖。</p>
+            </div>
+            <div class="world-card reveal">
+                <span class="icon">📿</span>
+                <h3>女娲血脉</h3>
+                <p>女娲族后裔世代以身补天、庇护人族，却背负着为天下牺牲的宿命，灵儿正是其中一脉。</p>
+            </div>
+            <div class="world-card reveal">
+                <span class="icon">🔮</span>
+                <h3>五灵珠</h3>
+                <p>风、雷、水、火、土五颗灵珠汇聚天地灵力，得之可呼风唤雨，亦是拜月教主觊觎之物。</p>
+            </div>
+            <div class="world-card reveal">
+                <span class="icon">🏯</span>
+                <h3>锁妖塔</h3>
+                <p>蜀山镇压群妖的禁地，塔内妖气冲天、机关重重，也是整段故事最令人心碎的地方。</p>
+            </div>
+            <div class="world-card reveal">
+                <span class="icon">🌺</span>
+                <h3>苗疆</h3>
+                <p>南疆黑白苗族世代相争，巫术与毒蛊横行，拜月教借水魔兽之力掀起滔天大劫。</p>
+            </div>
+            <div class="world-card reveal">
+                <span class="icon">☯️</span>
+                <h3>六界宿命</h3>
+                <p>人、仙、妖、魔、神、鬼六界轮转，情之一字却贯通其间——宿命可抗，深情不悔。</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 人物 -->
+    <section id="characters">
+        <div class="section-title reveal">
+            <h2>主要人物</h2>
+            <p>江湖儿女 · 各有悲欢</p>
+        </div>
+        <div class="char-grid">
+            <div class="char-card reveal" data-mark="逍">
+                <div class="role">仗剑少年 · 一代大侠</div>
+                <h3>李逍遥</h3>
+                <p>余杭镇云来云去客栈的小伙计，自幼父母双亡，一心想成为人人敬仰的大侠。机缘巧合下得酒剑仙传授御剑术，从此卷入一场关乎天下苍生的浩劫。</p>
+                <div class="quote">「我要成为人人敬仰的大侠！」</div>
+            </div>
+            <div class="char-card reveal" data-mark="灵">
+                <div class="role">女娲后人 · 南诏公主</div>
+                <h3>赵灵儿</h3>
+                <p>仙灵岛水月宫中长大的少女，纯洁善良、不谙世事，实为女娲族后裔、南诏国公主。身负拯救苍生之责，最终以自身封印水魔兽，化作漫天蒲公英。</p>
+                <div class="quote">「既不回头，何必不忘；既然无缘，何须誓言。」</div>
+            </div>
+            <div class="char-card reveal" data-mark="月">
+                <div class="role">林家千金 · 刁蛮侠女</div>
+                <h3>林月如</h3>
+                <p>苏州林家堡大小姐，江南武林盟主之女。刁蛮任性却情深义重，比武招亲与李逍遥结缘后一路相随，最终为救逍遥与灵儿，殒命锁妖塔下。</p>
+                <div class="quote">「原来我已经这么老了……吃到老，玩到老。」</div>
+            </div>
+            <div class="char-card reveal" data-mark="奴">
+                <div class="role">白苗少女 · 天真烂漫</div>
+                <h3>阿奴</h3>
+                <p>白苗族族长之女，使毒用蛊样样精通，性格古灵精怪。为寻找水灵珠化解苗疆旱灾与逍遥同行，对逍遥一往情深，却始终将心意藏于笑语之中。</p>
+                <div class="quote">「逍遥哥哥，阿奴会一直等你。」</div>
+            </div>
+            <div class="char-card reveal" data-mark="酒">
+                <div class="role">御剑乘风 · 游戏人间</div>
+                <h3>酒剑仙</h3>
+                <p>蜀山仙剑派俗家弟子司徒钟，嗜酒如命、放浪形骸，却身怀绝世剑术。山神庙一坛酒换来李逍遥的御剑启蒙，亦师亦友，快意恩仇。</p>
+                <div class="quote">「御剑乘风来，除魔天地间。」</div>
+            </div>
+            <div class="char-card reveal" data-mark="拜">
+                <div class="role">黑苗之主 · 乱世枭雄</div>
+                <h3>拜月教主</h3>
+                <p>黑苗族拜月教教主，野心勃勃、法力高强。豢养水魔兽、蛊惑巫王，一手挑起苗疆战乱与中原浩劫，是整部故事最大的幕后黑手。</p>
+                <div class="quote">「顺我者昌，逆我者亡。」</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 故事脉络 -->
+    <section id="story">
+        <div class="section-title reveal">
+            <h2>故事脉络</h2>
+            <p>从仙灵岛到锁妖塔 · 一段宿命之旅</p>
+        </div>
+        <div class="timeline">
+            <div class="timeline-item reveal">
+                <h3>仙灵岛求药</h3>
+                <p>婶婶病危，李逍遥远赴仙灵岛求取仙药，机缘巧合结识赵灵儿，并与她许下三生之约，命运的齿轮就此转动。</p>
+            </div>
+            <div class="timeline-item reveal">
+                <h3>山神庙学剑</h3>
+                <p>一坛桂花酒结下师徒之缘，酒剑仙于山神庙传授逍遥「御剑术」，少年的大侠梦自此有了第一式剑招。</p>
+            </div>
+            <div class="timeline-item reveal">
+                <h3>苏州比武招亲</h3>
+                <p>护送灵儿回苗疆途中途经苏州，逍遥误打误撞赢得林家堡比武招亲，与林月如不打不相识，三人同行闯荡江湖。</p>
+            </div>
+            <div class="timeline-item reveal">
+                <h3>白河村 · 隐龙窟</h3>
+                <p>蛇妖祸乱白河村，灵儿身世初露端倪；一行人追至隐龙窟除妖，灵儿却再度被人掳走，逍遥踏上寻人之路。</p>
+            </div>
+            <div class="timeline-item reveal">
+                <h3>京城蝶恋</h3>
+                <p>尚书府中，蝶精彩依为报恩情，甘愿耗尽千年道行救回刘晋元——「没有值得不值得，只有愿意不愿意」。</p>
+            </div>
+            <div class="timeline-item reveal">
+                <h3>锁妖塔殇</h3>
+                <p>为救灵儿独闯锁妖塔，塔倒之际月如推开二人，香消玉殒。「吃到老，玩到老」的约定，终究成了绝响。</p>
+            </div>
+            <div class="timeline-item reveal">
+                <h3>苗疆决战</h3>
+                <p>拜月教主唤醒水魔兽掀起灭世洪灾，灵儿以女娲神力与之同归于尽。大雪漫天，逍遥抱着襁褓中的忆如，独自走向归途。</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 系列作品 -->
+    <section id="series">
+        <div class="section-title reveal">
+            <h2>系列作品</h2>
+            <p>廿载仙剑 · 薪火相传</p>
+        </div>
+        <div class="series-grid">
+            <div class="series-card reveal">
+                <div class="year">1995</div>
+                <h3>仙剑奇侠传</h3>
+                <p>DOS 版一鸣惊人，后推出 98 柔情篇与 2001 年《新仙剑奇侠传》重制。</p>
+            </div>
+            <div class="series-card reveal">
+                <div class="year">2003</div>
+                <h3>仙剑奇侠传二</h3>
+                <p>讲述李忆如与王小虎的故事，承接一代结局之后。</p>
+            </div>
+            <div class="series-card reveal">
+                <div class="year">2003</div>
+                <h3>仙剑奇侠传三</h3>
+                <p>景天、雪见与龙葵的前世今生，首次引入六界世界观。</p>
+            </div>
+            <div class="series-card reveal">
+                <div class="year">2004</div>
+                <h3>三外传 · 问情篇</h3>
+                <p>南宫煌的身世之谜，补全三代与初代之间的时间线。</p>
+            </div>
+            <div class="series-card reveal">
+                <div class="year">2007</div>
+                <h3>仙剑奇侠传四</h3>
+                <p>云天河与韩菱纱的寻仙之旅，「我命由我不由天」深入人心。</p>
+            </div>
+            <div class="series-card reveal">
+                <div class="year">2011 / 2013</div>
+                <h3>仙剑五 · 五前传</h3>
+                <p>蜀山七圣与净天教恩怨，延续蜀山一脉的千年宿命。</p>
+            </div>
+            <div class="series-card reveal">
+                <div class="year">2015</div>
+                <h3>仙剑奇侠传六</h3>
+                <p>越今朝与越祈的时空轮回，首次采用即时战斗尝试。</p>
+            </div>
+            <div class="series-card reveal">
+                <div class="year">2021</div>
+                <h3>仙剑奇侠传七</h3>
+                <p>明庶门月清疏登场，虚幻引擎打造的次世代仙剑。</p>
+            </div>
+            <div class="series-card reveal">
+                <div class="year">2005 / 2009</div>
+                <h3>电视剧</h3>
+                <p>胡歌、刘亦菲主演《仙剑一》与《仙剑三》，成为一代人的荧屏记忆。</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 经典台词 -->
+    <section id="quotes">
+        <div class="section-title reveal">
+            <h2>经典回响</h2>
+            <p>一句一泪 · 皆是青春</p>
+        </div>
+        <div class="quotes">
+            <div class="quote-card reveal">
+                <p>「既不回头，何必不忘；既然无缘，何须誓言。今日种种，似水无痕；明夕何夕，君已陌路。」</p>
+                <cite>—— 赵灵儿</cite>
+            </div>
+            <div class="quote-card reveal">
+                <p>「吃到老，玩到老……原来，我已经这么老了。」</p>
+                <cite>—— 林月如</cite>
+            </div>
+            <div class="quote-card reveal">
+                <p>「御剑乘风来，除魔天地间。有酒乐逍遥，无酒我亦颠。一饮尽江河，再饮吞日月。千杯醉不倒，唯我酒剑仙。」</p>
+                <cite>—— 酒剑仙</cite>
+            </div>
+            <div class="quote-card reveal">
+                <p>「没有值得不值得，只有愿意不愿意。」</p>
+                <cite>—— 彩依</cite>
+            </div>
+            <div class="quote-card reveal">
+                <p>「胜败乃兵家常事，大侠请重新来过。」</p>
+                <cite>—— 游戏结束语</cite>
+            </div>
+            <div class="quote-card reveal">
+                <p>「我李逍遥要做天下第一大侠，我要锄强扶弱，我要名留青史！」</p>
+                <cite>—— 李逍遥</cite>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<footer>
+    <p class="end-line">仗剑江湖梦已远，仙剑奇侠永流传</p>
+    <p>仙剑奇侠传 · 作品介绍页 | 谨以此页，献给一代人的仙侠记忆</p>
+</footer>
+
+<script>
+    // 飘落的光点
+    (function () {
+        var header = document.querySelector('header');
+        for (var i = 0; i < 14; i++) {
+            var p = document.createElement('span');
+            p.className = 'petal';
+            p.style.left = Math.random() * 100 + '%';
+            p.style.animationDuration = (6 + Math.random() * 8) + 's';
+            p.style.animationDelay = (Math.random() * 8) + 's';
+            p.style.opacity = 0.3 + Math.random() * 0.5;
+            p.style.transform = 'scale(' + (0.5 + Math.random()) + ')';
+            header.appendChild(p);
+        }
+    })();
+
+    // 滚动显现动画
+    (function () {
+        var items = document.querySelectorAll('.reveal');
+        if (!('IntersectionObserver' in window)) {
+            items.forEach(function (el) { el.classList.add('visible'); });
+            return;
+        }
+        var observer = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.12 });
+        items.forEach(function (el) { observer.observe(el); });
+    })();
+</script>
+
+</body>
+</html>

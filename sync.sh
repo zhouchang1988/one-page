@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# sync.sh — 扫描子目录，解析类型，重新生成根 README.md 和 index.html
+# sync.sh — 扫描子目录，解析类型，重新生成根 AGENTS.md 和 index.html
 # 用法：
 #   ./sync.sh          单次运行
 #   ./sync.sh --watch  监听变化自动运行（需要 fswatch 或 inotifywait）
@@ -17,9 +17,9 @@ trap 'rm -f "$TMP"' EXIT
 for dir in */; do
   dir="${dir%/}"
   [[ "$dir" == .* ]] && continue
-  [[ ! -f "$dir/README.md" ]] && continue
+  [[ ! -f "$dir/AGENTS.md" ]] && continue
 
-  readme="$dir/README.md"
+  readme="$dir/AGENTS.md"
   title=$(grep -m1 '^# ' "$readme" | sed 's/^# //')
   type=$(grep '> 类型：' "$readme" | head -1 | sed 's/^>[[:space:]]*类型：[[:space:]]*//' || echo "未分类")
   desc=$(awk '
@@ -32,16 +32,10 @@ for dir in */; do
   printf '%s\t%s\t%s\t%s\n' "${type:-未分类}" "$dir" "$title" "$desc" >> "$TMP"
 done
 
-# ── 生成 README.md ──────────────────────────────────────────
+# ── 生成根目录 AGENTS.md ─────────────────────────────────────
 
+# 生成项目列表部分
 {
-  echo "# One Page"
-  echo ""
-  echo "单页作品集。每个子目录都是一个独立的单页项目，可直接在浏览器中打开。"
-  echo ""
-  echo "---"
-  echo ""
-
   prev_type=""
   sort -t$'\t' -k1,1 "$TMP" | while IFS=$'\t' read -r type dir title desc; do
     if [[ "$type" != "$prev_type" ]]; then
@@ -55,7 +49,44 @@ done
     echo "| [$title]($dir/) | $desc |"
   done
   echo ""
-} > README.md
+} > "$TMP.list"
+
+# 如果 AGENTS.md 不存在，创建基本结构
+if [[ ! -f "AGENTS.md" ]]; then
+  {
+    echo "# One Page"
+    echo ""
+    echo "单页作品集。每个子目录都是一个独立的单页项目，可直接在浏览器中打开。"
+    echo ""
+    echo "---"
+    echo ""
+  } > "AGENTS.md"
+fi
+
+# 找到 "---" 行号和第一个 "## " 行号，替换中间内容
+sep_line=$(grep -n '^---$' "AGENTS.md" | head -1 | cut -d: -f1)
+if [[ -n "$sep_line" ]]; then
+  # 找到 "---" 之后第一个 "## " 的行号
+  content_start=$(awk -v start=$((sep_line + 1)) 'NR > start && /^## / { print NR; exit }' "AGENTS.md")
+  
+  if [[ -n "$content_start" ]]; then
+    # 保留 "---" 及之前的内容 + 新列表 + 从 "## " 开始的后续内容
+    {
+      head -n "$sep_line" "AGENTS.md"
+      echo ""
+      cat "$TMP.list"
+      tail -n "+$content_start" "AGENTS.md"
+    } > "$TMP.agents"
+  else
+    # 没有找到 "## "，直接追加
+    {
+      cat "AGENTS.md"
+      cat "$TMP.list"
+    } > "$TMP.agents"
+  fi
+  
+  mv "$TMP.agents" "AGENTS.md"
+fi
 
 # ── 生成 index.html ─────────────────────────────────────────
 
@@ -240,7 +271,7 @@ cat <<'FOOTER'
 FOOTER
 } > index.html
 
-echo "[sync] README.md 和 index.html 已更新"
+echo "[sync] AGENTS.md 和 index.html 已更新"
 
 # ── watch 模式 ──────────────────────────────────────────────
 
@@ -248,7 +279,7 @@ if [[ "${1:-}" == "--watch" ]]; then
   echo "[sync] 监听模式启动，Ctrl+C 退出"
 
   if command -v fswatch &>/dev/null; then
-    fswatch -0 --exclude '\.git' --exclude '\.DS_Store' --exclude 'index\.html' --exclude 'README\.md' . | while read -d ''; do
+    fswatch -0 --exclude '\.git' --exclude '\.DS_Store' --exclude 'index\.html' --exclude 'AGENTS\.md' . | while read -d ''; do
       echo "[sync] 检测到变化，重新生成..."
       exec "$0"
     done
@@ -261,7 +292,7 @@ if [[ "${1:-}" == "--watch" ]]; then
     echo "[sync] 未找到 fswatch 或 inotifywait，使用轮询模式"
     LAST_HASH=""
     while true; do
-      CURRENT_HASH=$(find . -maxdepth 2 -name 'README.md' -not -path './.git/*' -exec md5 -r {} + 2>/dev/null | sort | md5 -q)
+      CURRENT_HASH=$(find . -maxdepth 2 -name 'AGENTS.md' -not -path './.git/*' -exec md5 -r {} + 2>/dev/null | sort | md5 -q)
       if [[ "$CURRENT_HASH" != "$LAST_HASH" ]]; then
         [[ -n "$LAST_HASH" ]] && { echo "[sync] 检测到变化，重新生成..."; exec "$0"; }
         LAST_HASH="$CURRENT_HASH"
