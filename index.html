@@ -3,237 +3,535 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>One Page</title>
+<title>One Page · 单页作品集</title>
 <style>
   *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
   :root {
-    --bg: #fafaf9;
-    --surface: #ffffff;
-    --text: #1c1917;
-    --text-secondary: #78716c;
-    --border: #e7e5e4;
-    --accent: #292524;
-    --radius: 12px;
-    --shadow: 0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
-    --shadow-hover: 0 10px 25px rgba(0,0,0,.08), 0 4px 10px rgba(0,0,0,.04);
+    /* 浅色 · 宣纸 */
+    --bg: #f2ecdf;
+    --surface: #faf6ec;
+    --text: #33302a;
+    --text-secondary: #7d7466;
+    --border: #ddd3bd;
+    --border-strong: #c2b48f;
+    --accent: #9e2b25;             /* 朱砂 */
+    --gold: #a8842f;               /* 藤黄 */
+    --radius: 4px;
+    --shadow: 0 1px 2px rgba(51,48,42,.06);
+    --shadow-hover: 0 16px 32px -14px rgba(96,72,40,.35);
+    --pattern: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='44'%3E%3Cpath d='M44 0H0v44' fill='none' stroke='%236b5a3e' stroke-opacity='.055'/%3E%3C/svg%3E");
   }
 
   @media (prefers-color-scheme: dark) {
     :root {
-      --bg: #1c1917;
-      --surface: #292524;
-      --text: #fafaf9;
-      --text-secondary: #a8a29e;
-      --border: #44403c;
-      --accent: #fafaf9;
-      --shadow: 0 1px 3px rgba(0,0,0,.3);
-      --shadow-hover: 0 10px 25px rgba(0,0,0,.4);
+      /* 深色 · 夜墨 */
+      --bg: #16181c;
+      --surface: #1f2227;
+      --text: #e8e1d2;
+      --text-secondary: #9c9482;
+      --border: #33373d;
+      --border-strong: #4a4f56;
+      --accent: #c4554a;
+      --gold: #c9a24f;
+      --shadow: 0 1px 2px rgba(0,0,0,.35);
+      --shadow-hover: 0 16px 32px -14px rgba(0,0,0,.6);
+      --pattern: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='44'%3E%3Cpath d='M44 0H0v44' fill='none' stroke='%23c9b48a' stroke-opacity='.05'/%3E%3C/svg%3E");
     }
   }
 
+  html { scroll-behavior: smooth; }
+
   body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans SC", sans-serif;
+    font-family: "Songti SC", "STSong", "Noto Serif SC", "Source Han Serif SC", "SimSun", serif;
     background: var(--bg);
     color: var(--text);
-    line-height: 1.6;
+    line-height: 1.7;
     min-height: 100vh;
   }
 
+  ::selection { background: var(--accent); color: #faf6ec; }
+
+  /* 顶部五色丝带 */
+  body::after {
+    content: "";
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    z-index: 20;
+    background: linear-gradient(90deg,
+      #9e2b25 0%, #9e2b25 30%,
+      #a8842f 30%, #a8842f 52%,
+      #486581 52%, #486581 76%,
+      #4e7c5a 76%, #4e7c5a 100%);
+    opacity: .85;
+  }
+
+  /* 窗棂底纹 + 顶部水墨晕染 */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+      radial-gradient(620px 320px at 12% -80px, color-mix(in srgb, var(--accent) 9%, transparent), transparent 68%),
+      radial-gradient(540px 300px at 88% -60px, color-mix(in srgb, var(--gold) 9%, transparent), transparent 68%),
+      var(--pattern);
+  }
+
   .container {
-    max-width: 960px;
+    max-width: 1060px;
     margin: 0 auto;
-    padding: 64px 24px 96px;
+    padding: 88px 24px 96px;
   }
 
-  header { margin-bottom: 56px; }
-
-  h1 {
-    font-size: 2rem;
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    margin-bottom: 8px;
+  /* ── Hero ── */
+  .hero {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 32px;
+    margin-bottom: 44px;
   }
 
-  header p {
+  .overline {
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.32em;
     color: var(--text-secondary);
-    font-size: 1.05rem;
+    margin-bottom: 20px;
   }
 
-  .category { margin-bottom: 48px; }
+  .overline::before { content: "「 "; color: var(--accent); }
+  .overline::after  { content: " 」"; color: var(--accent); }
+
+  .hero h1 {
+    font-size: clamp(2.1rem, 5vw, 3.1rem);
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    line-height: 1.35;
+    margin-bottom: 18px;
+  }
+
+  .hero h1 em {
+    font-style: normal;
+    color: var(--accent);
+    text-decoration: underline;
+    text-decoration-color: color-mix(in srgb, var(--gold) 65%, transparent);
+    text-decoration-thickness: 3px;
+    text-underline-offset: 7px;
+  }
+
+  .subtitle {
+    color: var(--text-secondary);
+    font-size: 1.02rem;
+    max-width: 34em;
+    margin-bottom: 24px;
+  }
+
+  .stats {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    letter-spacing: 0.06em;
+  }
+
+  .stats strong {
+    color: var(--accent);
+    font-weight: 700;
+    margin-right: 2px;
+  }
+
+  .stats-sep {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--border-strong);
+  }
+
+  /* 朱砂印章 */
+  .seal {
+    flex: none;
+    width: 88px;
+    height: 88px;
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--accent);
+    color: #faf6ec;
+    border-radius: 7px;
+    transform: rotate(-3deg);
+    box-shadow:
+      0 6px 18px color-mix(in srgb, var(--accent) 38%, transparent),
+      inset 0 0 0 2px rgba(250,246,236,.35),
+      inset 0 0 0 5px color-mix(in srgb, var(--accent) 82%, transparent);
+  }
+
+  .seal span {
+    writing-mode: vertical-rl;
+    font-size: 1.75rem;
+    font-weight: 700;
+    letter-spacing: 0.28em;
+    text-indent: 0.28em;
+  }
+
+  @media (max-width: 640px) {
+    .seal { display: none; }
+  }
+
+  /* ── 分类导航 ── */
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 16px 0;
+    margin-bottom: 42px;
+    background: color-mix(in srgb, var(--bg) 84%, transparent);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .pill {
+    padding: 5px 16px;
+    font-size: 0.88rem;
+    letter-spacing: 0.12em;
+    color: var(--text-secondary);
+    text-decoration: none;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    background: var(--surface);
+    transition: color .2s, border-color .2s, transform .2s;
+  }
+
+  .pill:hover {
+    color: var(--accent);
+    border-color: color-mix(in srgb, var(--accent) 55%, var(--border));
+    transform: translateY(-1px);
+  }
+
+  /* ── 分类区块 ── */
+  .category {
+    margin-bottom: 56px;
+    scroll-margin-top: 86px;
+    --cat-ink: color-mix(in srgb, var(--cat) 78%, var(--text));
+  }
 
   .category h2 {
-    font-size: 0.8rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--text-secondary);
-    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1.18rem;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    margin-bottom: 20px;
     padding-left: 2px;
+  }
+
+  /* 方胜纹（菱形）标记 */
+  .category h2 .dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 2px;
+    transform: rotate(45deg);
+    background: var(--cat);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--cat) 16%, transparent);
+  }
+
+  .category h2 .count {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: var(--cat-ink);
+    background: color-mix(in srgb, var(--cat) 10%, transparent);
+    border: 1px solid color-mix(in srgb, var(--cat) 32%, transparent);
+    border-radius: 3px;
+    padding: 1px 9px;
+    margin-left: 2px;
   }
 
   .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 12px;
+    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+    gap: 16px;
+  }
+
+  /* ── 卡片 ── */
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: none; }
   }
 
   .card {
+    position: relative;
     display: flex;
     flex-direction: column;
-    padding: 20px 22px;
+    padding: 20px 20px 22px;
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--radius);
     text-decoration: none;
     color: inherit;
-    transition: box-shadow .2s, transform .2s, border-color .2s;
     box-shadow: var(--shadow);
-    position: relative;
+    animation: rise .5s ease both;
+    transition: box-shadow .25s, transform .25s, border-color .25s;
+  }
+
+  /* 顶部题签色条 */
+  .card::before {
+    content: "";
+    position: absolute;
+    top: -1px; left: 18px; right: 18px;
+    height: 2px;
+    background: var(--cat);
+    opacity: 0;
+    transition: opacity .25s;
   }
 
   .card:hover {
     box-shadow: var(--shadow-hover);
-    transform: translateY(-2px);
-    border-color: var(--accent);
+    transform: translateY(-3px);
+    border-color: color-mix(in srgb, var(--cat) 45%, var(--border));
   }
 
-  .card h3 {
-    font-size: 1rem;
+  .card:hover::before { opacity: 1; }
+
+  .card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 13px;
+  }
+
+  .tag {
+    font-size: 0.72rem;
     font-weight: 600;
-    margin-bottom: 6px;
-    line-height: 1.4;
-  }
-
-  .card p {
-    font-size: 0.88rem;
-    color: var(--text-secondary);
-    line-height: 1.5;
-    flex: 1;
+    letter-spacing: 0.14em;
+    color: var(--cat-ink);
+    background: color-mix(in srgb, var(--cat) 8%, transparent);
+    border: 1px solid color-mix(in srgb, var(--cat) 30%, transparent);
+    border-radius: 3px;
+    padding: 2px 10px;
   }
 
   .card-arrow {
-    position: absolute;
-    top: 20px;
-    right: 20px;
     font-size: 1rem;
-    color: var(--text-secondary);
+    color: var(--cat-ink);
     opacity: 0;
+    transform: translateX(-4px);
     transition: opacity .2s, transform .2s;
   }
 
   .card:hover .card-arrow {
     opacity: 1;
-    transform: translateX(3px);
+    transform: none;
   }
 
+  .card h3 {
+    font-size: 1.06rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    margin-bottom: 7px;
+    line-height: 1.45;
+  }
+
+  .card p {
+    font-size: 0.86rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* ── 页脚 ── */
   footer {
-    text-align: center;
-    padding: 32px 0;
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    padding: 30px 0 10px;
     color: var(--text-secondary);
     font-size: 0.82rem;
-    border-top: 1px solid var(--border);
+    letter-spacing: 0.1em;
+    border-top: 3px double var(--border-strong);
+  }
+
+  .footer-sep { color: var(--accent); }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .card { animation: none; }
+    .card, .pill, .card-arrow, .card::before { transition: none; }
   }
 </style>
 </head>
 <body>
 <div class="container">
-  <header>
-    <h1>One Page</h1>
-    <p>单页作品集，直接在浏览器中体验。</p>
+  <header class="hero">
+    <div class="hero-text">
+      <p class="overline">One Page · 单页作品集</p>
+      <h1>每一个页面，<br>都是一方<em>小世界</em>。</h1>
+      <p class="subtitle">独立单页项目合集 —— 工具、互动体验、游戏与作品展示，无需构建，直接在浏览器中打开体验。</p>
+      <div class="stats">
+        <span><strong>14</strong> 个项目</span>
+        <span class="stats-sep"></span>
+        <span><strong>4</strong> 个分类</span>
+      </div>
+    </div>
+    <div class="seal" aria-hidden="true"><span>一页</span></div>
   </header>
-  <section class="category">
-    <h2>工具</h2>
+  <nav class="nav">
+    <a class="pill" href="#cat-工具">工具</a>
+    <a class="pill" href="#cat-互动体验">互动体验</a>
+    <a class="pill" href="#cat-游戏">游戏</a>
+    <a class="pill" href="#cat-作品展示">作品展示</a>
+  </nav>
+  <section class="category" id="cat-工具" style="--cat: #486581">
+    <h2><span class="dot"></span>工具<span class="count">2</span></h2>
     <div class="grid">
-      <a class="card" href="logo-sim/index.html" target="_blank">
+      <a class="card" href="logo-sim/index.html" target="_blank" style="animation-delay: 0ms">
+        <div class="card-top">
+          <span class="tag">工具</span>
+          <span class="card-arrow">&rarr;</span>
+        </div>
         <h3>LOGO 语言模拟器 (Logo Simulator)</h3>
         <p>一个基于浏览器的 LOGO 编程语言模拟器，支持编写和执行 LOGO 指令控制海龟画图。</p>
-        <span class="card-arrow">&rarr;</span>
       </a>
-      <a class="card" href="pic-tool/index.html" target="_blank">
+      <a class="card" href="pic-tool/index.html" target="_blank" style="animation-delay: 40ms">
+        <div class="card-top">
+          <span class="tag">工具</span>
+          <span class="card-arrow">&rarr;</span>
+        </div>
         <h3>图片调整大小工具 (Pic Tool)</h3>
         <p>一个纯前端的图片尺寸调整工具，支持拖拽上传图片、自定义宽高比例、预览和下载调整后的图片。</p>
-        <span class="card-arrow">&rarr;</span>
       </a>
     </div>
   </section>
-  <section class="category">
-    <h2>互动体验</h2>
+  <section class="category" id="cat-互动体验" style="--cat: #6b5b95">
+    <h2><span class="dot"></span>互动体验<span class="count">4</span></h2>
     <div class="grid">
-      <a class="card" href="finger-galaxy/index.html" target="_blank">
+      <a class="card" href="finger-galaxy/index.html" target="_blank" style="animation-delay: 80ms">
+        <div class="card-top">
+          <span class="tag">互动体验</span>
+          <span class="card-arrow">&rarr;</span>
+        </div>
         <h3>指尖星河 (Finger Galaxy)</h3>
         <p>手势/鼠标控制的星空互动页面。通过手指或鼠标在 Canvas 上绘制星尘轨迹，呈现沉浸式的银河交互体验。</p>
-        <span class="card-arrow">&rarr;</span>
       </a>
-      <a class="card" href="gesture-fish/index.html" target="_blank">
+      <a class="card" href="gesture-fish/index.html" target="_blank" style="animation-delay: 120ms">
+        <div class="card-top">
+          <span class="tag">互动体验</span>
+          <span class="card-arrow">&rarr;</span>
+        </div>
         <h3>鱼戏莲叶间 (Gesture Fish)</h3>
         <p>基于 MediaPipe 手势识别的锦鲤池塘互动页面。支持鼠标和摄像头手势双模式：滑动水面产生涟漪，悬停/长按投喂鱼食，60 条锦鲤在莲叶间自由游弋。</p>
-        <span class="card-arrow">&rarr;</span>
       </a>
-      <a class="card" href="kimi-city/index.html" target="_blank">
+      <a class="card" href="kimi-city/index.html" target="_blank" style="animation-delay: 160ms">
+        <div class="card-top">
+          <span class="tag">互动体验</span>
+          <span class="card-arrow">&rarr;</span>
+        </div>
         <h3>云端都市 (Kimi City)</h3>
         <p>基于 Canvas 的交互式城市体验，支持拖拽和滚轮缩放视角，呈现赛博朋克风格的都市夜景。</p>
-        <span class="card-arrow">&rarr;</span>
       </a>
-      <a class="card" href="pipes/index.html" target="_blank">
+      <a class="card" href="pipes/index.html" target="_blank" style="animation-delay: 200ms">
+        <div class="card-top">
+          <span class="tag">互动体验</span>
+          <span class="card-arrow">&rarr;</span>
+        </div>
         <h3>三维水管 (Pipes)</h3>
         <p>经典 Windows「三维水管」屏保的 WebGL2 重现。纯黑底 + 白/黄/红三色水管在 3D 网格上随机生长，拐弯处带球形关节；支持拖拽旋转视角，滚轮缩放，静置后缓慢自动环绕；长满后自动清场重来。</p>
-        <span class="card-arrow">&rarr;</span>
       </a>
     </div>
   </section>
-  <section class="category">
-    <h2>游戏</h2>
+  <section class="category" id="cat-游戏" style="--cat: #4e7c5a">
+    <h2><span class="dot"></span>游戏<span class="count">1</span></h2>
     <div class="grid">
-      <a class="card" href="skill-five/index.html" target="_blank">
+      <a class="card" href="skill-five/index.html" target="_blank" style="animation-delay: 240ms">
+        <div class="card-top">
+          <span class="tag">游戏</span>
+          <span class="card-arrow">&rarr;</span>
+        </div>
         <h3>技能五子棋 (Skills Five)</h3>
         <p>一个带有特殊技能的五子棋游戏，支持双人对战和人机对战，基于纯前端技术实现，无需后端服务器。</p>
-        <span class="card-arrow">&rarr;</span>
       </a>
     </div>
   </section>
-  <section class="category">
-    <h2>作品展示</h2>
+  <section class="category" id="cat-作品展示" style="--cat: #b05a3c">
+    <h2><span class="dot"></span>作品展示<span class="count">7</span></h2>
     <div class="grid">
-      <a class="card" href="dear-you/index.html" target="_blank">
+      <a class="card" href="dear-you/index.html" target="_blank" style="animation-delay: 280ms">
+        <div class="card-top">
+          <span class="tag">作品展示</span>
+          <span class="card-arrow">&rarr;</span>
+        </div>
         <h3>给阿嬷的情书 (Dear You)</h3>
         <p>一封献给阿嬷的电子情书，温暖怀旧的单页页面，配有背景音乐，以细腻的视觉设计表达对祖母的深情。</p>
-        <span class="card-arrow">&rarr;</span>
       </a>
-      <a class="card" href="huan-cheng/index.html" target="_blank">
+      <a class="card" href="huan-cheng/index.html" target="_blank" style="animation-delay: 320ms">
+        <div class="card-top">
+          <span class="tag">作品展示</span>
+          <span class="card-arrow">&rarr;</span>
+        </div>
         <h3>幻城 (Huan Cheng)</h3>
         <p>郭敬明玄幻经典小说《幻城》的单页介绍页面，以冰雪主题呈现小说中的奇幻世界观、人物和故事线。</p>
-        <span class="card-arrow">&rarr;</span>
       </a>
-      <a class="card" href="ming-chao/index.html" target="_blank">
+      <a class="card" href="ming-chao/index.html" target="_blank" style="animation-delay: 0ms">
+        <div class="card-top">
+          <span class="tag">作品展示</span>
+          <span class="card-arrow">&rarr;</span>
+        </div>
         <h3>明朝那些事儿 (Ming Chao)</h3>
         <p>当年明月历史著作《明朝那些事儿》的单页介绍页面，以明朝风格的视觉设计展示明朝历史脉络与精彩章节。</p>
-        <span class="card-arrow">&rarr;</span>
       </a>
-      <a class="card" href="sou-shen-ji/index.html" target="_blank">
+      <a class="card" href="sou-shen-ji/index.html" target="_blank" style="animation-delay: 40ms">
+        <div class="card-top">
+          <span class="tag">作品展示</span>
+          <span class="card-arrow">&rarr;</span>
+        </div>
         <h3>搜神记与蛮荒记 (Sou Shen Ji)</h3>
         <p>树下野狐神话史诗《搜神记》与《蛮荒记》的单页介绍页面，以深邃的神话风格呈现远古洪荒世界观、人物与故事。</p>
-        <span class="card-arrow">&rarr;</span>
       </a>
-      <a class="card" href="xian-jian/index.html" target="_blank">
+      <a class="card" href="xian-jian/index.html" target="_blank" style="animation-delay: 80ms">
+        <div class="card-top">
+          <span class="tag">作品展示</span>
+          <span class="card-arrow">&rarr;</span>
+        </div>
         <h3>仙剑奇侠传 (Xian Jian)</h3>
         <p>经典中文 RPG《仙剑奇侠传》的单页介绍页面，以青蓝水墨仙侠风格呈现游戏的仙侠世界观、主要人物、故事脉络、系列作品与经典台词。</p>
-        <span class="card-arrow">&rarr;</span>
       </a>
-      <a class="card" href="xian-ni/index.html" target="_blank">
+      <a class="card" href="xian-ni/index.html" target="_blank" style="animation-delay: 120ms">
+        <div class="card-top">
+          <span class="tag">作品展示</span>
+          <span class="card-arrow">&rarr;</span>
+        </div>
         <h3>仙逆 (Xian Ni)</h3>
         <p>耳根修仙小说《仙逆》的单页介绍与解析页面，以仙侠风格呈现"顺为凡，逆则仙"的修仙世界观、境界体系与故事脉络。</p>
-        <span class="card-arrow">&rarr;</span>
       </a>
-      <a class="card" href="zang-hai-zhuan/index.html" target="_blank">
+      <a class="card" href="zang-hai-zhuan/index.html" target="_blank" style="animation-delay: 160ms">
+        <div class="card-top">
+          <span class="tag">作品展示</span>
+          <span class="card-arrow">&rarr;</span>
+        </div>
         <h3>藏海传 (Zang Hai Zhuan)</h3>
         <p>权谋复仇传奇《藏海传》的单页介绍页面，以暗色金饰风格呈现小说中的权谋世界与复仇故事线。</p>
-        <span class="card-arrow">&rarr;</span>
       </a>
     </div>
   </section>
   <footer>
-    Generated by sync.sh
+    <span>共 14 个项目</span>
+    <span class="footer-sep">·</span>
+    <span>一页一世界</span>
+    <span class="footer-sep">·</span>
+    <span>Generated by sync.sh</span>
   </footer>
 </div>
 </body>
